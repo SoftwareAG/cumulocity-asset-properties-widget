@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { IManagedObject } from '@c8y/client';
+import { IManagedObject, InventoryService } from '@c8y/client';
 import { AssetSelectionChangeEvent } from '@c8y/ngx-components/assets-navigator';
 import { ContextDashboardService } from '@c8y/ngx-components/context-dashboard';
 
@@ -13,11 +13,15 @@ export class AssetPropertiesConfigComponent {
     selectedAsset:IManagedObject
     contextDashboardServiceMock: any;
 
-    constructor(private contextDashboardService: ContextDashboardService) {}
+    constructor(private contextDashboardService: ContextDashboardService, private inventoryService: InventoryService) {}
     
-    ngOnInit(): void {
+   async ngOnInit(): Promise<void> {
         if(this.config.settings){
-            this.selectedAsset = this.config.asset
+            try{
+                this.selectedAsset = (await this.inventoryService.detail(this.config.asset.id)).data;
+            }catch(er){
+                 // intended empty
+            }
             this.contextDashboardService.formDisabled = true;
         }
     }

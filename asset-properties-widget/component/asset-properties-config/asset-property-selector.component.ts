@@ -4,7 +4,7 @@ import { AssetTypesService, gettext } from "@c8y/ngx-components";
 import { AssetPropertiesService } from "./asset-properties.service";
 import { BsModalRef, BsModalService, ModalOptions } from "ngx-bootstrap/modal";
 import { schemaPropertySelectorCtrl } from "../asset-property-selector-model/schema-property-selector.component";
-import { defaultProperty } from "../../common/asset-property-constant";
+import { defaultProperty, property } from "../../common/asset-property-constant";
 import { isEmpty, cloneDeep } from 'lodash-es';
 import { ContextDashboardService } from "@c8y/ngx-components/context-dashboard";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
@@ -27,7 +27,7 @@ export class AssetPropertiesSelectorComponent {
     assetType: IManagedObject;
     assetPropertySelectorModalRef:BsModalRef
     properties = cloneDeep(defaultProperty);
-    customProperties: IManagedObject [] = cloneDeep(defaultProperty);
+    customProperties: IManagedObject [] = cloneDeep(defaultProperty).concat(cloneDeep(property));
     ExpandedComplexProperty:any;
 
     constructor(private assetTypes: AssetTypesService,private assetPropertyService: AssetPropertiesService,
@@ -36,8 +36,7 @@ export class AssetPropertiesSelectorComponent {
    async ngOnChanges(changes: IManagedObject): Promise<void> {
       if(changes.asset.firstChange && this.config?.properties){
       this.properties = this.config.properties;
-      this.customProperties = await this.assetPropertyService.getCustomProperties(this.asset);
-      this.customProperties = cloneDeep(defaultProperty).concat(this.getConstructCustomProperties());
+      this.customProperties = this.customProperties.concat(this.getConstructCustomProperties(await this.assetPropertyService.getCustomProperties(this.asset)));
       this.contextDashboardService.formDisabled = false;
       }else if(changes.asset.currentValue){
         this.assetType = undefined;
@@ -55,10 +54,10 @@ export class AssetPropertiesSelectorComponent {
       })
 
     }
-    getConstructCustomProperties():IManagedObject []{
+    getConstructCustomProperties(customProperties):IManagedObject []{
       let simpleProperties:IManagedObject[] = [];
       let constructCustomProperties:IManagedObject[] = [];
-      this.customProperties.forEach(property => {
+      customProperties.forEach(property => {
         const object = property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key]
         if(object.type === 'object'){
           constructCustomProperties.push(property)
@@ -73,9 +72,8 @@ export class AssetPropertiesSelectorComponent {
       this.isLoading = true;
       this.properties = cloneDeep(defaultProperty);
       this.assetType = this.assetTypes.getAssetTypeByName(this.asset.type);
-      this.customProperties = await this.assetPropertyService.getCustomProperties(this.asset);
       this.config.properties = this.properties;
-      this.customProperties = cloneDeep(this.properties).concat(this.getConstructCustomProperties())
+      this.customProperties = cloneDeep(this.properties).concat(property).concat(this.getConstructCustomProperties(await this.assetPropertyService.getCustomProperties(this.asset)))
       this.isLoading = false;
     }
 
@@ -98,8 +96,7 @@ export class AssetPropertiesSelectorComponent {
         this.assetPropertySelectorModalRef.hide();
       });
       this.assetPropertySelectorModalRef.content.savePropertySelection.subscribe((properties:IManagedObject[]) => {
-        this.removeSelectedProperties(properties);
-        this.properties = this.properties.concat(properties)
+        this.properties = this.properties.concat(this.removeSelectedProperties(properties))
         this.contextDashboardService.formDisabled = false;
         this.config.properties = this.properties;
         this.assetPropertySelectorModalRef.hide();
@@ -138,8 +135,10 @@ export class AssetPropertiesSelectorComponent {
           property.isHide = false
           this.properties[removeIndex] = property;
           properties.splice(index, 1);
+          this.removeSelectedProperties(properties)
         }
       })
+      return properties;
     }
 
     updateOptions(){

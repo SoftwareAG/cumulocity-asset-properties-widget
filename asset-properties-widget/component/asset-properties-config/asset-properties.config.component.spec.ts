@@ -8,10 +8,10 @@ describe('AssetPropertiesConfigComponent', () => {
     let component: AssetPropertiesConfigComponent;
     let contextDashboardServiceMock: any ;
     let asset;
-    let service;
+    let inventoryServiceMock;
   
     beforeEach(() => {
-      component = new AssetPropertiesConfigComponent(contextDashboardServiceMock);
+      component = new AssetPropertiesConfigComponent(contextDashboardServiceMock, inventoryServiceMock);
       contextDashboardServiceMock = {
         formDisabled: false
     }
