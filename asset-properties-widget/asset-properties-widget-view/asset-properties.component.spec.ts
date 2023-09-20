@@ -8,14 +8,17 @@ describe('AssetPropertiesComponent', () => {
   let inventoryBinaryMock: any;
   let inventoryMock: any;
   let assetTypesMock: any;
+  let appStateMock: any;
+  let userMock: any;
 
   beforeEach(() => {
     assetTypesMock = { getAssetTypeByName: jest.fn() }
     inventoryMock = { update: jest.fn(), detail: jest.fn(), childAdditionsRemove :jest.fn(), childAdditionsAdd: jest.fn()}
     alertMock = {success: jest.fn(), addServerFailure: jest.fn()}
     inventoryBinaryMock = {create: jest.fn()}
+    userMock = {hasAnyRole: jest.fn()}
 
-    component = new AssetPropertiesComponent(assetTypesMock, inventoryMock, inventoryBinaryMock, alertMock);
+    component = new AssetPropertiesComponent(assetTypesMock, inventoryMock, inventoryBinaryMock, alertMock, appStateMock,userMock);
   });
 
   it('should exist', () => {
@@ -366,6 +369,38 @@ describe('AssetPropertiesComponent', () => {
 
       //then
       expect(result[0].jsonSchema.properties.address).not.toHaveProperty('title');
+    });
+
+    it('should disabled properties edit icon', async () => {
+      // given
+      component['appState'] = {currentUser:{value: {
+        id: "Amarjyoti.Raj@softwareag.com",
+        userName: 'test',
+        displayName: 'Test'
+      }} as any} as any
+      jest.spyOn(userMock, 'hasAnyRole').mockReturnValue(true);
+
+      //when
+      await component.ngOnInit()
+
+      //then
+      expect(component.isEditDisabled).toBe(false);
+    });
+
+    it('should enable properties edit icon', async () => {
+      // given
+      component['appState'] = {currentUser:{value: {
+        id: "Amarjyoti.Raj@softwareag.com",
+        userName: 'amar',
+        displayName: 'Amar'
+      }} as any} as any
+      jest.spyOn(userMock, 'hasAnyRole').mockReturnValue(false);
+
+      //when
+      await component.ngOnInit()
+
+      //then
+      expect(component.isEditDisabled).toBe(true);
     });
   });
 });

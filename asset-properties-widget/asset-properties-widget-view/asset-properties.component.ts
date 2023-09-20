@@ -3,9 +3,10 @@ import {
   IManagedObject,
   IManagedObjectBinary,
   InventoryBinaryService,
-  InventoryService
+  InventoryService,
+  UserService
 } from '@c8y/client';
-import { AlertService, AssetTypesService, gettext } from '@c8y/ngx-components';
+import { AlertService, AppStateService, AssetTypesService, gettext } from '@c8y/ngx-components';
 import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
 
@@ -22,15 +23,30 @@ export class AssetPropertiesComponent implements OnChanges {
   customProperties: AssetPropertiesItem[] = [];
   isEdit = false;
   isLoading = false;
+  isEditDisabled: boolean = false
 
   constructor(
     private assetTypes: AssetTypesService,
     private inventory: InventoryService,
     private inventoryBinary: InventoryBinaryService,
     private alert: AlertService,
+    protected appState: AppStateService,
+    protected user: UserService,
   ) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
+  async ngOnInit() {
+    this.isEditDisabled = !this.canEditProperty();
+  }
+
+  canEditProperty(): boolean {
+    const currentUser = this.appState.currentUser.value;
+    const hasAdminRole = this.user.hasAnyRole(currentUser, [
+      'ROLE_INVENTORY_ADMIN'
+    ]);
+    return hasAdminRole;
+  }
+
+ ngOnChanges(changes: SimpleChanges): void {
     if (changes.asset?.currentValue || changes.properties?.currentValue) {
       this.assetType = undefined;
       this.customProperties = [];
