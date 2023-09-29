@@ -25,15 +25,17 @@ export class AssetPropertiesViewComponent implements OnInit {
     async ngOnInit(): Promise<void> {
         if(this.config.asset){
             try{
-            this.selectedAsset = (await this.inventoryService.detail(this.config.asset.id)).data;
-            this.customProperties = await this.assetPropertiesService.getCustomProperties(this.selectedAsset);
-            this.config.properties.forEach((property, index, object) => {
-                if(!property.isExistingProperty &&  (this.customProperties.length > 0 && !this.customProperties.find((prop) => prop.id === property.id))){
-                    object.splice(index, 1);
-                }
-            });
-            this.properties = this.config.properties;
-            this.handleRealtime();
+                this.selectedAsset = (await this.inventoryService.detail(this.config.asset.id)).data;
+                setTimeout(async () => {
+                this.customProperties =  await this.assetPropertiesService.getCustomProperties(this.selectedAsset);
+                this.config.properties.forEach((property, index, object) => {
+                    if(!property.isExistingProperty &&  (this.customProperties.length > 0 && !this.customProperties.find((prop) => prop.id === property.id))){
+                        object.splice(index, 1);
+                    }
+                });
+                this.properties = this.config.properties;
+                this.handleRealtime();
+                },1000)
             }catch(error){
                 this.isEmptyWidget = true;
             }
