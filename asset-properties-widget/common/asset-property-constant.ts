@@ -1,5 +1,5 @@
 export const defaultProperty = [
-{ c8y_JsonSchema:{properties :{name:{type: "string",label: "Name"}} }, name: 'name', label: "Name", type: "string", active: true, isEditable:false, isExistingProperty:true},
+{ c8y_JsonSchema:{properties :{name:{type: "string",label: "Name"}} }, name: 'name', label: "Name", type: "string", active: true, isEditable:true, isExistingProperty:true},
 {  c8y_JsonSchema:{properties :{id: {type: "string",label: "ID"}}}, name: 'id', label: "ID",  type: "string", active: true ,isEditable:false, isExistingProperty:true},
 {  c8y_JsonSchema:{properties :{type: {type: "string",label: "Type"}}},name: 'type', label: "Type",  type: "string", active: true,isEditable:false, isExistingProperty:true},
 ];
