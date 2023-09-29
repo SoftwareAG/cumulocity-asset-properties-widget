@@ -2,14 +2,14 @@
   <label>{{ 'Properties' | translate }}</label>
   <div class="d-flex">
     <div class="m-l-auto m-r-16">
-      <button
+      <a
         title="{{ 'Add property' | translate }}"
         class="btn btn-default btn-xs"
         (click)="addProperty()"
       >
       <i c8yicon="plus" class="dlt-c8y-icon-plus"></i>
       {{ 'Add property' | translate }}
-    </button>
+    </a>
     </div>
   </div>
 </div>
@@ -35,13 +35,13 @@
       </td>
       <td style="width: 10%" *ngIf="!property.isHide">
         <input type="checkbox" (change)="updateOptions()" [(ngModel)]="property.active" />
-        <button *ngIf="isComplexProperty(property)"
+        <!-- <a *ngIf="isComplexProperty(property)"
          class="collapse-btn"
          (click)="property.open = !property.open; onRowExpanded(property)"
          [title]="false ? ('Collapse' | translate) : ('Expand' | translate)"
          [attr.aria-label]="('Expand' | translate)">
           <i c8yIcon="chevron-right"></i>
-        </button>
+      </a> -->
         
       </td>
       <div *ngIf="property?.open" class="expanded-panel">
