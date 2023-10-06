@@ -8,3 +8,6 @@ msgstr ""
 
 msgid "Groups"
 msgstr "Assets"
+
+msgid "File could not be loaded."
+msgstr "File could not be loaded."

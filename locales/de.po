@@ -8,3 +8,6 @@ msgstr ""
 
 msgid "Module Federation widget"
 msgstr "Modul Federation Dingsbums"
+
+msgid "File could not be loaded."
+msgstr "Die Datei konnte nicht geladen werden."

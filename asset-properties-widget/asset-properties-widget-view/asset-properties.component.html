@@ -32,6 +32,7 @@
               class="btn btn-dot m-l-auto text-12"
               [attr.aria-label]="'Edit' | translate"
               tooltip="{{ 'Edit' | translate }}"
+              data-cy="asset-properties-edit-icon"
               type="button"
               [delay]="500"
               (click)="toggleEdit(prop)"
@@ -59,6 +60,7 @@
           <button
             class="btn btn-default btn-sm"
             title="{{ 'Cancel' | translate }}"
+            data-cy="asset-properties-cancel-button"
             type="button"
             (click)="toggleEdit(prop)"
           >
@@ -67,6 +69,7 @@
           <button
             class="btn btn-primary btn-sm"
             title="{{ 'Save' | translate }}"
+            data-cy="asset-properties-save-button"
             type="button"
             [disabled]="!assetProps?.form?.valid"
             (click)="save(assetProps.form.value, prop)"

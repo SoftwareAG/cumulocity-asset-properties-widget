@@ -16,6 +16,7 @@
         (click)="filesService.download(file)"
         type="button"
         title="{{ 'Download' | translate }} {{ file.name | translate }}"
+        data-cy="asset-properties-item-file-download-button"
         class="btn btn-clean text-truncate p-0"
       >
         {{ 'Download' | translate }} {{ file.name | translate }}
@@ -32,9 +33,9 @@
         [ngClass]="{ 'separator-top-bottom': i === 0, 'separator-bottom': i > 0 }"
         class="p-t-4 p-b-4 flex-row text-nowrap"
       >
-        <label class="small m-b-0 m-r-8" [ngClass]="{ 'a-s-start': prop.file }">{{
-          prop.label | translate | humanize
-        }}</label>
+        <label class="small m-b-0 m-r-8" [ngClass]="{ 'a-s-start': prop.file }">
+          {{ prop.label | translate }}
+        </label>
         <span class="m-l-auto" style="max-width: {{ prop.file ? '50%' : '100%' }}">
           <c8y-asset-properties-item
             [file]="prop.file"

@@ -74,6 +74,7 @@
               title="{{
                 'Complex property.' | translate
               }}"
+              data-cy="schema-property-selector-complex-property-tags"
               *ngIf="isComplexProperty(property)"
             >
               <i c8yicon="tags" class="text-info dlt-c8y-icon-tags"></i>
@@ -96,6 +97,7 @@
       class="btn btn-default"
       type="button"
       title="{{ 'Cancel' | translate }}"
+      data-cy="schema-property-selector-cancel-button"
       (click)="onCancelButtonClicked()"
     >
       {{ 'Cancel' | translate }}
@@ -104,6 +106,7 @@
       class="btn btn-primary"
       type="button"
       title="{{ 'Select' | translate }}"
+      data-cy="schema-property-selector-select-button"
       [disabled]="selectIsDisabled()"
       (click)="onSaveButtonClicked()"
     >

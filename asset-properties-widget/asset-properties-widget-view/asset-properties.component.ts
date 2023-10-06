@@ -185,6 +185,7 @@ export class AssetPropertiesComponent implements OnChanges {
       this.alert.success(gettext('Properties changes saved.'));
     } catch (ex) {
       this.alert.addServerFailure(ex);
+      this.toggleEdit(prop);
     }
   }
 
@@ -199,12 +200,12 @@ export class AssetPropertiesComponent implements OnChanges {
               await this.inventory.childAdditionsRemove(moId[0], this.asset.id);
             }
           } catch (ex) {
-            this.alert.addServerFailure(ex);
+            throw ex;
           }
           model[key] = upload.data.id;
           await this.inventory.childAdditionsAdd(upload.data.id, this.asset.id);
         } catch (ex) {
-          this.alert.addServerFailure(ex);
+          throw ex;
         }
       }
     }

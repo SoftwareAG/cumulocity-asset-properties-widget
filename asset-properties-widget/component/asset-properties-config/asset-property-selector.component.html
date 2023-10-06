@@ -68,6 +68,7 @@
                       class="btn btn-dot btn-dot--danger showOnHover pull-right"
                       type="button"
                       title="{{ 'Remove property' | translate }}"
+                      data-cy="asset-property-selector-remove-complex-property-button"
                       (click)="removeComplexProperty(item)"
                     >
                     <i c8yicon="times" class="dlt-c8y-icon-times"></i>
@@ -90,6 +91,7 @@
           class="btn btn-dot btn-dot--danger showOnHover pull-right"
           type="button"
           title="{{ 'Remove property' | translate }}"
+          data-cy="asset-property-selector-remove-property-button"
           (click)="removeProperty(property)"
         >
         <i c8yicon="times" class="dlt-c8y-icon-times"></i>
