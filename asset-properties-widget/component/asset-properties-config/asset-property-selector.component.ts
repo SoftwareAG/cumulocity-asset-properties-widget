@@ -18,7 +18,6 @@ type ModalInitialState = {
 @Component({
     selector: 'asset-property-selector',
     templateUrl: './asset-property-selector.component.html',
-    styleUrls: ['./asset-property-selector.component.css']
 })
 export class AssetPropertiesSelectorComponent {
     @Input() config: IManagedObject;
@@ -108,7 +107,7 @@ export class AssetPropertiesSelectorComponent {
           let customProperties = property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key]?.properties;
           const tempCustomProperties = {};
           for (const key in customProperties) {
-            if(customProperties[key].active == true){
+            if(customProperties[key].active === true){
               tempCustomProperties[key] = customProperties[key];
             }
             const complexPropertyValue = properties.find((property) => property.name === customProperties[key].name);

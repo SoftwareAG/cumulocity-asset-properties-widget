@@ -19,7 +19,7 @@
               class="btn btn-clean text-primary m-l-auto text-12"
               title="{{ 'Edit' | translate }}"
               (click)="toggleEdit(prop)"
-              *ngIf="prop.isEditable || prop.isEditable == undefined "
+              *ngIf="prop.isEditable || prop.isEditable === undefined "
               [disabled] = 'isEditDisabled'
             >
               <i c8yIcon="pencil"></i>

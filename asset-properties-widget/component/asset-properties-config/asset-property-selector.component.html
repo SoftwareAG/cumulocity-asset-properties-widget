@@ -35,14 +35,6 @@
       </td>
       <td style="width: 10%" *ngIf="!property.isHide">
         <input type="checkbox" (change)="updateOptions()" [(ngModel)]="property.active" />
-        <!-- <a *ngIf="isComplexProperty(property)"
-         class="collapse-btn"
-         (click)="property.open = !property.open; onRowExpanded(property)"
-         [title]="false ? ('Collapse' | translate) : ('Expand' | translate)"
-         [attr.aria-label]="('Expand' | translate)">
-          <i c8yIcon="chevron-right"></i>
-      </a> -->
-        
       </td>
       <div *ngIf="property?.open" class="expanded-panel">
         <div *ngIf="property?.open" class="table-container">

@@ -2,7 +2,7 @@
   "name": "asset-properties-widget-plugin",
   "version": "1.0.1",
   "description": "Asset properties",
-  "author": "Amarjyoti Raj - Software AG, IoT Accelerators R&D",
+  "author": "Amarjyoti Raj - Software AG, IOT-Apps R&D",
   "license": "Apache 2.0",
   "scripts": {
     "clean": "yarn clean:dist && yarn clean:node_modules",
@@ -88,7 +88,7 @@
         }
       ],
       "remotes": {
-        "widget-plugin": [
+        "asset-properties": [
           "AssetPropertiesWidgetModule"
         ]
       }
