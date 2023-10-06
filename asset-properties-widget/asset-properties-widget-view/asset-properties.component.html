@@ -1,0 +1,83 @@
+<ng-container>
+  <div class="card-block">
+    <div
+      class="text-center"
+      *ngIf="isLoading"
+    >
+      <c8y-loading></c8y-loading>
+    </div>
+
+    <ng-container *ngIf="!isLoading">
+      <div
+        class="card m-b-8"
+        title="{{ prop.description | translate }}"
+        *ngFor="let prop of customProperties"
+        [ngClass]="{ 'card-highlight': prop.isEdit }"
+      >
+        <div
+          class="card-block"
+          [ngClass]="{ 'p-b-0': prop.isEdit }"
+        >
+          <div
+            class="d-flex p-b-8 a-i-center"
+            *ngIf="!prop.isEdit"
+          >
+            <p
+              class="text-medium text-truncate"
+              title="{{ prop?.label | translate }}"
+            >
+              {{ prop?.label | translate }}
+            </p>
+            <button
+              class="btn btn-dot m-l-auto text-12"
+              [attr.aria-label]="'Edit' | translate"
+              tooltip="{{ 'Edit' | translate }}"
+              data-cy="asset-properties-edit-icon"
+              type="button"
+              [delay]="500"
+              (click)="toggleEdit(prop)"
+              *ngIf="prop.isEditable || prop.isEditable === undefined "
+              [disabled] = 'isEditDisabled'
+            >
+              <i c8yIcon="pencil"></i>
+            </button>
+          </div>
+          <c8y-asset-properties-item
+            #assetProps
+            [file]="prop.file"
+            [key]="prop.key"
+            [type]="prop.type"
+            [value]="prop.value"
+            [complex]="prop.complex"
+            [isEdit]="prop.isEdit"
+            [jsonSchema]="prop.jsonSchema"
+          ></c8y-asset-properties-item>
+        </div>
+        <div
+          class="card-footer p-t-0"
+          *ngIf="prop.isEdit"
+        >
+          <button
+            class="btn btn-default btn-sm"
+            title="{{ 'Cancel' | translate }}"
+            data-cy="asset-properties-cancel-button"
+            type="button"
+            (click)="toggleEdit(prop)"
+          >
+            {{ 'Cancel' | translate }}
+          </button>
+          <button
+            class="btn btn-primary btn-sm"
+            title="{{ 'Save' | translate }}"
+            data-cy="asset-properties-save-button"
+            type="button"
+            [disabled]="!assetProps?.form?.valid"
+            (click)="save(assetProps.form.value, prop)"
+          >
+            {{ 'Save' | translate }}
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
