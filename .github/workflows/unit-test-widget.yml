@@ -1,19 +1,19 @@
-name: Generic webapp unit test
+name: Generic widget unit test
 
 on:
   workflow_call:
     inputs:
       test_command:
-        description: 'Command to run webapp unit tests. For example: yarn test:dtm'
+        description: "Command to run widget unit tests. For example: yarn test"
         required: true
         type: string
       skip_run:
-        description: 'use to skip the workflow run'
+        description: "use to skip the workflow run"
         type: boolean
         default: false
 
 env:
-  WORK_DIRECTORY: 'ui'
+  WORK_DIRECTORY: "cumulocity-asset-properties-widget"
 
 jobs:
   unit-tests:
@@ -31,11 +31,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-      
+
       - name: Install Yarn
         run: npm install -g yarn
 
-      - name: 'Install dependencies'
+      - name: "Install dependencies"
         run: yarn install --frozen-lockfile --prefer-offline
 
       - name: Test
