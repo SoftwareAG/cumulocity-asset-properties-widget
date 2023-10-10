@@ -12,16 +12,10 @@ on:
         type: boolean
         default: false
 
-env:
-  WORK_DIRECTORY: "cumulocity-asset-properties-widget"
-
 jobs:
   unit-tests:
     runs-on: [self-hosted, ghiotapps]
     if: ${{inputs.skip_run != true }}
-    defaults:
-      run:
-        working-directory: ${{ env.WORK_DIRECTORY }}
 
     steps:
       - name: Checkout
