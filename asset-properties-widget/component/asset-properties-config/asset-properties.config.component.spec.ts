@@ -1,7 +1,5 @@
 import { IManagedObject } from "@c8y/client";
-import { of } from "rxjs";
 import { AssetPropertiesConfigComponent } from "./asset-properties.config.component";
-import { ContextDashboardService } from "@c8y/ngx-components/context-dashboard";
 
 describe('AssetPropertiesConfigComponent', () => {
     const date = new Date();
@@ -11,6 +9,7 @@ describe('AssetPropertiesConfigComponent', () => {
     let inventoryServiceMock;
   
     beforeEach(() => {
+      inventoryServiceMock = { detail: jest.fn() }
       component = new AssetPropertiesConfigComponent(contextDashboardServiceMock, inventoryServiceMock);
       contextDashboardServiceMock = {
         formDisabled: false
@@ -43,20 +42,15 @@ describe('AssetPropertiesConfigComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should disabled save button', () => {
+    it('should get selected asset MOs', async () => {
         // given
-        //(ContextDashboardService as any).formDisabled = true;
-        component.config = {asset: asset};
-        component.config = {settings:true}
-       // component[contextDashboardService] = {formDisabled:false}
-        //jest.spyOn((ContextDashboardService as any),'formDisabled')
-        // when
-        component.ngOnInit()
+        component.config = {settings:true,asset: asset}
+        jest.spyOn(inventoryServiceMock, 'detail').mockReturnValue(Promise.resolve({data: asset}))
 
-        console.log(component.contextDashboardServiceMock.formDisabled)
+        // when
+       await component.ngOnInit()
 
         //then
-       // expect(component.contextDashboardServiceMock.formDisabled).toBe(false);
-       // expect(ContextDashboardService.prototype.formDisabled).toBe(false);
+        expect(component.selectedAsset).toEqual(asset);
     });
 })    
