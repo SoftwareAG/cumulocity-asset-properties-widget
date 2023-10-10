@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: SAG/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Setup node
         uses: actions/setup-node@v3
