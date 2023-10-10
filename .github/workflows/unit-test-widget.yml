@@ -14,7 +14,7 @@ on:
 
 jobs:
   unit-tests:
-    runs-on: [self-hosted, cloud]
+    runs-on: [ubuntu-latest]
     if: ${{inputs.skip_run != true }}
 
     steps:
