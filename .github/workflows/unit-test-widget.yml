@@ -14,7 +14,7 @@ on:
 
 jobs:
   unit-tests:
-    runs-on: [self-hosted, ghiotapps]
+    runs-on: [self-hosted, cloud]
     if: ${{inputs.skip_run != true }}
 
     steps:
