@@ -38,7 +38,7 @@ jobs:
   status-check:
     needs: [unit-tests]
     if: always()
-    runs-on: [self-hosted, ghiotapps]
+    runs-on: [ubuntu-latest]
     steps:
       - name: Verify step status
         if: ${{ contains(needs.*.result, 'failure') }}
