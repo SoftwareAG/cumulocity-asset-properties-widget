@@ -12,6 +12,7 @@ import { has, get, set } from 'lodash-es';
   templateUrl: './asset-properties-item.component.html'
 })
 export class AssetPropertiesItemComponent implements AssetPropertiesItem, OnChanges {
+  // gg
   @Input()
   key: string;
   @Input()
