@@ -14,12 +14,12 @@ on:
 
 jobs:
   unit-tests:
-    runs-on: [self-hosted, ghiotapps]
+    runs-on: [ubuntu-latest]
     if: ${{inputs.skip_run != true }}
 
     steps:
       - name: Checkout
-        uses: SAG/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -38,7 +38,7 @@ jobs:
   status-check:
     needs: [unit-tests]
     if: always()
-    runs-on: [self-hosted, ghiotapps]
+    runs-on: [ubuntu-latest]
     steps:
       - name: Verify step status
         if: ${{ contains(needs.*.result, 'failure') }}
