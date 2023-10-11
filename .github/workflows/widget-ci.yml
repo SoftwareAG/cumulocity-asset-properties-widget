@@ -1,0 +1,16 @@
+name: Widget CI
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    paths:
+      - cumulocity-asset-properties-widget/asset-properties-widget/**
+    branches:
+      - develop
+
+jobs:
+  unit-tests:
+    uses: ./.github/workflows/unit-test-widget.yml
+    with:
+      test_command: "yarn test"
