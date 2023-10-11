@@ -3,7 +3,7 @@ name: Widget CI
 on:
   pull_request:
     paths-ignore:
-      - cumulocity-asset-properties-widget/asset-properties-widget/**
+      - asset-properties-widget/**
     branches:
       - develop
 
