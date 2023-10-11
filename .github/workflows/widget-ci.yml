@@ -7,7 +7,7 @@ on:
     paths:
       - asset-properties-widget/**
     branches:
-      - develop
+      - test
 
 jobs:
   unit-tests:
