@@ -5,7 +5,7 @@ on:
 
   pull_request:
     paths:
-      - cumulocity-asset-properties-widget/asset-properties-widget/**
+      - cumulocity-asset-properties-widget/**
     branches:
       - develop
 
