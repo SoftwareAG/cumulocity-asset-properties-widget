@@ -69,10 +69,10 @@
   "c8y": {
     "application": {
       "name": "Asset properties widget",
-      "description": "Asset properties Configuration widget",
-      "contextPath": "asset-properties",
-      "key": "asset-properties-application-key",
-      "globalTitle": "Asset properties Configuration widget",
+      "description": "Asset properties configuration widget",
+      "contextPath": "asset-properties-widget",
+      "key": "asset-properties-widget-application-key",
+      "globalTitle": "Asset properties configuration widget",
       "tabsHorizontal": true,
       "isPackage": false,
       "noAppSwitcher": false,
@@ -84,7 +84,7 @@
           "name": "Asset properties widget plugin",
           "module": "AssetPropertiesWidgetModule",
           "path": "./asset-properties-widget/asset-properties.module.ts",
-          "description": "Asset properties"
+          "description": "Asset properties configuration widget"
         }
       ],
       "remotes": {
