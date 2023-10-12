@@ -1,13 +1,14 @@
 import { Component, Input } from "@angular/core";
 import { IManagedObject } from "@c8y/client";
 import { AssetTypesService, gettext } from "@c8y/ngx-components";
-import { AssetPropertiesService } from "./asset-properties.service";
 import { BsModalRef, BsModalService, ModalOptions } from "ngx-bootstrap/modal";
-import { defaultProperty, property } from "../../common/asset-property-constant";
+//import { defaultProperty, property } from "../../common/asset-property-constant";
 import { isEmpty, cloneDeep } from 'lodash-es';
 import { ContextDashboardService } from "@c8y/ngx-components/context-dashboard";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
-import { assetPropertyItemSelectorCtrl } from "./asset-property-item-selector/asset-property-item-selector.component";
+import { assetPropertyItemSelectorCtrl } from "../asset-property-item-selector/asset-property-item-selector.component";
+import { AssetPropertiesService } from "../asset-properties.service";
+import { defaultProperty, property } from "../../../common/asset-property-constant";
 
 type ModalInitialState = {
   title: string;
