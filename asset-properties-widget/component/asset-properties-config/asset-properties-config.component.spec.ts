@@ -1,5 +1,5 @@
 import { IManagedObject } from "@c8y/client";
-import { AssetPropertiesConfigComponent } from "./asset-properties.config.component";
+import { AssetPropertiesConfigComponent } from "./asset-properties-config.component";
 
 describe('AssetPropertiesConfigComponent', () => {
     const date = new Date();
