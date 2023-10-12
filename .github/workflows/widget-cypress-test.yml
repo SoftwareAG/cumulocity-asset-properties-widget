@@ -51,7 +51,7 @@ jobs:
     uses: ./.github/workflows/cypress-test.yml
     with:
       tenantUrl: ${{ inputs.tenantUrl }}
-      project_directory: ./cypress-E2E-tests/
+      project_directory: cypress-E2E-tests
       spec_files: ${{needs.setup-variables.outputs.spec_files}}
       browser: ${{github.event.inputs.browser}}
 
