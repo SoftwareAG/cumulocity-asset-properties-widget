@@ -97,7 +97,7 @@ jobs:
           echo "buttonLabel=$buttonLabel" >> $GITHUB_OUTPUT
 
       - name: Send notification
-        uses: ./.github/workflows/notify-ms-teams/action.yml
+        uses: .github/workflows/notify-ms-teams/action.yml
         with:
           webhook_url: ${{secrets.MS_NOTIFICATIONS_WEBHOOK_URL}}
           title: ${{steps.notification-content.outputs.title}}

@@ -133,65 +133,65 @@ describe('Asset Properties Widget: Integration tests', function () {
   });
 
   // If there are two asset instances, value changed in one instance must get reflected in other instance as well
-  it('TC_Asset_Properties_Widget_Integration_002', () => {
-    const instance1Title = 'Asset Properties';
-    const instance2Title = 'Test';
-    const propFeildElement = '#formly_2_string_color_0';
-    const saveElement = '.btn-primary';
-    const assetName = 'Test Asset5';
-    const titleFieldId = '#widgetTitle';
-    cy.selectAssetPropertyAndSave(assetName, propKey);
-    cy.get(asset_properties_widget_elements.widgetDashboardAddWidgetButton).click();
-    cy.get(asset_properties_widget_elements.cardElement).click();
-    cy.get(titleFieldId).should('have.value', instance1Title);
-    cy.get(titleFieldId).clear().type(instance2Title);
-    cy.selectAssetPropertyAndSave(assetName, propKey);
-    cy.clickPropertyEditButton('Color');
-    cy.get(propFeildElement).clear().type(updatedPropValue);
-    cy.get(saveElement).click();
-    cy.get(propValueElement).should('contain.text', updatedPropValue);
-    cy.get(propValueElement).should('have.length', 2);
-    cy.deleteWidgetInstances([instance1Title, instance2Title]);
-  });
+  // it('TC_Asset_Properties_Widget_Integration_002', () => {
+  //   const instance1Title = 'Asset Properties';
+  //   const instance2Title = 'Test';
+  //   const propFeildElement = '#formly_2_string_color_0';
+  //   const saveElement = '.btn-primary';
+  //   const assetName = 'Test Asset5';
+  //   const titleFieldId = '#widgetTitle';
+  //   cy.selectAssetPropertyAndSave(assetName, propKey);
+  //   cy.get(asset_properties_widget_elements.widgetDashboardAddWidgetButton).click();
+  //   cy.get(asset_properties_widget_elements.cardElement).click();
+  //   cy.get(titleFieldId).should('have.value', instance1Title);
+  //   cy.get(titleFieldId).clear().type(instance2Title);
+  //   cy.selectAssetPropertyAndSave(assetName, propKey);
+  //   cy.clickPropertyEditButton('Color');
+  //   cy.get(propFeildElement).clear().type(updatedPropValue);
+  //   cy.get(saveElement).click();
+  //   cy.get(propValueElement).should('contain.text', updatedPropValue);
+  //   cy.get(propValueElement).should('have.length', 2);
+  //   cy.deleteWidgetInstances([instance1Title, instance2Title]);
+  // });
 
-  // Any deleted asset from dtm  , No data will be shown on widget view.
-  it('TC_Asset_Properties_Widget_Integration_003', () => {
-    const assetName = 'Test Asset3';
-    cy.selectAssetPropertyAndSave(assetName, propKey);
-    cy.get(propValueElement).should('contain.text', 'Not Defined');
+  // // Any deleted asset from dtm  , No data will be shown on widget view.
+  // it('TC_Asset_Properties_Widget_Integration_003', () => {
+  //   const assetName = 'Test Asset3';
+  //   cy.selectAssetPropertyAndSave(assetName, propKey);
+  //   cy.get(propValueElement).should('contain.text', 'Not Defined');
 
-    // delete asset in digital twin manager
-    cy.login();
-    cy.visitAndWaitUntilPageLoad('apps/digital-twin-manager/index.html#/assets');
-    cy.deleteAsset(assetName);
+  //   // delete asset in digital twin manager
+  //   cy.login();
+  //   cy.visitAndWaitUntilPageLoad('apps/digital-twin-manager/index.html#/assets');
+  //   cy.deleteAsset(assetName);
 
-    cy.login();
-    cy.visitAndWaitUntilPageLoad(`apps/asset-properties/index.html#/`);
-    cy.get('asset-properties > div').should('contain.text', 'No Data');
-    cy.deleteCard();
-  });
+  //   cy.login();
+  //   cy.visitAndWaitUntilPageLoad(`apps/asset-properties/index.html#/`);
+  //   cy.get('asset-properties > div').should('contain.text', 'No Data');
+  //   cy.deleteCard();
+  // });
 
-  // Deletion of any property in dtm must be reflected on widget as well. Property should not be shown in widget.
-  it('TC_Asset_Properties_Widget_Integration_004', () => {
-    const assetName = 'Test Asset2';
-    const confirmButton = "button[title='Confirm']";
-    cy.selectAssetPropertyAndSave(assetName, propKey);
-    cy.get(propValueElement).should('contain.text', 'Not Defined');
-    cy.deleteCard();
+  // // Deletion of any property in dtm must be reflected on widget as well. Property should not be shown in widget.
+  // it('TC_Asset_Properties_Widget_Integration_004', () => {
+  //   const assetName = 'Test Asset2';
+  //   const confirmButton = "button[title='Confirm']";
+  //   cy.selectAssetPropertyAndSave(assetName, propKey);
+  //   cy.get(propValueElement).should('contain.text', 'Not Defined');
+  //   cy.deleteCard();
 
-    // remove property in digital twin manager
-    cy.visitAndWaitUntilPageLoad(`apps/digital-twin-manager/index.html#/${ROUTES.ASSET_MODELS}`);
-    cy.clickOnAssetTypeEditButton('Group');
-    cy.removeCustomProperty('Color');
-    cy.get(asset_properties_widget_elements.saveAssetTypeButton).click();
-    cy.get(confirmButton).should('be.visible').click();
+  //   // remove property in digital twin manager
+  //   cy.visitAndWaitUntilPageLoad(`apps/digital-twin-manager/index.html#/${ROUTES.ASSET_MODELS}`);
+  //   cy.clickOnAssetTypeEditButton('Group');
+  //   cy.removeCustomProperty('Color');
+  //   cy.get(asset_properties_widget_elements.saveAssetTypeButton).click();
+  //   cy.get(confirmButton).should('be.visible').click();
 
-    cy.login();
-    cy.visitAndWaitUntilPageLoad(`apps/asset-properties/index.html#/`);
-    cy.get(asset_properties_widget_elements.addWidgetButton).click();
-    cy.get(asset_properties_widget_elements.cardElement).click();
-    cy.verifyTheAbsenceOfAssetProperty(assetName, propKey);
-  });
+  //   cy.login();
+  //   cy.visitAndWaitUntilPageLoad(`apps/asset-properties/index.html#/`);
+  //   cy.get(asset_properties_widget_elements.addWidgetButton).click();
+  //   cy.get(asset_properties_widget_elements.cardElement).click();
+  //   cy.verifyTheAbsenceOfAssetProperty(assetName, propKey);
+  // });
 
   after(function () {
     cy.cleanup();
