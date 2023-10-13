@@ -2,14 +2,17 @@
   <label>{{ 'Properties' | translate }}</label>
   <div class="d-flex">
     <div class="m-l-auto m-r-16">
-      <a
+      <button
         title="{{ 'Add property' | translate }}"
+        data-cy="asset-property-selector-add-property-button"
         class="btn btn-default btn-xs"
         (click)="addProperty()"
+        type="button"
+        [disabled] = "!asset"
       >
       <i c8yicon="plus" class="dlt-c8y-icon-plus"></i>
       {{ 'Add property' | translate }}
-    </a>
+      </button>
     </div>
   </div>
 </div>
