@@ -20,13 +20,6 @@ on:
           - "chrome"
           - "edge"
           - "firefox"
-      notify_on_run_completion:
-        description: "Notify when run completes"
-        type: choice
-        default: "no"
-        options:
-          - "yes"
-          - "no"
 
 env:
   E2E_SPEC_FILES: "cypress/integration/**/*"
@@ -60,50 +53,3 @@ jobs:
       AUTOTEST_USERNAME1_PASSWORD: ${{ secrets.AUTOTEST_USERNAME1_PASSWORD }}
       AUTOTEST_USERNAME2: ${{ secrets.AUTOTEST_USERNAME2 }}
       AUTOTEST_USERNAME2_PASSWORD: ${{ secrets.AUTOTEST_USERNAME2_PASSWORD }}
-
-  send-notification:
-    needs: [setup-variables, cypress-run]
-    runs-on: [ubuntu-latest]
-    if: ${{ github.event.inputs.notify_on_run_completion != 'no' }}
-    timeout-minutes: 5
-    continue-on-error: true
-    steps:
-      - name: Compose notification content
-        id: notification-content
-        run: |
-          if [[ ${{contains(needs.*.result, 'failure')}} == true ]]; then
-
-            title='E2E tests run on tenant ${{github.event.inputs.tenantUrl}} failed'
-            themeColor='FF0000'
-            needsJSON=$(echo '${{ toJson(needs) }}' | jq -c .)
-            failedJobs=$(echo $needsJSON | jq -r '. | with_entries(select(.value.result == "failure")) | keys[]')
-            failedJobs=$(echo $failedJobs | sed 's/ /, /g')
-            text="The following jobs failed: $failedJobs"
-            linkToWorkflow=${GITHUB_SERVER_URL}/${{github.repository}}/actions/runs/${{github.run_id}}
-            buttonLabel='View failures'
-          else
-            title='E2E tests run on tenant ${{github.event.inputs.tenantUrl}} complete'
-            themeColor='00FF00'
-            text="Run complete"
-            linkToWorkflow=${GITHUB_SERVER_URL}/${{github.repository}}/actions/runs/${{github.run_id}}
-            buttonLabel='View summary'
-          fi
-
-          echo "title=$title" >> $GITHUB_OUTPUT
-          echo "themeColor=$themeColor" >> $GITHUB_OUTPUT
-          echo "text=$text" >> $GITHUB_OUTPUT
-          echo "actionLink=$linkToWorkflow" >> $GITHUB_OUTPUT
-          echo "workflowRunNumber=${GITHUB_RUN_NUMBER}" >> $GITHUB_OUTPUT
-          echo "buttonLabel=$buttonLabel" >> $GITHUB_OUTPUT
-
-      - name: Send notification
-        uses: .github/workflows/notify-ms-teams/action.yml
-        with:
-          webhook_url: ${{secrets.MS_NOTIFICATIONS_WEBHOOK_URL}}
-          title: ${{steps.notification-content.outputs.title}}
-          text: ${{steps.notification-content.outputs.text}}
-          button_label: ${{steps.notification-content.outputs.buttonLabel}}
-          action_link: ${{steps.notification-content.outputs.actionLink}}
-          theme_color: ${{steps.notification-content.outputs.themeColor}}
-          workflow_name: ${{github.workflow}}
-          workflow_run_number: ${{steps.notification-content.outputs.workflowRunNumber}}
