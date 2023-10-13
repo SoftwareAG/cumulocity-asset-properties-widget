@@ -69,10 +69,10 @@
   "c8y": {
     "application": {
       "name": "Asset properties widget",
-      "description": "Asset properties configuration widget",
+      "description": "Asset properties widget",
       "contextPath": "asset-properties-widget",
       "key": "asset-properties-widget-application-key",
-      "globalTitle": "Asset properties configuration widget",
+      "globalTitle": "Asset properties widget",
       "tabsHorizontal": true,
       "isPackage": false,
       "noAppSwitcher": false,
