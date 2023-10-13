@@ -10,15 +10,17 @@ describe('AssetPropertiesComponent', () => {
   let assetTypesMock: any;
   let appStateMock: any;
   let userMock: any;
+  let permissionsServiceMock:any;
 
   beforeEach(() => {
+    permissionsServiceMock = {canEdit: jest.fn()}
     assetTypesMock = { getAssetTypeByName: jest.fn() }
     inventoryMock = { update: jest.fn(), detail: jest.fn(), childAdditionsRemove :jest.fn(), childAdditionsAdd: jest.fn()}
     alertMock = {success: jest.fn(), addServerFailure: jest.fn()}
     inventoryBinaryMock = {create: jest.fn()}
     userMock = {hasAnyRole: jest.fn()}
 
-    component = new AssetPropertiesComponent(assetTypesMock, inventoryMock, inventoryBinaryMock, alertMock, appStateMock,userMock);
+    component = new AssetPropertiesComponent(assetTypesMock, inventoryMock, inventoryBinaryMock, alertMock, appStateMock, userMock, permissionsServiceMock);
   });
 
   it('should exist', () => {
@@ -373,15 +375,18 @@ describe('AssetPropertiesComponent', () => {
 
     it('should disabled properties edit icon', async () => {
       // given
-      component['appState'] = {currentUser:{value: {
-        id: "Amarjyoti.Raj@softwareag.com",
-        userName: 'test',
-        displayName: 'Test'
-      }} as any} as any
-      jest.spyOn(userMock, 'hasAnyRole').mockReturnValue(true);
+      const changes = {asset:{currentValue:asset}} as any
+      jest.spyOn(permissionsServiceMock, 'canEdit').mockReturnValue(true);
+      jest.spyOn(assetTypesMock, 'getAssetTypeByName').mockReturnValue({
+        c8y_IsAssetType: {
+          properties: [{ id: 1, isRequired: true }]
+        }
+      });
+      component.properties = properties;
+      component.asset = asset;
 
       //when
-      await component.ngOnInit()
+      await component.ngOnChanges(changes)
 
       //then
       expect(component.isEditDisabled).toBe(false);
@@ -389,15 +394,18 @@ describe('AssetPropertiesComponent', () => {
 
     it('should enable properties edit icon', async () => {
       // given
-      component['appState'] = {currentUser:{value: {
-        id: "Amarjyoti.Raj@softwareag.com",
-        userName: 'amar',
-        displayName: 'Amar'
-      }} as any} as any
-      jest.spyOn(userMock, 'hasAnyRole').mockReturnValue(false);
+      const changes = {asset:{currentValue:asset}} as any
+      jest.spyOn(permissionsServiceMock, 'canEdit').mockReturnValue(false);
+      jest.spyOn(assetTypesMock, 'getAssetTypeByName').mockReturnValue({
+        c8y_IsAssetType: {
+          properties: [{ id: 1, isRequired: true }]
+        }
+      });
+      component.properties = properties;
+      component.asset = asset;
 
       //when
-      await component.ngOnInit()
+      await component.ngOnChanges(changes)
 
       //then
       expect(component.isEditDisabled).toBe(true);
