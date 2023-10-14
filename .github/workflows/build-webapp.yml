@@ -60,20 +60,12 @@ jobs:
         id: compose-file-name
         run: |
           version=`jq -r '.version' package.json`
-          echo $version
-          echo pwd
           echo "app_file_name=${{ inputs.app_file_name_prefix }}-$version" >> $GITHUB_OUTPUT
 
       - name: Build
         run: |
           yarn clean:dist
           ${{ inputs.build_command }}
-
-      # - name: Package
-      #   if: ${{ inputs.upload_artifact == true }}
-      #   run: |
-      #     zip -r ${GITHUB_WORKSPACE}/dist/${{ steps.compose-file-name.outputs.app_file_name }}.zip *
-      #   working-directory: dist/apps/${{ inputs.app_context_path}}/
 
       - name: Upload artifact
         if: ${{ inputs.upload_artifact == true }}

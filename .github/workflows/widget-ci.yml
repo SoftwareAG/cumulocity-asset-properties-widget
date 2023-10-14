@@ -10,10 +10,10 @@ on:
       - develop
 
 jobs:
-  # unit-tests:
-  #   uses: ./.github/workflows/unit-test-widget.yml
-  #   with:
-  #     test_command: "yarn test"
+  unit-tests:
+    uses: ./.github/workflows/unit-test-widget.yml
+    with:
+      test_command: "yarn test"
 
   build-webapp:
     uses: ./.github/workflows/build-webapp.yml
