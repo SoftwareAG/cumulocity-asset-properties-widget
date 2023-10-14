@@ -80,7 +80,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.compose-file-name.outputs.app_file_name }}
-          path: ./dist/${{ steps.compose-file-name.outputs.app_file_name }}.zip
+          path: dist/${{ steps.compose-file-name.outputs.app_file_name }}.zip
           retention-days: 7
 
   status-check:

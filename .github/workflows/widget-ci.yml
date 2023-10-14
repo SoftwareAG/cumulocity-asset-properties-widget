@@ -20,6 +20,6 @@ jobs:
     with:
       package_name: "asset-properties-widget"
       build_command: "yarn build"
-      app_file_name_prefix: "asset-properties"
+      app_file_name_prefix: "asset-properties-widget"
       app_context_path: "asset-properties-widget"
       upload_artifact: true
