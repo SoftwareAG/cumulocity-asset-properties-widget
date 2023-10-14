@@ -60,7 +60,7 @@ jobs:
         id: compose-file-name
         run: |
           version=`jq -r '.version' package.json`
-          echo version
+          echo $version
           echo pwd
           echo "app_file_name=${{ inputs.app_file_name_prefix }}-$version" >> $GITHUB_OUTPUT
 
@@ -80,7 +80,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.compose-file-name.outputs.app_file_name }}
-          path: dist/${{ steps.compose-file-name.outputs.app_file_name }}.zip
+          path: ./dist/${{ steps.compose-file-name.outputs.app_file_name }}.zip
           retention-days: 7
 
   status-check:
