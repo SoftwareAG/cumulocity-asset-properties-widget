@@ -1,0 +1,18 @@
+name: Webapp CI
+
+on:
+  pull_request:
+    paths-ignore:
+      - asset-properties-widget/**
+    branches:
+      - develop
+
+jobs:
+  build-webapp:
+    uses: ./.github/workflows/build-webapp.yml
+    with:
+      skip_run: true
+      package_name: ""
+      build_command: ""
+      app_file_name_prefix: ""
+      app_context_path: ""

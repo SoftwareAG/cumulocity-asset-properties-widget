@@ -1,0 +1,102 @@
+name: Generic webapp build
+
+on:
+  workflow_call:
+    inputs:
+      package_name:
+        description: "Name of the folder of the application in the workspace under packages folder"
+        required: true
+        type: string
+      build_command:
+        description: "Command to build the application. E.g: yarn build:dtm"
+        required: true
+        type: string
+      app_file_name_prefix:
+        description: "Desired name prefix for the output build package. E.g: for prefix dtm-ui, ouput will be dtm-ui-1017.0.1"
+        required: true
+        type: string
+      app_context_path:
+        description: "Context path of the application. E.g: digital-twin-manager"
+        required: true
+        type: string
+      upload_artifact:
+        description: "flag indicating to upload the built artifact or not"
+        type: boolean
+      build_number:
+        description: "Use the provided build number in the version"
+        type: string
+      skip_run:
+        description: "use to skip the workflow run"
+        type: boolean
+        default: false
+    outputs:
+      file_name:
+        description: "name of the uploaded artifact"
+        value: ${{ jobs.build-webapp.outputs.file_name}}
+
+jobs:
+  build-webapp:
+    if: ${{inputs.skip_run != true }}
+    runs-on: [ubuntu-latest]
+    outputs:
+      file_name: ${{ steps.compose-file-name.outputs.app_file_name }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --prefer-offline
+
+      - name: Compose file name
+        id: compose-file-name
+        run: |
+          if [[ -z "${{inputs.build_number}}" ]]; then
+            datetime=$(date +'%Y%m%d%H%M')
+            buildNumber=${datetime}-${GITHUB_SHA::7}
+          else
+            buildNumber=${{inputs.build_number}}
+          fi
+          version=`jq -r '.version' ./packages/${{ inputs.package_name }}/package.json`
+          echo "build_number=$version.${buildNumber}" >> $GITHUB_OUTPUT
+          echo "app_file_name=${{ inputs.app_file_name_prefix }}-$version.${buildNumber}" >> $GITHUB_OUTPUT
+
+      - name: Update Build Version
+        run: |
+          sed -i 's/${project.version}/'"${{steps.compose-file-name.outputs.build_number}}"'/' "packages/${{ inputs.package_name }}/assets/version.json"
+
+      - name: Build
+        run: |
+          yarn clean:dist
+          ${{ inputs.build_command }}
+
+      - name: Package
+        if: ${{ inputs.upload_artifact == true }}
+        run: |
+          zip -r ${GITHUB_WORKSPACE}/dist/${{ steps.compose-file-name.outputs.app_file_name }}.zip *
+        working-directory: dist/apps/${{ inputs.app_context_path}}/
+
+      - name: Upload artifact
+        if: ${{ inputs.upload_artifact == true }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.compose-file-name.outputs.app_file_name }}
+          path: dist/${{ steps.compose-file-name.outputs.app_file_name }}.zip
+          retention-days: 7
+
+  status-check:
+    needs: [build-webapp]
+    if: always()
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Verify step status
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1
