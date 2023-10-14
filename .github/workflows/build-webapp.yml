@@ -59,7 +59,7 @@ jobs:
       - name: Compose file name
         id: compose-file-name
         run: |
-          version=`jq -r '.version' ./packages/${{ inputs.package_name }}/package.json`
+          version=`jq -r '.version' ./package.json`
           echo "app_file_name=${{ inputs.app_file_name_prefix }}-$version" >> $GITHUB_OUTPUT
 
       - name: Build
