@@ -59,19 +59,8 @@ jobs:
       - name: Compose file name
         id: compose-file-name
         run: |
-          if [[ -z "${{inputs.build_number}}" ]]; then
-            datetime=$(date +'%Y%m%d%H%M')
-            buildNumber=${datetime}-${GITHUB_SHA::7}
-          else
-            buildNumber=${{inputs.build_number}}
-          fi
           version=`jq -r '.version' ./packages/${{ inputs.package_name }}/package.json`
-          echo "build_number=$version.${buildNumber}" >> $GITHUB_OUTPUT
-          echo "app_file_name=${{ inputs.app_file_name_prefix }}-$version.${buildNumber}" >> $GITHUB_OUTPUT
-
-      - name: Update Build Version
-        run: |
-          sed -i 's/${project.version}/'"${{steps.compose-file-name.outputs.build_number}}"'/' "packages/${{ inputs.package_name }}/assets/version.json"
+          echo "app_file_name=${{ inputs.app_file_name_prefix }}-$version" >> $GITHUB_OUTPUT
 
       - name: Build
         run: |
