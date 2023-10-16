@@ -1,10 +1,10 @@
-<c8y-asset-properties
-  *ngIf = "!isEmptyWidget"
+  <c8y-asset-properties
+  *ngIf = "!isEmptyWidget && selectedAsset && properties"
   [properties]="properties"
   [asset]="selectedAsset"
   (assetChange)="assetChange($event)"
   class="d-contents"
-></c8y-asset-properties>
+  ></c8y-asset-properties>
 <div *ngIf = "isEmptyWidget" style="text-align: center">
  {{ 'No Data' | translate }}
 </div>

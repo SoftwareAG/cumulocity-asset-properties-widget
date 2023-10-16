@@ -20,13 +20,13 @@
   <thead>
     <th style="width: 5%"></th>
     <th style="width: 10%">
-      <label>{{ 'Show' | translate }}</label>
+      <label data-cy="asset-property-selector-show-column">{{ 'Show' | translate }}</label>
     </th>
     <th style="width: 28%">
-      <label>{{ 'Label' | translate }}</label>
+      <label data-cy="asset-property-selector-label-column">{{ 'Label' | translate }}</label>
     </th>
     <th style="width: 28%">
-      <label>{{ 'Key' | translate }}</label>
+      <label data-cy="asset-property-selector-key-column">{{ 'Key' | translate }}</label>
     </th>
     <th style="width: 5%"></th>
   </thead>
@@ -34,10 +34,10 @@
   <tbody class="header-row" cdkDropList (cdkDropListDropped)="drop($event)">
     <tr cdkDrag cdkDragLockAxis="y" class="property" *ngFor="let property of properties" class="table-row-not-expanded">
       <td cdkDragHandle style="width: 5%" *ngIf="!property.isHide">
-        <i c8yicon="bars" class="dlt-c8y-icon-bars" style="cursor: move"></i>
+        <i c8yicon="bars" class="dlt-c8y-icon-bars" data-cy="asset-property-selector-move-bars" style="cursor: move"></i>
       </td>
       <td style="width: 10%" *ngIf="!property.isHide">
-        <input type="checkbox" (change)="updateOptions()" [(ngModel)]="property.active" />
+        <input data-cy="asset-property-selector-checkbox" type="checkbox" (change)="updateOptions()" [(ngModel)]="property.active" />
       </td>
       <div *ngIf="property?.open" class="expanded-panel">
         <div *ngIf="property?.open" class="table-container">
@@ -56,13 +56,13 @@
               </thead>
               <tbody>
                 <tr class="header-row" *ngFor="let item of property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key].properties | keyvalue">
-                  <td >
+                  <td>
                     <input [disabled]="true" type="checkbox" (change)="updateOptions()" [(ngModel)]="property.active" />
                   </td>
-                  <td >
+                  <td>
                     <input class="property-label" [(ngModel)]="item.value.title" />
                   </td>
-                  <td >
+                  <td>
                     <span>{{ item.key | translate }}</span>
                   </td>
                   <td>
@@ -84,10 +84,10 @@
       </div>
       
       <td style="width: 28%" *ngIf="!property.isHide">
-        <input class="form-control property-label" [(ngModel)]="property.label" />
+        <input data-cy="asset-property-selector-label" class="form-control property-label" [(ngModel)]="property.label" />
       </td>
       <td style="width: 28%" *ngIf="!property.isHide">
-        <span>{{ property.name | translate }}</span>
+        <span data-cy="asset-property-selector-name">{{ property.name | translate }}</span>
       </td>
       <td style="width: 5%" *ngIf="!property.isHide">
         <button
