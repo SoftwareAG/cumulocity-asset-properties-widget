@@ -36,14 +36,17 @@ export class AssetPropertiesComponent implements OnChanges {
     private permissionsService: Permissions
   ) {}
 
+  async ngOnInit() {
+    this.isEditDisabled = !(await this.permissionsService.canEdit([], this.asset, {
+      skipOwnerCheck: true,
+      skipRolesCheck: true
+    }));
+  }
+
  async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (changes.asset?.currentValue || changes.properties?.currentValue) {
       this.assetType = undefined;
       this.customProperties = [];
-      this.isEditDisabled = !(await this.permissionsService.canEdit([], this.asset, {
-        skipOwnerCheck: true,
-        skipRolesCheck: true
-      }));
       this.loadAsset();
     }
   }

@@ -375,18 +375,10 @@ describe('AssetPropertiesComponent', () => {
 
     it('should disabled properties edit icon', async () => {
       // given
-      const changes = {asset:{currentValue:asset}} as any
       jest.spyOn(permissionsServiceMock, 'canEdit').mockReturnValue(true);
-      jest.spyOn(assetTypesMock, 'getAssetTypeByName').mockReturnValue({
-        c8y_IsAssetType: {
-          properties: [{ id: 1, isRequired: true }]
-        }
-      });
-      component.properties = properties;
-      component.asset = asset;
 
       //when
-      await component.ngOnChanges(changes)
+      await component.ngOnInit()
 
       //then
       expect(component.isEditDisabled).toBe(false);
@@ -394,18 +386,10 @@ describe('AssetPropertiesComponent', () => {
 
     it('should enable properties edit icon', async () => {
       // given
-      const changes = {asset:{currentValue:asset}} as any
       jest.spyOn(permissionsServiceMock, 'canEdit').mockReturnValue(false);
-      jest.spyOn(assetTypesMock, 'getAssetTypeByName').mockReturnValue({
-        c8y_IsAssetType: {
-          properties: [{ id: 1, isRequired: true }]
-        }
-      });
-      component.properties = properties;
-      component.asset = asset;
 
       //when
-      await component.ngOnChanges(changes)
+      await component.ngOnInit()
 
       //then
       expect(component.isEditDisabled).toBe(true);
