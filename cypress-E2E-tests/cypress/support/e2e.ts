@@ -47,22 +47,4 @@ Cypress.on('uncaught:exception', err => {
     return false;
   }
 });
-
-require('cy-verify-downloads').addCustomCommand(); //eslint-disable-line @typescript-eslint/no-var-requires
-
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
-
-function matchesPattern(str) {
-  const pattern = /^https\:\/\/dtmtester1\.pm-\d+-dtm\.stage\.c8y\.io$/; //eslint-disable-line no-useless-escape
-  return pattern.test(str);
-}
-
-before(function () {
-  if (matchesPattern(Cypress.config('baseUrl'))) {
-    cy.login();
-    cy.visitAndWaitUntilPageLoad('apps/digital-twin-manager/index.html');
-    cy.updateBranding();
-  }
-});
 export {};
