@@ -18,7 +18,6 @@ jobs:
   build-webapp:
     uses: ./.github/workflows/build-webapp.yml
     with:
-      package_name: "asset-properties-widget"
       build_command: "yarn build"
       app_file_name_prefix: "asset-properties-widget"
       app_context_path: "asset-properties-widget"

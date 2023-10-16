@@ -3,10 +3,6 @@ name: Generic webapp build
 on:
   workflow_call:
     inputs:
-      package_name:
-        description: "Name of the folder of the application in the workspace under packages folder"
-        required: true
-        type: string
       build_command:
         description: "Command to build the application. E.g: yarn build:dtm"
         required: true
@@ -17,7 +13,7 @@ on:
         type: string
       app_context_path:
         description: "Context path of the application. E.g: digital-twin-manager"
-        required: true
+        required: false
         type: string
       upload_artifact:
         description: "flag indicating to upload the built artifact or not"
