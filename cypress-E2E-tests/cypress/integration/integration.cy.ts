@@ -4,7 +4,11 @@ import { ROUTES } from 'cypress/constants/routes.constant';
 
 const propKey = 'color';
 const updatedPropValue = 'Blu';
-const propValueElement = ':nth-child(5) > .card-block > c8y-asset-properties-item > p';
+const propWidgetURL = `apps/asset-properties-widget/index.html#/`;
+const dtmURL = 'apps/digital-twin-manager/index.html#/assets';
+const propValueElement = 'c8y-asset-properties-item > p';
+const propFeildElement = "c8y-field-input > input[type='text']";
+const saveElement = 'button[data-cy="asset-properties-save-button"]';
 const groupObject = {
   label: 'Group',
   name: 'group',
@@ -94,7 +98,7 @@ describe('Asset Properties Widget: Integration tests', function () {
 
   beforeEach(function () {
     cy.login();
-    cy.visitAndWaitUntilPageLoad(`apps/asset-properties-widget/index.html#/`);
+    cy.visitAndWaitUntilPageLoad(propWidgetURL);
     cy.get(asset_properties_widget_elements.addWidgetButton).click();
     cy.get(asset_properties_widget_elements.cardElement).click();
   });
@@ -104,19 +108,16 @@ describe('Asset Properties Widget: Integration tests', function () {
     // Asset property widget changes
     const assetName = 'Test Asset6';
     const propValue = 'Red';
-    const propFeildElement = '#formly_2_string_color_0';
-    const saveElement = '.btn-primary';
     cy.selectAssetPropertyAndSave(assetName, propKey);
     cy.clickPropertyEditButton('Color');
     cy.get(propFeildElement).clear().type(propValue);
     cy.get(saveElement).click();
 
     // Digital twin manager verification and updation
-    cy.login();
-    cy.visitAndWaitUntilPageLoad('apps/digital-twin-manager/index.html#/assets');
-    const propElement = 'c8y-asset-properties-item > .text-truncate';
-    const editPencilElement = '.dlt-c8y-icon-pencil';
-    const inputFeildElement = "input[minlength='2']";
+    cy.visitAndWaitUntilPageLoad(dtmURL);
+    const propElement = 'c8y-asset-properties-item > p';
+    const editPencilElement = "button > i[c8yicon='pencil']";
+    const inputFeildElement = "c8y-field-input > input[type='text']";
     const propSaveElement = '.card-footer > .btn-primary';
     cy.verifyThePresenceOfAsset(assetName);
     cy.navigateToSubassetPageThroughAssetTreeGrid(assetName);
@@ -126,9 +127,8 @@ describe('Asset Properties Widget: Integration tests', function () {
     cy.get(propSaveElement).click();
 
     // Verification in Asset property widget
-    cy.login();
-    cy.visitAndWaitUntilPageLoad(`apps/asset-properties-widget/index.html#/`);
-    cy.get(propValueElement).should('contain.text', updatedPropValue);
+    cy.visitAndWaitUntilPageLoad(propWidgetURL);
+    cy.get(propValueElement).eq(4).should('contain.text', updatedPropValue);
     cy.deleteCard();
   });
 
@@ -136,10 +136,9 @@ describe('Asset Properties Widget: Integration tests', function () {
   it('TC_Asset_Properties_Widget_Integration_002', () => {
     const instance1Title = 'Asset Properties';
     const instance2Title = 'Test';
-    const propFeildElement = '#formly_2_string_color_0';
-    const saveElement = '.btn-primary';
     const assetName = 'Test Asset5';
     const titleFieldId = '#widgetTitle';
+    const propValueElement = ':nth-child(5) > .card-block > c8y-asset-properties-item > p';
     cy.selectAssetPropertyAndSave(assetName, propKey);
     cy.get(asset_properties_widget_elements.widgetDashboardAddWidgetButton).click();
     cy.get(asset_properties_widget_elements.cardElement).click();
@@ -161,12 +160,10 @@ describe('Asset Properties Widget: Integration tests', function () {
     cy.get(propValueElement).should('contain.text', 'Not Defined');
 
     // delete asset in digital twin manager
-    cy.login();
-    cy.visitAndWaitUntilPageLoad('apps/digital-twin-manager/index.html#/assets');
+    cy.visitAndWaitUntilPageLoad(dtmURL);
     cy.deleteAsset(assetName);
 
-    cy.login();
-    cy.visitAndWaitUntilPageLoad(`apps/asset-properties-widget/index.html#/`);
+    cy.visitAndWaitUntilPageLoad(propWidgetURL);
     cy.get('asset-properties > div').should('contain.text', 'No Data');
     cy.deleteCard();
   });
@@ -186,8 +183,7 @@ describe('Asset Properties Widget: Integration tests', function () {
     cy.get(asset_properties_widget_elements.saveAssetTypeButton).click();
     cy.get(confirmButton).should('be.visible').click();
 
-    cy.login();
-    cy.visitAndWaitUntilPageLoad(`apps/asset-properties-widget/index.html#/`);
+    cy.visitAndWaitUntilPageLoad(propWidgetURL);
     cy.get(asset_properties_widget_elements.addWidgetButton).click();
     cy.get(asset_properties_widget_elements.cardElement).click();
     cy.verifyTheAbsenceOfAssetProperty(assetName, propKey);
