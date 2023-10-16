@@ -3,10 +3,10 @@ import { IManagedObject } from '@c8y/client';
 import * as cloneDeep from 'lodash/cloneDeep';
 
 @Component({
-    selector: 'schema-property-selector-component',
-    templateUrl: './schema-property-selector.component.html',
+    selector: 'asset-property-item-selector-component',
+    templateUrl: './asset-property-item-selector.component.html',
 })
-export class schemaPropertySelectorCtrl {
+export class assetPropertyItemSelectorCtrl {
     @Input() title?: string;
     @Input() customProperties?: any;
     @Input() propertiesList?: any;
