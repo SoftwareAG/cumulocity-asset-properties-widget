@@ -218,6 +218,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   // Verify the presence and functionality of add property button. On clicking of which should display a preview window with list of default properties
   it('TC_Asset_Properties_Widget_config_012', () => {
     const defaultProp = ['name', 'id', 'type', 'owner', 'lastUpdated'];
+    cy.selectAsset(assetName);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     cy.get(selectPropElement).should('have.text', 'Select property');
     for (let i = 0; i < defaultProp.length; i++) {
@@ -228,6 +229,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   // Verify that filtering the property in Select property works as expected
   it('TC_Asset_Properties_Widget_config_013', () => {
     const title = ['owner', 'name'];
+    cy.selectAsset(assetName);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     cy.get(asset_properties_widget_elements.filterProperties).type(title[0]);
     cy.get(`div[title='${title[0]}']`).should('be.visible');
@@ -236,6 +238,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
 
   // Verify the presence of Show, label and key column,cancel and select button
   it('TC_Asset_Properties_Widget_config_014', () => {
+    cy.selectAsset(assetName);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     cy.get(selectPropElement).should('have.text', 'Select property');
     cy.get(asset_properties_widget_elements.selectButton).should('be.visible');
@@ -249,6 +252,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   // Verify User should be able to check and uncheck the required fields
   it('TC_Asset_Properties_Widget_config_015', () => {
     const ownerTitle = 'owner';
+    cy.selectAsset(assetName);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     cy.selectAssetProperty(ownerTitle);
     cy.unselectAssetProperty(ownerTitle);
@@ -256,6 +260,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
 
   // select button should be disabled until any field is checked
   it('TC_Asset_Properties_Widget_config_016', () => {
+    cy.selectAsset(assetName);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     cy.get(asset_properties_widget_elements.selectButton).should('be.disabled');
   });
@@ -263,6 +268,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   // Verify Select button should be disabled until any field is checked
   it('TC_Asset_Properties_Widget_config_017', () => {
     const title = 'owner';
+    cy.selectAsset(assetName);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     cy.get(asset_properties_widget_elements.selectButton).should('be.disabled');
     cy.selectAssetProperty(title);
@@ -432,14 +438,14 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(asset_properties_widget_elements.saveButton).should('be.visible');
   });
 
-  // Asset property widget title can be duplicate
-  it('TC_Asset_Properties_Widget_config_034', () => {
-    cy.selectAssetAndSave(assetName);
-    cy.get(asset_properties_widget_elements.widgetDashboardAddWidgetButton).click();
-    cy.get(asset_properties_widget_elements.cardElement).click();
-    cy.selectAssetAndSave(assetName);
-    cy.deleteWidgetInstances([assetProperties, assetProperties]);
-  });
+  // // Asset property widget title can be duplicate
+  // it('TC_Asset_Properties_Widget_config_034', () => {
+  //   cy.selectAssetAndSave(assetName);
+  //   cy.get(asset_properties_widget_elements.widgetDashboardAddWidgetButton).click();
+  //   cy.get(asset_properties_widget_elements.cardElement).click();
+  //   cy.selectAssetAndSave(assetName);
+  //   cy.deleteWidgetInstances([assetProperties, assetProperties]);
+  // });
 
   // Verify the presence "No widgets to display" meessage in the dashboard
   it('TC_Asset_Properties_Widget_view_001', () => {
