@@ -17,7 +17,6 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       on('task', { isFileExist, findFiles });
     },
-    specPattern: 'cypress/integration/*.ts',
-    baseUrl: 'https://dtmsecurity.latest.stage.c8y.io'
+    specPattern: 'cypress/integration/*.ts'
   }
 });
