@@ -1,4 +1,4 @@
-name: Widget unit test Skip
+name: Widget unit test skip
 
 on:
   pull_request:
