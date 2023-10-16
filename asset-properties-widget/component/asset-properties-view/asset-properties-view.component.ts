@@ -28,12 +28,12 @@ export class AssetPropertiesViewComponent implements OnInit {
                 this.selectedAsset = (await this.inventoryService.detail(this.config.asset.id)).data;
                 setTimeout(async () => {
                 this.customProperties =  await this.assetPropertiesService.getCustomProperties(this.selectedAsset);
-                this.config.properties.forEach((property, index, object) => {
-                    if(!property.isExistingProperty &&  (this.customProperties.length > 0 && !this.customProperties.find((prop) => prop.id === property.id))){
-                        object.splice(index, 1);
+                this.properties = this.config.properties.filter((property) => {
+                    if(property.isExistingProperty || ( this.customProperties.length != 0 && this.customProperties.find((prop) => prop.id === property.id))){
+                        return property
                     }
                 });
-                this.properties = this.config.properties;
+                this.config.properties = this.properties;
                 this.handleRealtime();
                 },1000)
             }catch(error){

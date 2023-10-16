@@ -5,7 +5,7 @@ import { ContextDashboardService } from '@c8y/ngx-components/context-dashboard';
 
 @Component({
     selector: 'asset-properties-config',
-    templateUrl: './asset-properties.config.component.html',
+    templateUrl: './asset-properties-config.component.html',
 })
 export class AssetPropertiesConfigComponent {
     @Input() config: any = {};

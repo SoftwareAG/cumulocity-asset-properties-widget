@@ -1,0 +1,9 @@
+name: Widget - E2E
+on:
+  workflow_dispatch:
+jobs:
+  setup-variables:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Print widget name
+        run: echo "Asset properties widget"
