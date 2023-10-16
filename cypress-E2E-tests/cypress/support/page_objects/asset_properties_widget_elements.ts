@@ -2,11 +2,11 @@ export default {
   //###############[Buttons]##############
   addWidgetButton: "div > button[title='Add widget']",
   saveButton: "button[title='Save']",
-  cancelButton: '.modal-footer > .btn-default',
-  addPropertyButton: "a[title='Add property']",
+  cancelButton: "button[title='Cancel']",
+  addPropertyButton: "button[data-cy='asset-property-selector-add-property-button']",
   radioButton: "input[type='radio']",
-  selectButton: "button[title='Select']",
-  propertyCancelButton: "button[title='Cancel']",
+  selectButton: "button[data-cy='schema-property-selector-select-button']",
+  propertyCancelButton: "button[data-cy='schema-property-selector-cancel-button']",
   selectWidgetButton: "button[title='Select widget']",
   configurationButton: "button[title='Configuration']",
   appearanceButton: "button[title='Appearance']",
@@ -24,7 +24,6 @@ export default {
   //###############[Textbox]##############
 
   //###############[Other]################
-  modalHeaderElement: '.modal-header > .text-medium',
-  cardElement: "[title='Editable form for asset properties'] > .card",
+  cardElement: "div[title='Editable form for asset properties widget']",
   filterProperties: "input[placeholder='Filter properties']"
 };

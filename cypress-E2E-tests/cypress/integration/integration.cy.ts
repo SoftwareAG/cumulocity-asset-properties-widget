@@ -94,7 +94,7 @@ describe('Asset Properties Widget: Integration tests', function () {
 
   beforeEach(function () {
     cy.login();
-    cy.visitAndWaitUntilPageLoad(`apps/asset-properties/index.html#/`);
+    cy.visitAndWaitUntilPageLoad(`apps/asset-properties-widget/index.html#/`);
     cy.get(asset_properties_widget_elements.addWidgetButton).click();
     cy.get(asset_properties_widget_elements.cardElement).click();
   });
@@ -127,7 +127,7 @@ describe('Asset Properties Widget: Integration tests', function () {
 
     // Verification in Asset property widget
     cy.login();
-    cy.visitAndWaitUntilPageLoad(`apps/asset-properties/index.html#/`);
+    cy.visitAndWaitUntilPageLoad(`apps/asset-properties-widget/index.html#/`);
     cy.get(propValueElement).should('contain.text', updatedPropValue);
     cy.deleteCard();
   });
@@ -166,7 +166,7 @@ describe('Asset Properties Widget: Integration tests', function () {
     cy.deleteAsset(assetName);
 
     cy.login();
-    cy.visitAndWaitUntilPageLoad(`apps/asset-properties/index.html#/`);
+    cy.visitAndWaitUntilPageLoad(`apps/asset-properties-widget/index.html#/`);
     cy.get('asset-properties > div').should('contain.text', 'No Data');
     cy.deleteCard();
   });
@@ -187,7 +187,7 @@ describe('Asset Properties Widget: Integration tests', function () {
     cy.get(confirmButton).should('be.visible').click();
 
     cy.login();
-    cy.visitAndWaitUntilPageLoad(`apps/asset-properties/index.html#/`);
+    cy.visitAndWaitUntilPageLoad(`apps/asset-properties-widget/index.html#/`);
     cy.get(asset_properties_widget_elements.addWidgetButton).click();
     cy.get(asset_properties_widget_elements.cardElement).click();
     cy.verifyTheAbsenceOfAssetProperty(assetName, propKey);
