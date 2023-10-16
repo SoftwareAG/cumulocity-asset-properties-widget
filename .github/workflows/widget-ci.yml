@@ -1,4 +1,4 @@
-name: Widget CI
+name: Widget - CI
 
 on:
   workflow_dispatch:

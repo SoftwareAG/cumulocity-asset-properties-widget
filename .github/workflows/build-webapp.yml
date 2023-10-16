@@ -1,4 +1,4 @@
-name: Generic widget build
+name: Widget build
 
 on:
   workflow_call:

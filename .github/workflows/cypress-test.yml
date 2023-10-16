@@ -1,4 +1,4 @@
-name: Generic Cypress E2E
+name: Widget cypress E2E
 
 on:
   workflow_dispatch:
