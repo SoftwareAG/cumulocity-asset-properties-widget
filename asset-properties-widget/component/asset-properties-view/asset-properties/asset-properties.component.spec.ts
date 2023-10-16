@@ -10,15 +10,17 @@ describe('AssetPropertiesComponent', () => {
   let assetTypesMock: any;
   let appStateMock: any;
   let userMock: any;
+  let permissionsServiceMock:any;
 
   beforeEach(() => {
+    permissionsServiceMock = {canEdit: jest.fn()}
     assetTypesMock = { getAssetTypeByName: jest.fn() }
     inventoryMock = { update: jest.fn(), detail: jest.fn(), childAdditionsRemove :jest.fn(), childAdditionsAdd: jest.fn()}
     alertMock = {success: jest.fn(), addServerFailure: jest.fn()}
     inventoryBinaryMock = {create: jest.fn()}
     userMock = {hasAnyRole: jest.fn()}
 
-    component = new AssetPropertiesComponent(assetTypesMock, inventoryMock, inventoryBinaryMock, alertMock, appStateMock,userMock);
+    component = new AssetPropertiesComponent(assetTypesMock, inventoryMock, inventoryBinaryMock, alertMock, appStateMock, userMock, permissionsServiceMock);
   });
 
   it('should exist', () => {
@@ -373,12 +375,7 @@ describe('AssetPropertiesComponent', () => {
 
     it('should disabled properties edit icon', async () => {
       // given
-      component['appState'] = {currentUser:{value: {
-        id: "Amarjyoti.Raj@softwareag.com",
-        userName: 'test',
-        displayName: 'Test'
-      }} as any} as any
-      jest.spyOn(userMock, 'hasAnyRole').mockReturnValue(true);
+      jest.spyOn(permissionsServiceMock, 'canEdit').mockReturnValue(true);
 
       //when
       await component.ngOnInit()
@@ -389,12 +386,7 @@ describe('AssetPropertiesComponent', () => {
 
     it('should enable properties edit icon', async () => {
       // given
-      component['appState'] = {currentUser:{value: {
-        id: "Amarjyoti.Raj@softwareag.com",
-        userName: 'amar',
-        displayName: 'Amar'
-      }} as any} as any
-      jest.spyOn(userMock, 'hasAnyRole').mockReturnValue(false);
+      jest.spyOn(permissionsServiceMock, 'canEdit').mockReturnValue(false);
 
       //when
       await component.ngOnInit()

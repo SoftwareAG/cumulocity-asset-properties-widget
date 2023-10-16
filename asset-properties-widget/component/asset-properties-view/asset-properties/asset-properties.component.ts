@@ -9,6 +9,7 @@ import {
 import { AlertService, AppStateService, AssetTypesService, gettext } from '@c8y/ngx-components';
 import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
+import { Permissions } from '@c8y/ngx-components';
 
 @Component({
   selector: 'c8y-asset-properties',
@@ -32,21 +33,17 @@ export class AssetPropertiesComponent implements OnChanges {
     private alert: AlertService,
     protected appState: AppStateService,
     protected user: UserService,
+    private permissionsService: Permissions
   ) {}
 
   async ngOnInit() {
-    this.isEditDisabled = !this.canEditProperty();
+    this.isEditDisabled = !(await this.permissionsService.canEdit([], this.asset, {
+      skipOwnerCheck: true,
+      skipRolesCheck: true
+    }));
   }
 
-  canEditProperty(): boolean {
-    const currentUser = this.appState.currentUser.value;
-    const hasAdminRole = this.user.hasAnyRole(currentUser, [
-      'ROLE_INVENTORY_ADMIN'
-    ]);
-    return hasAdminRole;
-  }
-
- ngOnChanges(changes: SimpleChanges): void {
+ async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (changes.asset?.currentValue || changes.properties?.currentValue) {
       this.assetType = undefined;
       this.customProperties = [];
