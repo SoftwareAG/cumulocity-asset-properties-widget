@@ -341,7 +341,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.selectAsset(assetName);
     cy.selectAsset(assetName1);
     cy.get(`div[title='Assets > ${assetName}']`)
-      .children('div[class*="m-l-4 m-r-4 miller-column__item__checkbox"]')
+      .children('div[class*="checkbox"]')
       .children('label')
       .children('input[type="radio"]')
       .should('be.not.checked');

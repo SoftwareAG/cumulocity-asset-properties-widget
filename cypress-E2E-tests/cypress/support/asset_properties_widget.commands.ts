@@ -79,7 +79,7 @@ declare global {
 
 Cypress.Commands.add('selectAsset', assetName => {
   cy.get(`div[title='Assets > ${assetName}']`)
-    .children('div[class*="m-l-4 m-r-4 miller-column__item__checkbox"]')
+    .children('div[class*="checkbox"]')
     .children('label')
     .children('input[type="radio"]')
     .check({ force: true });
@@ -162,7 +162,7 @@ Cypress.Commands.add('selectAssetAndSave', assetName => {
 
 Cypress.Commands.add('selectSubasset', assetName => {
   cy.get(`div[title='${assetName}']`)
-    .children('div[class*="m-l-4 m-r-4 miller-column__item__checkbox"]')
+    .children('div[class*="checkbox"]')
     .children('label')
     .children('input[type="radio"]')
     .check({ force: true });
