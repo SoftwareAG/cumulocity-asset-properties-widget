@@ -1,4 +1,4 @@
-name: Generic webapp build
+name: Generic widget build
 
 on:
   workflow_call:

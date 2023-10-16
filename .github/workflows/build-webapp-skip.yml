@@ -1,4 +1,4 @@
-name: Webapp CI
+name: Widget build skip
 
 on:
   pull_request:
