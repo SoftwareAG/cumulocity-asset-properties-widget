@@ -106,9 +106,14 @@ Cypress.Commands.add('unselectAssetProperty', title => {
 });
 
 Cypress.Commands.add('deleteCard', () => {
-  cy.get(asset_properties_widget_elements.settingsButton).click();
-  cy.get(asset_properties_widget_elements.removeWidgetButton).click();
-  cy.get(asset_properties_widget_elements.removeButton).click();
+  cy.intercept({
+    method: 'PUT',
+    url: '**/inventory/managedObjects/**'
+  }).as('removed');
+  cy.get(asset_properties_widget_elements.settingsButton).should('be.visible').click();
+  cy.get(asset_properties_widget_elements.removeWidgetButton).should('be.visible').click();
+  cy.get(asset_properties_widget_elements.removeButton).should('be.visible').click();
+  cy.wait('@removed');
 });
 
 Cypress.Commands.add('verifyTheAbsenceOfAssetProperty', (assetName, property) => {
@@ -143,15 +148,21 @@ Cypress.Commands.add('clickPropertyEditButton', property => {
 });
 
 Cypress.Commands.add('deleteWidgetInstances', title => {
+  cy.intercept({
+    method: 'PUT',
+    url: '**/inventory/managedObjects/**'
+  }).as('removed');
   for (let i = 0; i < title.length; i++) {
     cy.get('c8y-dashboard-child-title span')
       .eq(0)
       .parents('c8y-dashboard-child-title')
       .siblings("div[class*='header-actions']")
       .children("div[placement='bottom right']")
+      .children("button[title='Settings']")
       .click();
-    cy.get(asset_properties_widget_elements.removeWidgetButton).click();
-    cy.get(asset_properties_widget_elements.removeButton).click();
+    cy.get(asset_properties_widget_elements.removeWidgetButton).should('be.visible').click();
+    cy.get(asset_properties_widget_elements.removeButton).should('be.visible').click();
+    cy.wait('@removed');
   }
 });
 
