@@ -1,4 +1,4 @@
-name: Generic widget unit test
+name: Widget unit test
 
 on:
   workflow_call:

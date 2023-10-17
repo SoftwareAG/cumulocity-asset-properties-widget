@@ -1,4 +1,4 @@
-name: Widget CI
+name: Widget - CI
 
 on:
   workflow_dispatch:
@@ -14,3 +14,11 @@ jobs:
     uses: ./.github/workflows/unit-test-widget.yml
     with:
       test_command: "yarn test"
+
+  build-webapp:
+    uses: ./.github/workflows/build-webapp.yml
+    with:
+      build_command: "yarn build"
+      app_file_name_prefix: "asset-properties-widget"
+      app_context_path: "asset-properties-widget"
+      upload_artifact: true

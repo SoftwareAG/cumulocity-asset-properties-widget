@@ -1,9 +1,55 @@
 name: Widget - E2E
+
 on:
   workflow_dispatch:
+    inputs:
+      tenantUrl:
+        description: "Tenant URL"
+        required: true
+        type: string
+      spec_files:
+        description: "Spec files(comma separated list)"
+        required: false
+        type: string
+      browser:
+        description: "Browser"
+        required: true
+        type: choice
+        default: "chrome"
+        options:
+          - "chrome"
+          - "edge"
+          - "firefox"
+
+env:
+  E2E_SPEC_FILES: "cypress/integration/**/*"
+
 jobs:
   setup-variables:
     runs-on: [ubuntu-latest]
+    outputs:
+      spec_files: ${{steps.determine-spec-files.outputs.spec_files}}
+
     steps:
-      - name: Print widget name
-        run: echo "Asset properties widget"
+      - name: Determine spec files to use
+        id: determine-spec-files
+        run: |
+          if [[ -z "${{ github.event.inputs.spec_files }}" ]]; then
+            echo "spec_files=${{ env.E2E_SPEC_FILES }}" >> $GITHUB_OUTPUT
+          else
+            echo "spec_files=${{ github.event.inputs.spec_files }}" >> $GITHUB_OUTPUT
+          fi
+  cypress-run:
+    needs: [setup-variables]
+    uses: ./.github/workflows/cypress-test.yml
+    with:
+      tenantUrl: ${{ inputs.tenantUrl }}
+      project_directory: cypress-E2E-tests
+      spec_files: ${{needs.setup-variables.outputs.spec_files}}
+      browser: ${{github.event.inputs.browser}}
+
+    secrets:
+      AUTOTEST_USERNAME1: ${{ secrets.AUTOTEST_USERNAME1 }}
+      AUTOTEST_USERNAME1_PASSWORD: ${{ secrets.AUTOTEST_USERNAME1_PASSWORD }}
+      AUTOTEST_USERNAME2: ${{ secrets.AUTOTEST_USERNAME2 }}
+      AUTOTEST_USERNAME2_PASSWORD: ${{ secrets.AUTOTEST_USERNAME2_PASSWORD }}
