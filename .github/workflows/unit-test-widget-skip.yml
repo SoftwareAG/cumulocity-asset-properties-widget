@@ -1,4 +1,4 @@
-name: Widget CI
+name: Widget unit test skip
 
 on:
   pull_request:
