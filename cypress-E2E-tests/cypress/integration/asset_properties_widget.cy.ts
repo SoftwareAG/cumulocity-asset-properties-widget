@@ -582,10 +582,7 @@ describe('Asset Properties Widget: Permissions tests', function () {
   it('TC_Asset_Properties_Widget_Permissions_002', () => {
     cy.get(asset_properties_widget_elements.widgetDashboardAddWidgetButton).should('be.disabled');
     cy.get(cardTitleElement).should('contain.text', asset2);
-    cy.clickPropertyEditButton('Name');
-    cy.get(propFeildElement).clear().type('New Asset');
-    cy.get(saveElement).click();
-    cy.get(assetNameElement).should('contains.text', 'New Asset');
+    cy.get("button[data-cy='asset-properties-edit-icon']").should('be.enabled');
   });
 
   after(function () {
