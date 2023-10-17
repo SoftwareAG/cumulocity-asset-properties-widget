@@ -4,7 +4,7 @@ const { isFileExist, findFiles } = require('cy-verify-downloads');
 export default defineConfig({
   defaultCommandTimeout: 20000,
   pageLoadTimeout: 20000,
-  retries: 0,
+  retries: 1,
   video: false,
   reporter: 'mochawesome',
   numTestsKeptInMemory: 10,

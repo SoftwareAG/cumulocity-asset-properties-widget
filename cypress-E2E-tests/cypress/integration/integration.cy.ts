@@ -100,7 +100,7 @@ describe('Asset Properties Widget: Integration tests', function () {
     cy.login();
     cy.visitAndWaitUntilPageLoad(propWidgetURL);
     cy.get(asset_properties_widget_elements.addWidgetButton).click();
-    cy.get(asset_properties_widget_elements.cardElement).click();
+    cy.get(asset_properties_widget_elements.cardElement).eq(0).click();
   });
 
   // Any change in property value done , will be reflected in dtm and vice versa
@@ -141,7 +141,7 @@ describe('Asset Properties Widget: Integration tests', function () {
     const propValueElement = ':nth-child(5) > .card-block > c8y-asset-properties-item > p';
     cy.selectAssetPropertyAndSave(assetName, propKey);
     cy.get(asset_properties_widget_elements.widgetDashboardAddWidgetButton).click();
-    cy.get(asset_properties_widget_elements.cardElement).click();
+    cy.get(asset_properties_widget_elements.cardElement).eq(0).click();
     cy.get(titleFieldId).should('have.value', instance1Title);
     cy.get(titleFieldId).clear().type(instance2Title);
     cy.selectAssetPropertyAndSave(assetName, propKey);
@@ -185,7 +185,7 @@ describe('Asset Properties Widget: Integration tests', function () {
 
     cy.visitAndWaitUntilPageLoad(propWidgetURL);
     cy.get(asset_properties_widget_elements.addWidgetButton).click();
-    cy.get(asset_properties_widget_elements.cardElement).click();
+    cy.get(asset_properties_widget_elements.cardElement).eq(0).click();
     cy.verifyTheAbsenceOfAssetProperty(assetName, propKey);
   });
 
