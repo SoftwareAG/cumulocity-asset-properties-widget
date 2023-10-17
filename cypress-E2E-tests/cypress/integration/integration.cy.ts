@@ -110,7 +110,8 @@ describe('Asset Properties Widget: Integration tests', function () {
     const propValue = 'Red';
     cy.selectAssetPropertyAndSave(assetName, propKey);
     cy.clickPropertyEditButton('Color');
-    cy.get(propFeildElement).clear().type(propValue);
+    cy.get(propFeildElement).clear();
+    cy.get(propFeildElement).type(propValue);
     cy.get(saveElement).click();
 
     // Digital twin manager verification and updation
@@ -123,7 +124,8 @@ describe('Asset Properties Widget: Integration tests', function () {
     cy.navigateToSubassetPageThroughAssetTreeGrid(assetName);
     cy.get(propElement).should('contain.text', propValue);
     cy.get(editPencilElement).click();
-    cy.get(inputFeildElement).clear().type(updatedPropValue);
+    cy.get(inputFeildElement).clear();
+    cy.get(inputFeildElement).type(updatedPropValue);
     cy.get(propSaveElement).click();
 
     // Verification in Asset property widget
@@ -143,10 +145,12 @@ describe('Asset Properties Widget: Integration tests', function () {
     cy.get(asset_properties_widget_elements.widgetDashboardAddWidgetButton).click();
     cy.get(asset_properties_widget_elements.cardElement).eq(0).click();
     cy.get(titleFieldId).should('have.value', instance1Title);
-    cy.get(titleFieldId).clear().type(instance2Title);
+    cy.get(titleFieldId).clear();
+    cy.get(titleFieldId).type(instance2Title);
     cy.selectAssetPropertyAndSave(assetName, propKey);
     cy.clickPropertyEditButton('Color');
-    cy.get(propFeildElement).clear().type(updatedPropValue);
+    cy.get(propFeildElement).clear();
+    cy.get(propFeildElement).type(updatedPropValue);
     cy.get(saveElement).click();
     cy.get(propValueElement).should('contain.text', updatedPropValue);
     cy.get(propValueElement).should('have.length', 2);

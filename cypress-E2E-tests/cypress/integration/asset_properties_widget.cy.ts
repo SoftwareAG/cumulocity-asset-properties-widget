@@ -132,7 +132,8 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   it('TC_Asset_Properties_Widget_config_002', () => {
     cy.get(titleTextElement).should('contain.text', 'Title');
     cy.get(titleFieldId).should('have.value', assetProperties);
-    cy.get(titleFieldId).clear().type(title);
+    cy.get(titleFieldId).clear();
+    cy.get(titleFieldId).type(title);
   });
 
   // Verify the presence of  Properties text, Add Prperty button, Show, Label, Key columns for the Properties section elements
@@ -179,13 +180,15 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
 
   // Type in the title without selecting any asset, verify that save button should be disabled.
   it('TC_Asset_Properties_Widget_config_006', () => {
-    cy.get(titleFieldId).clear().type(title);
+    cy.get(titleFieldId).clear();
+    cy.get(titleFieldId).type(title);
     cy.get(asset_properties_widget_elements.saveButton).should('be.disabled');
   });
 
   // Type in the title by selecting any asset, click on save and verify if the changes are getting reflected
   it('TC_Asset_Properties_Widget_config_007', () => {
-    cy.get(titleFieldId).clear().type(title);
+    cy.get(titleFieldId).clear();
+    cy.get(titleFieldId).type(title);
     cy.selectAsset(assetName);
     cy.get(asset_properties_widget_elements.saveButton).click();
     cy.get(cardTitleElement).should('contain.text', assetProperties);
@@ -511,7 +514,8 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   it('TC_Asset_Properties_Widget_view_009', () => {
     cy.selectAssetAndSave(assetName);
     cy.clickPropertyEditButton('Name');
-    cy.get(propFeildElement).clear().type('New Asset');
+    cy.get(propFeildElement).clear();
+    cy.get(propFeildElement).type('New Asset');
     cy.get(saveElement).click();
     cy.get(assetNameElement).should('contains.text', 'New Asset');
     cy.deleteCard();
@@ -553,11 +557,13 @@ describe('Asset Properties Widget: Permissions tests', function () {
     cy.visitAndWaitUntilPageLoad(url);
     cy.get(asset_properties_widget_elements.addWidgetButton).click();
     cy.get(asset_properties_widget_elements.cardElement).eq(0).click();
-    cy.get(titleFieldId).clear().type(asset1);
+    cy.get(titleFieldId).clear();
+    cy.get(titleFieldId).type(asset1);
     cy.selectAssetPropertyAndSave(asset1, 'lastUpdated');
     cy.get(asset_properties_widget_elements.widgetDashboardAddWidgetButton).click();
     cy.get(asset_properties_widget_elements.cardElement).eq(0).click();
-    cy.get(titleFieldId).clear().type(asset2);
+    cy.get(titleFieldId).clear();
+    cy.get(titleFieldId).type(asset2);
     cy.selectAssetPropertyAndSave(asset2, 'lastUpdated');
     cy.logout();
   });
