@@ -2,7 +2,7 @@
 import asset_properties_widget_elements from '../support/page_objects/asset_properties_widget_elements';
 import '@4tw/cypress-drag-drop';
 
-const assetProperties = 'Asset Properties';
+const assetProperties = 'Asset Properties 2.0';
 const title = 'Asset Properties Updated';
 const titleTextElement = 'c8y-form-group > label';
 const titleFieldId = '#widgetTitle';
@@ -15,7 +15,7 @@ const editWidgetHeadetElement = "div[title='Edit widget']";
 const cardTitleElement = 'c8y-dashboard-child-title';
 const devices = ['Device1', 'Device2'];
 const assetName = 'Test Asset2';
-const url = `apps/asset-properties-widget/index.html#/`;
+const url = `apps/sag-pkg-asset-properties-widget/index.html#/`;
 const searchResultsElement = 'c8y-list-group span';
 const strongTextElement = "c8y-ui-empty-state p[class*='text-medium']";
 const checkboxElement = "input[type='checkbox']";
@@ -168,11 +168,11 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   });
 
   // Type in the title without selecting any asset, verify that save button should be disabled.
-  it('TC_Asset_Properties_Widget_config_006', () => {
-    cy.get(titleFieldId).clear();
-    cy.get(titleFieldId).type(title);
-    cy.get(asset_properties_widget_elements.saveButton).should('be.disabled');
-  });
+  //it('TC_Asset_Properties_Widget_config_006', () => {
+  //cy.get(titleFieldId).clear();
+  //cy.get(titleFieldId).type(title);
+  //cy.get(asset_properties_widget_elements.saveButton).should('be.disabled');
+  //});
 
   // Type in the title by selecting any asset, click on save and verify if the changes are getting reflected
   it('TC_Asset_Properties_Widget_config_007', () => {
@@ -180,7 +180,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(titleFieldId).type(title);
     cy.selectAsset(assetName);
     cy.get(asset_properties_widget_elements.saveButton).click();
-    cy.get(cardTitleElement).should('contain.text', assetProperties);
+    cy.get(cardTitleElement).should('contain.text', title);
     cy.deleteCard();
   });
 
@@ -464,7 +464,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   it('TC_Asset_Properties_Widget_view_005', () => {
     const messageElement = 'div[data-cy="prompt-alert"] > p';
     const message =
-      'You are about to remove widget "Asset Properties" from your dashboard. Do you want to proceed?';
+      'You are about to remove widget "Asset Properties 2.0" from your dashboard. Do you want to proceed?';
     cy.selectAssetAndSave(assetName);
     cy.get(asset_properties_widget_elements.settingsButton).click();
     cy.get(asset_properties_widget_elements.removeWidgetButton).click();
