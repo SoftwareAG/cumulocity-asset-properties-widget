@@ -33,7 +33,7 @@ import { AssetPropertiesSelectorComponent } from './component/asset-properties-c
       multi: true,
       useValue: {
         id: 'asset-properties-widget',
-        label: 'Asset Properties',
+        label: 'Asset Properties 2.0',
         previewImage: preview.image,
         description: 'Editable form for asset properties widget',
         component: AssetPropertiesViewComponent,
