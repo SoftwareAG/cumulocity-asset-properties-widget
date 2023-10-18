@@ -6,7 +6,7 @@ This Asset Properties Widget is the Cumulocity module federation plugin created 
 
 | APPLICATION BUILDER | CUMULOCITY  | ASSET PROPERTIES WIDGET PLUGIN |
 | ------------------- | ----------- | ------------------------------ |
-| 2.0.x               | >= 1018.0.0 | 1.0.1                          |
+| 2.0.x               | >= 1018.0.0 | 1.0.0                          |
 
 ![Asset-properties](images/asset-property-image.JPG)
 
@@ -22,9 +22,12 @@ Cumulocity c8ycli >=1018.0.144
 
 ## Installation
 
-### Runtime Widget Deployment?
+### To install the widget-plugin in the Custom Cockpit application, follow the steps below:
 
-- This plugin support runtime deployment. Download and install via Administrations --> Ecosystems --> Applications --> Packages.
+1.	Click on Add extension Packages button in Administration > Ecosystem > Extension, where you can add your widget zip file.
+2.	If you already have a custom Cockpit application, navigate to its Details page (Administration > Ecosystem > Applications > Cockpit(Custom)) and then to the Plugins tab. Install the Asset properties widget plugin.  [Extensions](https://cumulocity.com/guides/users-guide/administration/#extensions).
+3.	If you don’t have your Custom Cockpit application, navigate to Administration > Ecosystem > Applications and click Add application. In the resulting dialog, select the option Duplicate existing application. From the list of applications select Cockpit (Subscribed). Use the default values and proceed once its done follow the **2nd steps**.
+4. Now your widget is available in your Cockpit application. Navigate to the dashboard where the newly added widget is available in the list of widgets to add.
 
 ## QuickStart
 
@@ -36,7 +39,7 @@ This guide will teach you how to add widget in your existing or new dashboard.
 
 3. Click `Add Widget`
 
-4. Search for `Asset Properties`
+4. Search for `Asset Properties 2.0`
 
 5. Select `Target Asset`
 
