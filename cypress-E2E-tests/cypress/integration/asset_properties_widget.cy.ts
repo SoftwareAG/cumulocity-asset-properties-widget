@@ -2,7 +2,7 @@
 import asset_properties_widget_elements from '../support/page_objects/asset_properties_widget_elements';
 import '@4tw/cypress-drag-drop';
 
-const assetProperties = 'Asset Properties';
+const assetProperties = 'Asset Properties 2.0';
 const title = 'Asset Properties Updated';
 const titleTextElement = 'c8y-form-group > label';
 const titleFieldId = '#widgetTitle';
@@ -464,7 +464,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   it('TC_Asset_Properties_Widget_view_005', () => {
     const messageElement = 'div[data-cy="prompt-alert"] > p';
     const message =
-      'You are about to remove widget "Asset Properties" from your dashboard. Do you want to proceed?';
+      'You are about to remove widget "Asset Properties 2.0" from your dashboard. Do you want to proceed?';
     cy.selectAssetAndSave(assetName);
     cy.get(asset_properties_widget_elements.settingsButton).click();
     cy.get(asset_properties_widget_elements.removeWidgetButton).click();
