@@ -5,7 +5,6 @@ import { RouterModule as ngRouterModule } from '@angular/router';
 import { BootstrapComponent, CoreModule, RouterModule } from '@c8y/ngx-components';
 import { CockpitDashboardModule } from '@c8y/ngx-components/context-dashboard';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { AssetPropertiesWidgetModule } from './asset-properties-widget/asset-properties.module';
 
 // Translations
 import './locales/de.po'; // <- adding additional strings to the german translation.
@@ -17,7 +16,6 @@ import './locales/de.po'; // <- adding additional strings to the german translat
     RouterModule.forRoot(),
     CoreModule.forRoot(),
     CockpitDashboardModule,
-    AssetPropertiesWidgetModule
   ],
   providers: [BsModalRef],
   bootstrap: [BootstrapComponent]
