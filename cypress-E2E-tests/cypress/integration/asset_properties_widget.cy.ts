@@ -151,17 +151,17 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const labels = ['Name', 'ID', 'Asset model'];
     const keys = ['name', 'id', 'type'];
     for (let i = 0; i < labels.length; i++) {
-      cy.get('td > i').eq(i).should('be.visible');
+      cy.get('asset-property-selector td > i').eq(i).should('be.visible');
       cy.get(checkboxElement).eq(i).should('be.visible');
       cy.get("td > input[class*='form-control']").eq(i).should('have.value', labels[i]);
-      cy.get('td > span').eq(i).should('have.text', keys[i]);
+      cy.get('asset-property-selector td > span').eq(i).should('have.text', keys[i]);
     }
   });
 
   // Verify that removing the property reflects under Properties section
   it('TC_Asset_Properties_Widget_config_005', () => {
     const key = 'type';
-    const keyElement = 'td > span';
+    const keyElement = 'asset-property-selector td > span';
     cy.get(keyElement).eq(2).should('have.text', key);
     cy.get("button[data-cy='asset-property-selector-remove-property-button']").eq(2).click();
     cy.get(keyElement).eq(2).should('not.exist');
