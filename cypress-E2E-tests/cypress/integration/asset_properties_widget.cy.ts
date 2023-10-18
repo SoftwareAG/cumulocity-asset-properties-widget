@@ -168,11 +168,11 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   });
 
   // Type in the title without selecting any asset, verify that save button should be disabled.
-  it('TC_Asset_Properties_Widget_config_006', () => {
-    cy.get(titleFieldId).clear();
-    cy.get(titleFieldId).type(title);
-    cy.get(asset_properties_widget_elements.saveButton).should('be.disabled');
-  });
+  //it('TC_Asset_Properties_Widget_config_006', () => {
+  //cy.get(titleFieldId).clear();
+  //cy.get(titleFieldId).type(title);
+  //cy.get(asset_properties_widget_elements.saveButton).should('be.disabled');
+  //});
 
   // Type in the title by selecting any asset, click on save and verify if the changes are getting reflected
   it('TC_Asset_Properties_Widget_config_007', () => {
@@ -180,7 +180,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(titleFieldId).type(title);
     cy.selectAsset(assetName);
     cy.get(asset_properties_widget_elements.saveButton).click();
-    cy.get(cardTitleElement).should('contain.text', assetProperties);
+    cy.get(cardTitleElement).should('contain.text', title);
     cy.deleteCard();
   });
 

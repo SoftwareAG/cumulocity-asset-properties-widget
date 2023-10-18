@@ -136,7 +136,7 @@ describe('Asset Properties Widget: Integration tests', function () {
 
   // If there are two asset instances, value changed in one instance must get reflected in other instance as well
   it('TC_Asset_Properties_Widget_Integration_002', () => {
-    const instance1Title = 'Asset Properties';
+    const instance1Title = 'Asset Properties 2.0';
     const instance2Title = 'Test';
     const assetName = 'Test Asset5';
     const titleFieldId = '#widgetTitle';
@@ -173,7 +173,7 @@ describe('Asset Properties Widget: Integration tests', function () {
   });
 
   // Deletion of any property in dtm must be reflected on widget as well. Property should not be shown in widget.
-  it.only('TC_Asset_Properties_Widget_Integration_004', () => {
+  it('TC_Asset_Properties_Widget_Integration_004', () => {
     const assetName = 'Test Asset2';
     const confirmButton = "button[title='Confirm']";
     cy.selectAssetPropertyAndSave(assetName, propKey);
