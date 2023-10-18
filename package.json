@@ -1,5 +1,5 @@
 {
-  "name": "asset-properties-widget-plugin",
+  "name": "cumulocity-asset-properties-widget-plugin",
   "version": "1.0.0",
   "description": "Asset properties",
   "author": "Amarjyoti Raj - Software AG, IOT-Apps R&D",
@@ -70,8 +70,8 @@
     "application": {
       "name": "Asset properties widget",
       "description": "Asset properties widget",
-      "contextPath": "cumulocity-asset-properties-widget",
-      "key": "cumulocity-asset-properties-widget-application-key",
+      "contextPath": "sag-pkg-asset-properties-widget",
+      "key": "sag-pkg-asset-properties-widget-application-key",
       "globalTitle": "Asset properties widget",
       "tabsHorizontal": true,
       "isPackage": false,
@@ -81,14 +81,14 @@
       "contentSecurityPolicy": "base-uri 'none'; default-src 'self' 'unsafe-inline' http: https: ws: wss: blob:; connect-src 'self' *.aptrinsic.com *.billwerk.com http: https: ws: wss: blob:;  script-src 'self' open.mapquestapi.com *.twitter.com *.twimg.com *.aptrinsic.com 'unsafe-inline' 'unsafe-eval' data:; style-src * 'unsafe-inline' blob:; img-src * data: blob:; font-src * data:; frame-src *; worker-src 'self' blob:;",
       "exports": [
         {
-          "name": "Asset properties widget plugin",
+          "name": "Cumulocity Asset properties widget plugin",
           "module": "AssetPropertiesWidgetModule",
           "path": "./asset-properties-widget/asset-properties.module.ts",
           "description": "Asset properties configuration widget"
         }
       ],
       "remotes": {
-        "cumulocity-asset-properties-widget": [
+        "sag-pkg-asset-properties-widget": [
           "AssetPropertiesWidgetModule"
         ]
       }
