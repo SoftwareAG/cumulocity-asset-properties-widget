@@ -4,7 +4,7 @@ import { ROUTES } from 'cypress/constants/routes.constant';
 
 const propKey = 'color';
 const updatedPropValue = 'Blu';
-const propWidgetURL = `apps/asset-properties-widget/index.html#/`;
+const propWidgetURL = `apps/sag-pkg-asset-properties-widget/index.html#/`;
 const dtmURL = 'apps/digital-twin-manager/index.html#/assets';
 const propValueElement = 'c8y-asset-properties-item > p';
 const propFeildElement = "input[type='text']";
@@ -173,7 +173,7 @@ describe('Asset Properties Widget: Integration tests', function () {
   });
 
   // Deletion of any property in dtm must be reflected on widget as well. Property should not be shown in widget.
-  it('TC_Asset_Properties_Widget_Integration_004', () => {
+  it.only('TC_Asset_Properties_Widget_Integration_004', () => {
     const assetName = 'Test Asset2';
     const confirmButton = "button[title='Confirm']";
     cy.selectAssetPropertyAndSave(assetName, propKey);
