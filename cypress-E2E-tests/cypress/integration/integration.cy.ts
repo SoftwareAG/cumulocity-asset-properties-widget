@@ -7,7 +7,7 @@ const updatedPropValue = 'Blu';
 const propWidgetURL = `apps/asset-properties-widget/index.html#/`;
 const dtmURL = 'apps/digital-twin-manager/index.html#/assets';
 const propValueElement = 'c8y-asset-properties-item > p';
-const propFeildElement = "c8y-field-input > input[type='text']";
+const propFeildElement = "input[type='text']";
 const saveElement = 'button[data-cy="asset-properties-save-button"]';
 const groupObject = {
   label: 'Group',

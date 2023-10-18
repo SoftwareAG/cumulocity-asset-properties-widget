@@ -4,25 +4,24 @@ import '@4tw/cypress-drag-drop';
 
 const assetProperties = 'Asset Properties';
 const title = 'Asset Properties Updated';
-const titleTextElement = 'div > c8y-form-group > label';
+const titleTextElement = 'c8y-form-group > label';
 const titleFieldId = '#widgetTitle';
-const searchElement = "c8y-search-input input[placeholder='Search for groups or assets…']";
+const searchElement = "input[placeholder='Search for groups or assets…']";
 const assetsTextElement = "p[title='Assets']";
-const textElement = "c8y-asset-selector > div > p[class*='text-12']";
-const selectPropElement = "asset-property-item-selector-component > div > h3[id='modal-title']";
+const textElement = "c8y-asset-selector p[class*='text-12']";
+const selectPropElement = "h3[id='modal-title']";
 const backArrowElement = "i[c8yicon='angle-left']";
 const editWidgetHeadetElement = "div[title='Edit widget']";
-const cardTitleElement = 'c8y-dashboard-child-title > div > span';
+const cardTitleElement = 'c8y-dashboard-child-title';
 const devices = ['Device1', 'Device2'];
 const assetName = 'Test Asset2';
 const url = `apps/asset-properties-widget/index.html#/`;
-const searchResultsElement = 'c8y-list-group > c8y-li > div > div > div > div > span';
-const strongTextElement = "c8y-ui-empty-state > div > div > p[class*='text-medium']";
-const checkboxElement =
-  "asset-property-selector > table > tbody > tr > td > input[type='checkbox']";
+const searchResultsElement = 'c8y-list-group span';
+const strongTextElement = "c8y-ui-empty-state p[class*='text-medium']";
+const checkboxElement = "input[type='checkbox']";
 const assetNameElement = 'c8y-asset-properties-item > p';
-const removePopupElement = 'div[data-cy="prompt-alert"] > h3 > span';
-const propFeildElement = "c8y-field-input > input[type='text']";
+const removePopupElement = 'h3 span';
+const propFeildElement = "input[type='text']";
 const saveElement = 'button[data-cy="asset-properties-save-button"]';
 const groupObject = {
   label: 'Group',
@@ -138,14 +137,12 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
 
   // Verify the presence of  Properties text, Add Prperty button, Show, Label, Key columns for the Properties section elements
   it('TC_Asset_Properties_Widget_config_003', () => {
-    const propertiesTextElement = 'asset-property-selector > div > label';
+    const propertiesTextElement = 'asset-property-selector div label';
     cy.get(propertiesTextElement).should('have.text', 'Properties');
     cy.get(asset_properties_widget_elements.addPropertyButton);
     const columns = ['Show', 'Label', 'Key'];
     for (let i = 0; i < columns.length; i++) {
-      cy.get('asset-property-selector > table > thead > th > label')
-        .eq(i)
-        .should('have.text', columns[i]);
+      cy.get('th label').eq(i).should('have.text', columns[i]);
     }
   });
 
@@ -154,27 +151,19 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const labels = ['Name', 'ID', 'Asset model'];
     const keys = ['name', 'id', 'type'];
     for (let i = 0; i < labels.length; i++) {
-      cy.get('asset-property-selector > table > tbody > tr > td > i').eq(i).should('be.visible');
+      cy.get('td > i').eq(i).should('be.visible');
       cy.get(checkboxElement).eq(i).should('be.visible');
-      cy.get("asset-property-selector > table > tbody > tr > td > input[class*='form-control']")
-        .eq(i)
-        .should('have.value', labels[i]);
-      cy.get('asset-property-selector > table > tbody > tr > td > span')
-        .eq(i)
-        .should('have.text', keys[i]);
+      cy.get("td > input[class*='form-control']").eq(i).should('have.value', labels[i]);
+      cy.get('td > span').eq(i).should('have.text', keys[i]);
     }
   });
 
   // Verify that removing the property reflects under Properties section
   it('TC_Asset_Properties_Widget_config_005', () => {
     const key = 'type';
-    const keyElement = 'asset-property-selector > table > tbody > tr > td > span';
+    const keyElement = 'td > span';
     cy.get(keyElement).eq(2).should('have.text', key);
-    cy.get(
-      "asset-property-selector > table > tbody > tr > td > button[data-cy='asset-property-selector-remove-property-button']"
-    )
-      .eq(2)
-      .click();
+    cy.get("button[data-cy='asset-property-selector-remove-property-button']").eq(2).click();
     cy.get(keyElement).eq(2).should('not.exist');
   });
 
@@ -229,9 +218,10 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(selectPropElement).should('have.text', 'Select property');
     cy.get(asset_properties_widget_elements.selectButton).should('be.visible');
     cy.get(asset_properties_widget_elements.propertyCancelButton).should('be.visible');
-    const columnName = ['Show', 'Label', 'Key'];
+    const columnName = ['show', 'label', 'key'];
+    cy.get("label[data-cy='asset-property-item-show-column']");
     for (let i = 0; i < columnName.length; i++) {
-      cy.get('div > div > div > div > div > label').eq(i).should('have.text', columnName[i]);
+      cy.get(`label[data-cy='asset-property-item-${columnName[i]}-column']`).should('be.visible');
     }
   });
 
@@ -338,7 +328,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const assetName = 'check 1';
     cy.get(searchElement).type(assetName);
     cy.get(searchResultsElement).should('have.text', 'Search results');
-    cy.get('c8y-li > div > div > div').eq(1).should('contains.text', assetName).click();
+    cy.get('c8y-li > div').eq(1).should('contains.text', assetName).click();
     cy.get(asset_properties_widget_elements.radioButton).should('be.checked');
     cy.get(`p[title='${assetName}']`).should('contains.text', assetName);
     cy.get("button[title='Search']").click();
@@ -351,8 +341,8 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const assetName = 'check 1';
     const subassetName = 'check 1 > check 2 > check 4';
     cy.get(searchElement).type(assetName);
-    cy.get('c8y-li > div > div > div').eq(1).should('contains.text', assetName).click();
-    cy.get('button > span > i[c8yicon="angle-right"]').click();
+    cy.get('c8y-li > div').eq(1).should('contains.text', assetName).click();
+    cy.get('i[c8yicon="angle-right"]').click();
     cy.selectSubasset(subassetName);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     // workaround for assettypes cache issue
@@ -375,13 +365,13 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   it('TC_Asset_Properties_Widget_config_028', () => {
     cy.get(titleFieldId).clear();
     cy.get(searchElement).click();
-    cy.get('c8y-messages > small > div').should('contain.text', 'This field is required.');
+    cy.get('c8y-messages').should('contain.text', 'This field is required.');
   });
 
   // Verify the search functionality works as expected when there are no matching records
   it('TC_Asset_Properties_Widget_config_029', () => {
     const assetName = 'eee';
-    const smallTextElement = 'c8y-ui-empty-state > div > div > div > small';
+    const smallTextElement = 'c8y-ui-empty-state div > small';
     cy.get(searchElement).type(assetName);
     cy.get(searchResultsElement).should('have.text', 'Search results');
     cy.get(strongTextElement).should('have.text', 'No match found.');
@@ -400,7 +390,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get('input[placeholder="Filter this column…"]').click();
     cy.get(filterElement).should('be.visible');
     cy.get(strongTextElement).should('have.text', 'No results to display.');
-    cy.get("c8y-ui-empty-state > div > div > p[class*='small']").should(
+    cy.get("c8y-ui-empty-state  p[class*='small']").should(
       'have.text',
       'The selected asset has no children.'
     );
