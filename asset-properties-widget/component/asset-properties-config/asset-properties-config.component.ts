@@ -4,6 +4,7 @@ import { IManagedObject, InventoryService } from '@c8y/client';
 import { DynamicComponent, OnBeforeSave } from '@c8y/ngx-components';
 import { AssetSelectionChangeEvent } from '@c8y/ngx-components/assets-navigator';
 import { ContextDashboardService } from '@c8y/ngx-components/context-dashboard';
+import { some } from 'lodash-es';
 
 @Component({
     selector: 'asset-properties-config',
@@ -33,10 +34,7 @@ export class AssetPropertiesConfigComponent implements DynamicComponent, OnBefor
     }
 
     onBeforeSave(config: any): boolean {
-        if (!config.asset || !(config.properties.map(function(item) { return item.active}).indexOf(true) > -1)) {
-            this.isAssetSelected = config.asset ? true : false;
-          return false;
-        }
-        return true;
-    } 
+        this.isAssetSelected = Boolean(config.asset);
+        return !!(config.properties && some(config.properties, 'active'));
+      }
 }
