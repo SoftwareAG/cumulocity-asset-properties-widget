@@ -24,7 +24,7 @@ jobs:
       upload_artifact: true
 
   deploy:
-    runs-on: [ubuntu]
+    runs-on: [ubuntu-latest]
     needs: [build-widget]
     steps:
       - name: Create folder
