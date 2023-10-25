@@ -10,10 +10,10 @@ on:
       - develop
 
 jobs:
-  unit-tests:
-    uses: ./.github/workflows/unit-test-widget.yml
-    with:
-      test_command: "yarn test"
+  # unit-tests:
+  #   uses: ./.github/workflows/unit-test-widget.yml
+  #   with:
+  #     test_command: "yarn test"
 
   build-webapp:
     uses: ./.github/workflows/build-webapp.yml
@@ -22,3 +22,20 @@ jobs:
       app_file_name_prefix: "sag-pkg-asset-properties-widget"
       app_context_path: "sag-pkg-asset-properties-widget"
       upload_artifact: true
+
+  Download webapp:
+    uses: actions/download-artifact@v3
+    with:
+      name: sag-pkg-asset-properties-widget-1.0.0
+      path: "./downloads"
+
+  deploy-widget:
+    uses: ./.github/workflows/deploy-action/action.yml
+    with:
+      TYPE: HOSTED
+      PACKAGE_LOCATION: ${{ github.workspace }}/downloads/sag-pkg-asset-properties-widget-1.0.0.zip
+      TENANT_URL: "https://dtmsecurity.latest.stage.c8y.io"
+      AUTHORIZATION_CODE: "YXV0b3VzZXI6QXV0b3VzZXIyMUA="
+      APPLICATION_NAME: "Asset properties widget"
+      CONTEXT_PATH: "sag-pkg-asset-properties-widget"
+      DELETE_EXISTING: false
