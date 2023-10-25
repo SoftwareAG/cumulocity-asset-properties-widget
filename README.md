@@ -22,7 +22,9 @@ Cumulocity c8ycli >=1018.0.144
 
 ## Installation
 
-### To install the widget-plugin in the Custom Cockpit application, follow the steps below:
+To install the Asset properties 2.0 widget plugin, you must add the plugin package to the extensions first and then install it on the desired custom application.
+
+#### To add the plugin package to extensions
 
 1.  Navigate to Administration > Ecosystem > Extensions
 2.  Click  **Add extension package** to upload the zip file
