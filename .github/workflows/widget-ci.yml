@@ -23,11 +23,21 @@ jobs:
       app_context_path: "sag-pkg-asset-properties-widget"
       upload_artifact: true
 
-  create-folder:
-    run: |
-      if [[ ! -d "downloads" ]]; then
-      mkdir downloads
-      fi
+   deploy:
+    runs-on: [ubuntu]
+    needs: [build-widget]
+    steps:
+      - name: Create folder
+        run: |
+          if [[ ! -d "downloads" ]]; then
+          mkdir downloads
+          fi
+
+      - name: Download webapp
+        uses: actions/download-artifact@v3
+        with:
+          name: "sag-pkg-asset-properties-widget-1.0.0"
+          path: './downloads'
 
   # download-widget:
   #   uses: actions/download-artifact@v3
