@@ -39,19 +39,13 @@ jobs:
           name: "sag-pkg-asset-properties-widget-1.0.0"
           path: "./downloads"
 
-  # download-widget:
-  #   uses: actions/download-artifact@v3
-  #   with:
-  #     name: "sag-pkg-asset-properties-widget-1.0.0"
-  #     path: "./downloads"
-
-  # deploy-widget:
-  #   uses: ./.github/workflows/deploy-action/action.yml
-  #   with:
-  #     TYPE: HOSTED
-  #     PACKAGE_LOCATION: ${{ github.workspace }}/downloads/sag-pkg-asset-properties-widget-1.0.0.zip
-  #     TENANT_URL: "https://dtmsecurity.latest.stage.c8y.io"
-  #     AUTHORIZATION_CODE: "YXV0b3VzZXI6QXV0b3VzZXIyMUA="
-  #     APPLICATION_NAME: "Asset properties widget"
-  #     CONTEXT_PATH: "sag-pkg-asset-properties-widget"
-  #     DELETE_EXISTING: false
+      - name: Deploy webapp
+        uses: ./.github/workflows/deploy-action/action.yml
+        with:
+          TYPE: HOSTED
+          PACKAGE_LOCATION: ${{ github.workspace }}/downloads/sag-pkg-asset-properties-widget-1.0.0.zip
+          TENANT_URL: "https://dtmsecurity.latest.stage.c8y.io"
+          AUTHORIZATION_CODE: "YXV0b3VzZXI6QXV0b3VzZXIyMUA="
+          APPLICATION_NAME: "Asset properties widget"
+          CONTEXT_PATH: "sag-pkg-asset-properties-widget"
+          DELETE_EXISTING: false
