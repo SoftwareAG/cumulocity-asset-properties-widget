@@ -37,8 +37,12 @@ To install the Asset properties 2.0 widget plugin, you must add the plugin packa
 
 
 To know more about extensions, see [Administration> Managing applications > Extensions](https://cumulocity.com/guides/users-guide/administration/#extensions) in *User guide*
-3.	If you don’t have your Custom Cockpit application, navigate to Administration > Ecosystem > Applications and click Add application. In the resulting dialog, select the option Duplicate existing application. From the list of applications select Cockpit (Subscribed). Use the default values and proceed once its done follow the **2nd steps**.
-4. Now your widget is available in your Cockpit application. Navigate to the dashboard where the newly added widget is available in the list of widgets to add.
+Note: You need a custom application with Cumulocity IoT dashboard to see the widget in action. A quick way to achieve this is by creating a custom Cockpit application.
+To create  a custom Cockpit application, follow the steps below:
+1. Navigate to Administration > Ecosystem > Applications 
+2. click **Add application**. 
+3. In the resulting dialog, select the option **Duplicate existing application**. 
+4. From the list of applications, select Cockpit (Subscribed). Use the default values and proceed.
 
 ## QuickStart
 
