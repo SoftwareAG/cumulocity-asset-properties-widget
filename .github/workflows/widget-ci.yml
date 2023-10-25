@@ -23,11 +23,17 @@ jobs:
       app_context_path: "sag-pkg-asset-properties-widget"
       upload_artifact: true
 
-  # download-widget:
-  #   uses: actions/download-artifact@v3
-  #   with:
-  #     name: sag-pkg-asset-properties-widget-1.0.0
-  #     path: "./downloads"
+  create-folder:
+    run: |
+      if [[ ! -d "downloads" ]]; then
+      mkdir downloads
+      fi
+
+  download-widget:
+    uses: actions/download-artifact@v3
+    with:
+      name: sag-pkg-asset-properties-widget-1.0.0
+      path: "./downloads"
 
   # deploy-widget:
   #   uses: ./.github/workflows/deploy-action/action.yml
