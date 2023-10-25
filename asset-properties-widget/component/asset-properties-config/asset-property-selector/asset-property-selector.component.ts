@@ -98,7 +98,7 @@ export class AssetPropertiesSelectorComponent {
       });
       this.assetPropertySelectorModalRef.content.savePropertySelection.subscribe((properties:IManagedObject[]) => {
         this.properties = this.properties.concat(this.removeSelectedProperties(properties))
-        this.isPropertySelected = true;
+        this.isAtleastOnePropertySelected = true;
         this.config.properties = this.properties;
         this.assetPropertySelectorModalRef.hide();
       });
