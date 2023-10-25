@@ -23,7 +23,7 @@ jobs:
       app_context_path: "sag-pkg-asset-properties-widget"
       upload_artifact: true
 
-   deploy:
+  deploy:
     runs-on: [ubuntu]
     needs: [build-widget]
     steps:
@@ -37,7 +37,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: "sag-pkg-asset-properties-widget-1.0.0"
-          path: './downloads'
+          path: "./downloads"
 
   # download-widget:
   #   uses: actions/download-artifact@v3
