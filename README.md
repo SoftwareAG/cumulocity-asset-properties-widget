@@ -29,7 +29,14 @@ To install the Asset properties 2.0 widget plugin, you must add the plugin packa
 1.  Navigate to Administration > Ecosystem > Extensions
 2.  Click  **Add extension package** to upload the zip file
 
-2.	If you already have a custom Cockpit application, navigate to its Details page (Administration > Ecosystem > Applications > Cockpit(Custom)) and then to the Plugins tab. Install the Asset properties widget plugin.  [Extensions](https://cumulocity.com/guides/users-guide/administration/#extensions).
+#### To install the widget plugin on a custom application
+1. Navigate Adminstration > Ecosystem > Applications
+2. Click application name to view the application details.
+3. Switch to **Plugins** tab, Click **Install plugins**
+4. In the resulting dialog, search for Asset properties 2.0 widget, click **Install**
+
+
+To know more about extensions, see [Administration> Managing applications > Extensions](https://cumulocity.com/guides/users-guide/administration/#extensions) in *User guide*
 3.	If you don’t have your Custom Cockpit application, navigate to Administration > Ecosystem > Applications and click Add application. In the resulting dialog, select the option Duplicate existing application. From the list of applications select Cockpit (Subscribed). Use the default values and proceed once its done follow the **2nd steps**.
 4. Now your widget is available in your Cockpit application. Navigate to the dashboard where the newly added widget is available in the list of widgets to add.
 
