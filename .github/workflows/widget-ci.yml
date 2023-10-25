@@ -32,7 +32,7 @@ jobs:
   download-widget:
     uses: actions/download-artifact@v3
     with:
-      name: sag-pkg-asset-properties-widget-1.0.0
+      name: "sag-pkg-asset-properties-widget-1.0.0"
       path: "./downloads"
 
   # deploy-widget:
