@@ -29,6 +29,7 @@ export class AssetPropertiesSelectorComponent {
     properties = cloneDeep(defaultProperty);
     customProperties: IManagedObject [] = cloneDeep(defaultProperty).concat(cloneDeep(property));
     ExpandedComplexProperty:any;
+    isPropertySelected:boolean = true;
 
     constructor(private assetTypes: AssetTypesService,private assetPropertyService: AssetPropertiesService,
       private modalService: BsModalService, private contextDashboardService: ContextDashboardService) {}
@@ -37,11 +38,11 @@ export class AssetPropertiesSelectorComponent {
       if(changes.asset.firstChange && this.config?.properties){
       this.properties = this.config.properties;
       this.customProperties = this.customProperties.concat(this.getConstructCustomProperties(await this.assetPropertyService.getCustomProperties(this.asset)));
-      this.contextDashboardService.formDisabled = false;
       }else if(changes.asset.currentValue){
         this.assetType = undefined;
         this.loadAssetProperty();
       }
+      this.isPropertySelected = true;
     }
     addDefaultAndSelectedProperties(){
       this.properties.forEach((property) => {
@@ -97,7 +98,7 @@ export class AssetPropertiesSelectorComponent {
       });
       this.assetPropertySelectorModalRef.content.savePropertySelection.subscribe((properties:IManagedObject[]) => {
         this.properties = this.properties.concat(this.removeSelectedProperties(properties))
-        this.contextDashboardService.formDisabled = false;
+        this.isPropertySelected = true;
         this.config.properties = this.properties;
         this.assetPropertySelectorModalRef.hide();
       });
@@ -142,10 +143,10 @@ export class AssetPropertiesSelectorComponent {
     }
 
     updateOptions(){
-      if(this.asset && this.properties.map(function(item) { return item.active}).indexOf(true) > -1){
-        this.contextDashboardService.formDisabled = false;
+      if(this.properties.map(function(item) { return item.active}).indexOf(true) > -1){
+        this.isPropertySelected = true;
       }else {
-        this.contextDashboardService.formDisabled = true;
+        this.isPropertySelected = false;
       }
     }
 
@@ -154,10 +155,10 @@ export class AssetPropertiesSelectorComponent {
       if(removeIndex >= 0){
         this.properties.splice(removeIndex, 1);
         property['active'] = false;
-        if(this.properties.length < 1){
-          this.contextDashboardService.formDisabled = true;
-        }else if(this.asset && this.properties.every(({ active }) => active)) {
-          this.contextDashboardService.formDisabled = false;
+        if(this.properties.length > 0 && this.properties.every(({ active }) => active)){
+          this.isPropertySelected = true;
+        }else {
+          this.isPropertySelected = false;
         }
       }
     }
