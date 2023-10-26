@@ -40,7 +40,7 @@ jobs:
           path: "./downloads"
 
       - name: Deploy webapp
-        uses: ./.github/workflows/action.yml@feature/workflows
+        uses: ./.github/workflows/deploy-action/action.yml
         with:
           TYPE: HOSTED
           PACKAGE_LOCATION: ${{ github.workspace }}/downloads/sag-pkg-asset-properties-widget-1.0.0.zip
