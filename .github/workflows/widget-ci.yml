@@ -14,6 +14,9 @@ on:
     branches:
       - develop
 
+env:
+  APP_CONTEXT_PATH: "sag-pkg-asset-properties-widget"
+
 jobs:
   unit-tests:
     uses: ./.github/workflows/unit-test-widget.yml
@@ -41,10 +44,16 @@ jobs:
           mkdir downloads
           fi
 
+      - name: Compose file name
+        id: compose-file-name
+        run: |
+          version=`jq -r '.version' package.json`
+          echo "app_file_name=${{ inputs.app_file_name_prefix }}-$version" >> $GITHUB_OUTPUT
+
       - name: Download webapp
         uses: actions/download-artifact@v3
         with:
-          name: "sag-pkg-asset-properties-widget-1.0.0"
+          name: ${{ steps.compose-file-name.outputs.app_file_name }}
           path: "./downloads"
 
       - name: Grant permission
@@ -55,9 +64,9 @@ jobs:
         uses: ./.github/workflows/c8y-deploy-action
         with:
           TYPE: HOSTED
-          PACKAGE_LOCATION: ${{ github.workspace }}/downloads/sag-pkg-asset-properties-widget-1.0.0.zip
+          PACKAGE_LOCATION: ${{ github.workspace }}/downloads/${{ steps.compose-file-name.outputs.app_file_name }}.zip
           TENANT_URL: ${{github.event.inputs.tenant_url}}
           AUTHORIZATION_CODE: ${{ secrets.AUTHORIZATION_CODE }}
           APPLICATION_NAME: "Asset properties widget"
-          CONTEXT_PATH: "sag-pkg-asset-properties-widget"
+          CONTEXT_PATH: ${{env.APP_CONTEXT_PATH}}
           DELETE_EXISTING: false
