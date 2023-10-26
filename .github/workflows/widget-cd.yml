@@ -1,13 +1,22 @@
-name: Widget - CI
+name: Widget - CD
 
 on:
   workflow_dispatch:
+    inputs:
+      tenant_url:
+        required: true
+        description: "Tenant URL"
+        type: string
 
   pull_request:
     paths:
       - asset-properties-widget/**
     branches:
+      - main
       - develop
+
+env:
+  APP_CONTEXT_PATH: "sag-pkg-asset-properties-widget"
 
 jobs:
   unit-tests:
@@ -36,10 +45,16 @@ jobs:
           mkdir downloads
           fi
 
+      - name: Compose file name
+        id: compose-file-name
+        run: |
+          version=`jq -r '.version' package.json`
+          echo "app_file_name=${{env.APP_CONTEXT_PATH}}-$version" >> $GITHUB_OUTPUT
+
       - name: Download webapp
         uses: actions/download-artifact@v3
         with:
-          name: "sag-pkg-asset-properties-widget-1.0.0"
+          name: ${{ steps.compose-file-name.outputs.app_file_name }}
           path: "./downloads"
 
       - name: Grant permission
@@ -50,9 +65,23 @@ jobs:
         uses: ./.github/workflows/c8y-deploy-action
         with:
           TYPE: HOSTED
-          PACKAGE_LOCATION: ${{ github.workspace }}/downloads/sag-pkg-asset-properties-widget-1.0.0.zip
-          TENANT_URL: "https://dtmsecurity.latest.stage.c8y.io"
-          AUTHORIZATION_CODE: "c3BhdTpXZWxjb21lQDEyMw=="
+          PACKAGE_LOCATION: ${{ github.workspace }}/downloads/${{ steps.compose-file-name.outputs.app_file_name }}.zip
+          TENANT_URL: ${{github.event.inputs.tenant_url}}
+          AUTHORIZATION_CODE: ${{ secrets.AUTHORIZATION_CODE }}
           APPLICATION_NAME: "Asset properties widget"
-          CONTEXT_PATH: "sag-pkg-asset-properties-widget"
+          CONTEXT_PATH: ${{env.APP_CONTEXT_PATH}}
           DELETE_EXISTING: false
+
+  e2e-tests:
+    needs: [deploy]
+    uses: ./.github/workflows/cypress-test.yml
+    with:
+      tenantUrl: ${{github.event.inputs.tenant_url}}
+      project_directory: cypress-E2E-tests
+      spec_files: "cypress/integration/**/*"
+      browser: "chrome"
+    secrets:
+      AUTOTEST_USERNAME1: ${{ secrets.AUTOTEST_USERNAME1 }}
+      AUTOTEST_USERNAME1_PASSWORD: ${{ secrets.AUTOTEST_USERNAME1_PASSWORD }}
+      AUTOTEST_USERNAME2: ${{ secrets.AUTOTEST_USERNAME2 }}
+      AUTOTEST_USERNAME2_PASSWORD: ${{ secrets.AUTOTEST_USERNAME2_PASSWORD }}
