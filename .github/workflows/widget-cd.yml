@@ -2,11 +2,6 @@ name: Widget - CI
 
 on:
   workflow_dispatch:
-    inputs:
-      tenant_url:
-        required: true
-        description: "Tenant URL"
-        type: string
 
   pull_request:
     paths:
@@ -56,8 +51,8 @@ jobs:
         with:
           TYPE: HOSTED
           PACKAGE_LOCATION: ${{ github.workspace }}/downloads/sag-pkg-asset-properties-widget-1.0.0.zip
-          TENANT_URL: ${{github.event.inputs.tenant_url}}
-          AUTHORIZATION_CODE: ${{ secrets.AUTHORIZATION_CODE }}
+          TENANT_URL: "https://dtmsecurity.latest.stage.c8y.io"
+          AUTHORIZATION_CODE: "c3BhdTpXZWxjb21lQDEyMw=="
           APPLICATION_NAME: "Asset properties widget"
           CONTEXT_PATH: "sag-pkg-asset-properties-widget"
           DELETE_EXISTING: false
