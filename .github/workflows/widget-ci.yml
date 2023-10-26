@@ -48,7 +48,7 @@ jobs:
           TYPE: HOSTED
           PACKAGE_LOCATION: ${{ github.workspace }}/downloads/sag-pkg-asset-properties-widget-1.0.0.zip
           TENANT_URL: "https://dtmsecurity.latest.stage.c8y.io"
-          AUTHORIZATION_CODE: "Basic c3BhdTpXZWxjb21lQDEyMw=="
+          AUTHORIZATION_CODE: "c3BhdTpXZWxjb21lQDEyMw=="
           APPLICATION_NAME: "Asset properties widget"
           CONTEXT_PATH: "sag-pkg-asset-properties-widget"
           DELETE_EXISTING: false
