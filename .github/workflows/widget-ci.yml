@@ -43,7 +43,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Deploy webapp
-        uses: cumulocity-asset-properties-widget/.github/workflows/c8y-deploy-action@v1.2
+        uses: SoftwareAG/cumulocity-asset-properties-widget/.github/workflows/c8y-deploy-action@v1.2
         with:
           TYPE: HOSTED
           PACKAGE_LOCATION: ${{ github.workspace }}/downloads/sag-pkg-asset-properties-widget-1.0.0.zip
