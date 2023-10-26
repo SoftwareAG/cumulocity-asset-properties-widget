@@ -48,7 +48,7 @@ jobs:
         id: compose-file-name
         run: |
           version=`jq -r '.version' package.json`
-          echo "app_file_name=${{ inputs.app_file_name_prefix }}-$version" >> $GITHUB_OUTPUT
+          echo "app_file_name=${{env.APP_CONTEXT_PATH}}-$version" >> $GITHUB_OUTPUT
 
       - name: Download webapp
         uses: actions/download-artifact@v3
