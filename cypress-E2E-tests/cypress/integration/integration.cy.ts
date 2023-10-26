@@ -4,7 +4,7 @@ import { ROUTES } from 'cypress/constants/routes.constant';
 
 const propKey = 'color';
 const updatedPropValue = 'Blu';
-const propWidgetURL = `apps/asset-properties-widget/index.html#/`;
+const propWidgetURL = `apps/sag-pkg-asset-properties-widget/index.html#/`;
 const dtmURL = 'apps/digital-twin-manager/index.html#/assets';
 const propValueElement = 'c8y-asset-properties-item > p';
 const propFeildElement = "input[type='text']";
@@ -136,7 +136,7 @@ describe('Asset Properties Widget: Integration tests', function () {
 
   // If there are two asset instances, value changed in one instance must get reflected in other instance as well
   it('TC_Asset_Properties_Widget_Integration_002', () => {
-    const instance1Title = 'Asset Properties';
+    const instance1Title = 'Asset Properties 2.0';
     const instance2Title = 'Test';
     const assetName = 'Test Asset5';
     const titleFieldId = '#widgetTitle';
