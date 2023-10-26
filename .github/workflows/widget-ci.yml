@@ -16,7 +16,7 @@ jobs:
       test_command: "yarn test"
 
   build-widget:
-    uses: ./.github/workflows/build-webapp.yml
+    uses: ./.github/workflows/build-widget.yml
     with:
       build_command: "yarn build"
       app_file_name_prefix: "sag-pkg-asset-properties-widget"
