@@ -39,6 +39,9 @@ jobs:
           name: "sag-pkg-asset-properties-widget-1.0.0"
           path: "./downloads"
 
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Deploy webapp
         uses: ./.github/workflows/c8y-deploy-action@v1.2
         with:
