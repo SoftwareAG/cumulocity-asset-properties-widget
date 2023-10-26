@@ -70,3 +70,17 @@ jobs:
           APPLICATION_NAME: "Asset properties widget"
           CONTEXT_PATH: ${{env.APP_CONTEXT_PATH}}
           DELETE_EXISTING: false
+
+  e2e-tests:
+    needs: [deploy]
+    uses: ./.github/workflows/cypress-test.yml
+    with:
+      tenantUrl: ${{github.event.inputs.tenant_url}}
+      project_directory: cypress-E2E-tests
+      spec_files: "cypress/integration/**/*"
+      browser: "chrome"
+    secrets:
+      AUTOTEST_USERNAME1: ${{ secrets.AUTOTEST_USERNAME1 }}
+      AUTOTEST_USERNAME1_PASSWORD: ${{ secrets.AUTOTEST_USERNAME1_PASSWORD }}
+      AUTOTEST_USERNAME2: ${{ secrets.AUTOTEST_USERNAME2 }}
+      AUTOTEST_USERNAME2_PASSWORD: ${{ secrets.AUTOTEST_USERNAME2_PASSWORD }}
