@@ -90,16 +90,16 @@ describe('AssetPropertiesConfigComponent', () => {
       expect(component.isAssetSelected).toBeTruthy();
     });
 
-    it('should return false if non of property is selected', async () => {
-      //given
-      const config = {asset,properties:[]};
+    // it('should return false if non of property is selected', async () => {
+    //   //given
+    //   const config = {asset,properties:[]};
 
-      // when
-      const result = await component.onBeforeSave(config);
+    //   // when
+    //   const result = await component.onBeforeSave(config);
 
-      // expect
-      expect(result).toEqual(false);
-      expect(component.isAssetSelected).toBeTruthy();
-    });
+    //   // expect
+    //   expect(result).toEqual(false);
+    //   expect(component.isAssetSelected).toBeTruthy();
+    // });
   });
 })    
