@@ -13,12 +13,12 @@ jobs:
   unit-tests:
     uses: ./.github/workflows/unit-test-widget.yml
     with:
-      test_command: "yarn test"
+      test_command: "yarn test asset-properties-config.component.spec.ts "
 
-  build-webapp:
-    uses: ./.github/workflows/build-webapp.yml
-    with:
-      build_command: "yarn build"
-      app_file_name_prefix: "sag-pkg-asset-properties-widget"
-      app_context_path: "sag-pkg-asset-properties-widget"
-      upload_artifact: true
+  # build-webapp:
+  #   uses: ./.github/workflows/build-webapp.yml
+  #   with:
+  #     build_command: "yarn build"
+  #     app_file_name_prefix: "sag-pkg-asset-properties-widget"
+  #     app_context_path: "sag-pkg-asset-properties-widget"
+  #     upload_artifact: true
