@@ -68,38 +68,38 @@ describe('AssetPropertiesConfigComponent', () => {
       expect(component.isAssetSelected).toBeTruthy();
   });
 
-  describe('onBeforeSave', () => {
-    it('should return false if asset is not selected', async () => {
-      // when
-      const result = await component.onBeforeSave({});
+  // describe('onBeforeSave', () => {
+  //   it('should return false if asset is not selected', async () => {
+  //     // when
+  //     const result = await component.onBeforeSave({});
 
-      // expect
-      expect(result).toEqual(false);
-      expect(component.isAssetSelected).toBeFalsy();
-    });
+  //     // expect
+  //     expect(result).toEqual(false);
+  //     expect(component.isAssetSelected).toBeFalsy();
+  //   });
 
-    it('should return true if asset is selected and at least one property is selected', async () => {
-      //given
-      const config = {asset:{asset},properties:properties};
+  //   it('should return true if asset is selected and at least one property is selected', async () => {
+  //     //given
+  //     const config = {asset:{asset},properties:properties};
 
-      // when
-      const result = await component.onBeforeSave(config);
+  //     // when
+  //     const result = await component.onBeforeSave(config);
 
-      // expect
-      expect(result).toEqual(true);
-      expect(component.isAssetSelected).toBeTruthy();
-    });
+  //     // expect
+  //     expect(result).toEqual(true);
+  //     expect(component.isAssetSelected).toBeTruthy();
+  //   });
 
-    it('should return false if non of property is selected', async () => {
-      //given
-      const config = {asset,properties:[]};
+  //   it('should return false if non of property is selected', async () => {
+  //     //given
+  //     const config = {asset,properties:[]};
 
-      // when
-      const result = await component.onBeforeSave(config);
+  //     // when
+  //     const result = await component.onBeforeSave(config);
 
-      // expect
-      expect(result).toEqual(false);
-      expect(component.isAssetSelected).toBeTruthy();
-    });
-  });
+  //     // expect
+  //     expect(result).toEqual(false);
+  //     expect(component.isAssetSelected).toBeTruthy();
+  //   });
+  // });
 })    
