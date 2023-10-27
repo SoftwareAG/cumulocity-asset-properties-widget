@@ -2,13 +2,13 @@ import { Component, Input } from "@angular/core";
 import { IManagedObject } from "@c8y/client";
 import { AssetTypesService, gettext } from "@c8y/ngx-components";
 import { BsModalRef, BsModalService, ModalOptions } from "ngx-bootstrap/modal";
-//import { defaultProperty, property } from "../../common/asset-property-constant";
 import { isEmpty, cloneDeep } from 'lodash-es';
 import { ContextDashboardService } from "@c8y/ngx-components/context-dashboard";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { assetPropertyItemSelectorCtrl } from "../asset-property-item-selector/asset-property-item-selector.component";
 import { AssetPropertiesService } from "../asset-properties.service";
 import { defaultProperty, property } from "../../../common/asset-property-constant";
+import { some } from 'lodash-es';
 
 type ModalInitialState = {
   title: string;
@@ -29,6 +29,7 @@ export class AssetPropertiesSelectorComponent {
     properties = cloneDeep(defaultProperty);
     customProperties: IManagedObject [] = cloneDeep(defaultProperty).concat(cloneDeep(property));
     ExpandedComplexProperty:any;
+    isAtleastOnePropertySelected:boolean = true;
 
     constructor(private assetTypes: AssetTypesService,private assetPropertyService: AssetPropertiesService,
       private modalService: BsModalService, private contextDashboardService: ContextDashboardService) {}
@@ -37,11 +38,11 @@ export class AssetPropertiesSelectorComponent {
       if(changes.asset.firstChange && this.config?.properties){
       this.properties = this.config.properties;
       this.customProperties = this.customProperties.concat(this.getConstructCustomProperties(await this.assetPropertyService.getCustomProperties(this.asset)));
-      this.contextDashboardService.formDisabled = false;
       }else if(changes.asset.currentValue){
         this.assetType = undefined;
         this.loadAssetProperty();
       }
+      this.isAtleastOnePropertySelected = true;
     }
     addDefaultAndSelectedProperties(){
       this.properties.forEach((property) => {
@@ -97,7 +98,7 @@ export class AssetPropertiesSelectorComponent {
       });
       this.assetPropertySelectorModalRef.content.savePropertySelection.subscribe((properties:IManagedObject[]) => {
         this.properties = this.properties.concat(this.removeSelectedProperties(properties))
-        this.contextDashboardService.formDisabled = false;
+        this.isAtleastOnePropertySelected = true;
         this.config.properties = this.properties;
         this.assetPropertySelectorModalRef.hide();
       });
@@ -141,24 +142,16 @@ export class AssetPropertiesSelectorComponent {
       return properties;
     }
 
-    updateOptions(){
-      if(this.asset && this.properties.map(function(item) { return item.active}).indexOf(true) > -1){
-        this.contextDashboardService.formDisabled = false;
-      }else {
-        this.contextDashboardService.formDisabled = true;
-      }
-    }
+    updateOptions() {
+      this.isAtleastOnePropertySelected = some(this.properties, 'active');
+     }
 
     removeProperty(property:IManagedObject){
       var removeIndex = this.properties.map(function(item) { return item.name; }).indexOf(property.name);
       if(removeIndex >= 0){
         this.properties.splice(removeIndex, 1);
         property['active'] = false;
-        if(this.properties.length < 1){
-          this.contextDashboardService.formDisabled = true;
-        }else if(this.asset && this.properties.every(({ active }) => active)) {
-          this.contextDashboardService.formDisabled = false;
-        }
+        this.isAtleastOnePropertySelected = (this.properties.length > 0 && some(this.properties, 'active'));
       }
     }
 
