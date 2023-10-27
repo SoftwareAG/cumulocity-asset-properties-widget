@@ -3,8 +3,7 @@ import { ControlContainer, NgForm } from '@angular/forms';
 import { IManagedObject, InventoryService } from '@c8y/client';
 import { DynamicComponent, OnBeforeSave } from '@c8y/ngx-components';
 import { AssetSelectionChangeEvent } from '@c8y/ngx-components/assets-navigator';
-import { ContextDashboardService } from '@c8y/ngx-components/context-dashboard';
-import { some } from 'lodash-es';
+import { some } from 'lodash';
 
 @Component({
     selector: 'asset-properties-config',
@@ -16,7 +15,7 @@ export class AssetPropertiesConfigComponent implements DynamicComponent, OnBefor
     selectedAsset:IManagedObject
     isAssetSelected= true;
 
-    constructor(private contextDashboardService: ContextDashboardService, private inventoryService: InventoryService) {}
+    constructor(private inventoryService: InventoryService) {}
     
    async ngOnInit(): Promise<void> {
         if(this.config.settings){
@@ -35,6 +34,6 @@ export class AssetPropertiesConfigComponent implements DynamicComponent, OnBefor
 
     onBeforeSave(config: any): boolean {
         this.isAssetSelected = Boolean(config.asset);
-        return !!(config.properties && some(config.properties, ['active', true], false));
+        return !!(config.properties && some(config.properties, 'active'));
       }
 }

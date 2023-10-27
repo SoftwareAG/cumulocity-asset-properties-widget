@@ -5,17 +5,13 @@ import { AssetSelectionChangeEvent } from "@c8y/ngx-components/assets-navigator"
 describe('AssetPropertiesConfigComponent', () => {
     const date = new Date();
     let component: AssetPropertiesConfigComponent;
-    let contextDashboardServiceMock: any ;
     let asset;
     let properties;
     let inventoryServiceMock;
   
     beforeEach(() => {
       inventoryServiceMock = { detail: jest.fn() }
-      component = new AssetPropertiesConfigComponent(contextDashboardServiceMock, inventoryServiceMock);
-      contextDashboardServiceMock = {
-        formDisabled: false
-    }
+      component = new AssetPropertiesConfigComponent(inventoryServiceMock);
     properties =[
       { c8y_JsonSchema:{properties :{name:{type: "string",label: "Name"}} }, name: 'name', label: "Name", type: "string", active: true, isEditable:true, isExistingProperty:true},
       {  c8y_JsonSchema:{properties :{type: {type: "string",label: "Asset model"}}},name: 'type', label: "Asset model",  type: "string", active: true,isEditable:false, isExistingProperty:true},
