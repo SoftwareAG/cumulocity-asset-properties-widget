@@ -3,7 +3,7 @@ import { ControlContainer, NgForm } from '@angular/forms';
 import { IManagedObject, InventoryService } from '@c8y/client';
 import { DynamicComponent, OnBeforeSave } from '@c8y/ngx-components';
 import { AssetSelectionChangeEvent } from '@c8y/ngx-components/assets-navigator';
-import { some } from 'lodash';
+import { some } from 'lodash-es';
 
 @Component({
     selector: 'asset-properties-config',
