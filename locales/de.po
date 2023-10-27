@@ -11,3 +11,9 @@ msgstr "Modul Federation Dingsbums"
 
 msgid "File could not be loaded."
 msgstr "Die Datei konnte nicht geladen werden."
+
+msgid "Select an asset from the list."
+msgstr "Ein Asset aus der Liste wählen."
+
+msgid "Add and select at least one property."
+msgstr "Fügen Sie und hinzu Wählen Sie mindestens einen Attribut"
