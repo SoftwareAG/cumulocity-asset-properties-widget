@@ -13,7 +13,7 @@ jobs:
   unit-tests:
     uses: ./.github/workflows/unit-test-widget.yml
     with:
-      test_command: "yarn test asset-properties-config.component.spec.ts asset-properties-view.component.spec.ts"
+      test_command: "yarn test asset-properties.component.spec.ts asset-properties-view.component.spec.ts"
 
   # build-webapp:
   #   uses: ./.github/workflows/build-webapp.yml
