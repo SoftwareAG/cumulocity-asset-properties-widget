@@ -3,7 +3,6 @@ import { ControlContainer, NgForm } from '@angular/forms';
 import { IManagedObject, InventoryService } from '@c8y/client';
 import { DynamicComponent, OnBeforeSave } from '@c8y/ngx-components';
 import { AssetSelectionChangeEvent } from '@c8y/ngx-components/assets-navigator';
-import { some } from 'lodash-es';
 
 @Component({
     selector: 'asset-properties-config',
@@ -34,6 +33,6 @@ export class AssetPropertiesConfigComponent implements DynamicComponent, OnBefor
 
     onBeforeSave(config: any): boolean {
         this.isAssetSelected = Boolean(config.asset);
-        return !!(config.properties && some(config.properties, 'active'));
+        return !!(config.properties && config.properties.some(value => value.active === true));
       }
 }
