@@ -35,6 +35,6 @@ export class AssetPropertiesConfigComponent implements DynamicComponent, OnBefor
 
     onBeforeSave(config: any): boolean {
         this.isAssetSelected = Boolean(config.asset);
-        return !!(config.properties && some(config.properties, 'active', false));
+        return !!(config.properties && some(config.properties, { active: true }, false));
       }
 }
