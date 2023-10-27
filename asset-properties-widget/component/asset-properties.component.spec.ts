@@ -1,5 +1,5 @@
 import { IManagedObject } from '@c8y/client';
-import { AssetPropertiesComponent } from './asset-properties.component';
+import { AssetPropertiesComponent } from './asset-properties-view/asset-properties/asset-properties.component';
 import { JSONSchema7 } from 'json-schema';
 
 describe('AssetPropertiesComponent', () => {
