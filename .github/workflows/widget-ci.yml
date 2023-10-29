@@ -53,7 +53,7 @@ jobs:
 
       - name: Grant permission
         run: |
-          chmod +x ./.github/workflows/c8y-deploy-action/deploy.sh
+          chmod +x spau6/c8y-deploy-action/deploy.sh
 
       - name: Deploy webapp
         uses: spau6/c8y-deploy-action@main
