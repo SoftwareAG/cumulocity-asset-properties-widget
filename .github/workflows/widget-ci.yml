@@ -22,3 +22,8 @@ jobs:
       app_file_name_prefix: "sag-pkg-asset-properties-widget"
       app_context_path: "sag-pkg-asset-properties-widget"
       upload_artifact: true
+
+  lint:
+    uses: ./.github/workflows/linting-widget.yml
+    with:
+      lint_command: 'yarn lint'

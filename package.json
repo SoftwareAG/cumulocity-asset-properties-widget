@@ -16,8 +16,7 @@
     "postinstall": "ngcc",
     "prebuild": " gulp clean",
     "postbuild": " gulp bundle",
-    "lint": "eslint --ext .ts,.component.html .",
-    "lint:dev": "eslint --ext .ts,.component.html"
+    "lint": "eslint --ext .ts,.component.html ."
   },
   "keywords": [
     "Cumulocity",
