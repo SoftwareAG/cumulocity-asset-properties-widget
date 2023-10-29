@@ -3,7 +3,7 @@ export default {
   progressBar: 'c8y-progress-bar',
   alertOutlet: 'c8y-alert-outlet div strong',
 
-  //#######[Links]###############
+  // #######[Links]###############
   propertyLibraryLink: "button[title='Asset properties']",
   localizationLink: "button[title='Localization']",
   assetsLink: '#navigator_node_assets',
@@ -22,7 +22,7 @@ export default {
   chooseOnMapButton: "button[data-cy='location-type-choose-on-map']",
   mapLink: "div[data-cy='location-type-map']",
 
-  //########[Buttons]#############
+  // ########[Buttons]#############
   configureCloumnsButton: "button[title='Configure columns']",
   reloadButton: "button[title='Reload']",
   cancelEditPopupButton: "button[title='Cancel']",

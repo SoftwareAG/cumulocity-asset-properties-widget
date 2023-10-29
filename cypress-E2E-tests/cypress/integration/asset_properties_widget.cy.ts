@@ -1,3 +1,4 @@
+// eslint-disable-next-line spaced-comment
 /// <reference types="cypress" />
 import asset_properties_widget_elements from '../support/page_objects/asset_properties_widget_elements';
 import '@4tw/cypress-drag-drop';
@@ -15,7 +16,7 @@ const editWidgetHeadetElement = "div[title='Edit widget']";
 const cardTitleElement = 'c8y-dashboard-child-title';
 const devices = ['Device1', 'Device2'];
 const assetName = 'Test Asset2';
-const url = `apps/sag-pkg-asset-properties-widget/index.html#/`;
+const url = 'apps/sag-pkg-asset-properties-widget/index.html#/';
 const searchResultsElement = 'c8y-list-group span';
 const strongTextElement = "c8y-ui-empty-state p[class*='text-medium']";
 const checkboxElement = "input[type='checkbox']";
@@ -168,11 +169,11 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   });
 
   // Type in the title without selecting any asset, verify that save button should be disabled.
-  //it('TC_Asset_Properties_Widget_config_006', () => {
-  //cy.get(titleFieldId).clear();
-  //cy.get(titleFieldId).type(title);
-  //cy.get(asset_properties_widget_elements.saveButton).should('be.disabled');
-  //});
+  // it('TC_Asset_Properties_Widget_config_006', () => {
+  // cy.get(titleFieldId).clear();
+  // cy.get(titleFieldId).type(title);
+  // cy.get(asset_properties_widget_elements.saveButton).should('be.disabled');
+  // });
 
   // Type in the title by selecting any asset, click on save and verify if the changes are getting reflected
   it('TC_Asset_Properties_Widget_config_007', () => {
@@ -486,7 +487,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.deleteCard();
   });
 
-  //User should be able to click on edit , do some changes and save it. Changes done should be reflected on view.Properties other than these can be edited and saved.
+  // User should be able to click on edit , do some changes and save it. Changes done should be reflected on view.Properties other than these can be edited and saved.
   it('TC_Asset_Properties_Widget_view_007', () => {
     cy.selectAssetAndSave(assetName);
     cy.get(assetNameElement).eq(0).should('contains.text', 'Test Asset2');

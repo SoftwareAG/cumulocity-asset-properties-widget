@@ -1,19 +1,31 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import {
   IManagedObject,
   IManagedObjectBinary,
   InventoryBinaryService,
   InventoryService,
-  UserService
+  UserService,
 } from '@c8y/client';
-import { AlertService, AppStateService, AssetTypesService, gettext } from '@c8y/ngx-components';
+import {
+  AlertService,
+  AppStateService,
+  AssetTypesService,
+  gettext,
+} from '@c8y/ngx-components';
 import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
 import { Permissions } from '@c8y/ngx-components';
 
 @Component({
   selector: 'c8y-asset-properties',
-  templateUrl: './asset-properties.component.html'
+  templateUrl: './asset-properties.component.html',
 })
 export class AssetPropertiesComponent implements OnChanges {
   @Input()
@@ -24,7 +36,7 @@ export class AssetPropertiesComponent implements OnChanges {
   customProperties: AssetPropertiesItem[] = [];
   isEdit = false;
   isLoading = false;
-  isEditDisabled: boolean = false
+  isEditDisabled: boolean = false;
 
   constructor(
     private assetTypes: AssetTypesService,
@@ -37,13 +49,17 @@ export class AssetPropertiesComponent implements OnChanges {
   ) {}
 
   async ngOnInit() {
-    this.isEditDisabled = !(await this.permissionsService.canEdit([], this.asset, {
-      skipOwnerCheck: true,
-      skipRolesCheck: true
-    }));
+    this.isEditDisabled = !(await this.permissionsService.canEdit(
+      [],
+      this.asset,
+      {
+        skipOwnerCheck: true,
+        skipRolesCheck: true,
+      }
+    ));
   }
 
- async ngOnChanges(changes: SimpleChanges): Promise<void> {
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (changes.asset?.currentValue || changes.properties?.currentValue) {
       this.assetType = undefined;
       this.customProperties = [];
@@ -62,37 +78,45 @@ export class AssetPropertiesComponent implements OnChanges {
     const properties = [];
     for (const mo of managedObjects) {
       if (mo.c8y_JsonSchema && mo.active) {
-        const [item] = await this.parseItem(mo, mo.c8y_JsonSchema.properties, this.asset);
+        const [item] = await this.parseItem(
+          mo,
+          mo.c8y_JsonSchema.properties,
+          this.asset
+        );
         this.setItemRequired(item, mo);
         properties.push(item);
       }
     }
     return properties;
   }
-  getKey(properties){
+  getKey(properties) {
     const arr = [];
-    Object.keys(properties).forEach(function(item){
-      if(properties[item].active) arr.push(item);
-    }); 
+    Object.keys(properties).forEach(function (item) {
+      if (properties[item].active) arr.push(item);
+    });
     return arr;
   }
 
   deleteTitleFromMOJsonSchema(mo: IManagedObject) {
     const schemaProperties = mo?.c8y_JsonSchema?.properties;
-    const property = Object.keys(schemaProperties || {})[0];
+    const [property] = Object.keys(schemaProperties || {});
     delete (mo?.c8y_JsonSchema?.properties[property] || {}).title;
   }
 
-  async parseItem(mo: IManagedObject, properties, asset): Promise<AssetPropertiesItem[]> {
+  async parseItem(
+    mo: IManagedObject,
+    properties,
+    asset
+  ): Promise<AssetPropertiesItem[]> {
     if (!asset) {
       return [];
     }
     const keys = Object.keys(properties);
     const items: AssetPropertiesItem[] = [];
     for (const key of keys) {
-      if(properties[key]){
+      if (properties[key]) {
         let value = asset[key];
-        const type = properties[key].type;
+        const {type} = properties[key];
         let file;
         if (type === 'file' && value) {
           const fileId = typeof value === 'object' ? value[0]?.file?.id : value;
@@ -111,7 +135,7 @@ export class AssetPropertiesComponent implements OnChanges {
         if (type === 'object') {
           // remove title to avoid excessive property name on asset complex properties form
           this.deleteTitleFromMOJsonSchema(mo);
-  
+
           if (!value) {
             value = {};
             for (const prop in properties[key].properties) {
@@ -119,7 +143,7 @@ export class AssetPropertiesComponent implements OnChanges {
             }
           }
         }
-        let assetKey = asset[key] ? asset[key] : '';
+        const assetKey = asset[key] ? asset[key] : '';
         items.push({
           key,
           value,
@@ -135,7 +159,7 @@ export class AssetPropertiesComponent implements OnChanges {
           jsonSchema: mo.c8y_JsonSchema,
           lastUpdated: mo.lastUpdated,
           isEditable: mo.isEditable,
-          active: properties[key].active as boolean
+          active: properties[key].active as boolean,
         });
       }
     }
@@ -158,18 +182,24 @@ export class AssetPropertiesComponent implements OnChanges {
   async save(propertyValue, prop: AssetPropertiesItem): Promise<void> {
     try {
       if (prop.type === 'object') {
-        propertyValue[prop.key] = await this.uploadFiles(propertyValue[prop.key], prop.value);
+        propertyValue[prop.key] = await this.uploadFiles(
+          propertyValue[prop.key],
+          prop.value
+        );
       } else {
         for (const [key, value] of Object.entries(propertyValue)) {
           if (value === undefined) {
             propertyValue[key] = null;
           }
         }
+        // eslint-disable-next-line no-param-reassign
         propertyValue = await this.uploadFiles(propertyValue, prop.value);
       }
 
       // Avoid making a PUT request containing just the id, as response body might be incomplete
-      const hasValues = Object.values(propertyValue).some(value => value !== undefined);
+      const hasValues = Object.values(propertyValue).some(
+        (value) => value !== undefined
+      );
       if (!hasValues) {
         this.toggleEdit(prop);
         return;
@@ -186,12 +216,17 @@ export class AssetPropertiesComponent implements OnChanges {
     }
   }
 
-  private async uploadFiles(model: object, moId?: IManagedObjectBinary[]): Promise<object> {
+  private async uploadFiles(
+    model: object,
+    moId?: IManagedObjectBinary[]
+  ): Promise<object> {
     const keys = Object.keys(model);
     for (const key of keys) {
       if (Array.isArray(model[key]) && model[key][0]?.file instanceof File) {
+        // eslint-disable-next-line no-useless-catch
         try {
           const upload = await this.inventoryBinary.create(model[key][0].file);
+          // eslint-disable-next-line no-useless-catch
           try {
             if (moId && moId[0]) {
               await this.inventory.childAdditionsRemove(moId[0], this.asset.id);
@@ -210,15 +245,17 @@ export class AssetPropertiesComponent implements OnChanges {
   }
 
   private setItemRequired(item: AssetPropertiesItem, mo: IManagedObject): void {
-    const isAssetPropertyRequired = !!this.assetType?.c8y_IsAssetType?.properties.find(
-      p => p.id === mo.id
-    )?.isRequired;
+    const isAssetPropertyRequired =
+      !!this.assetType?.c8y_IsAssetType?.properties.find((p) => p.id === mo.id)
+        ?.isRequired;
     if (!isAssetPropertyRequired) {
       return;
     }
     const isComplexProperty = !!item?.complex?.length;
     if (isComplexProperty) {
-      const complexProperty = item.jsonSchema?.properties?.[mo.c8y_JsonSchema.key] as JSONSchema7;
+      const complexProperty = item.jsonSchema?.properties?.[
+        mo.c8y_JsonSchema.key
+      ] as JSONSchema7;
       complexProperty.required = item.complex.map(({ key }) => key);
     } else {
       item.jsonSchema.required = [mo.c8y_JsonSchema.key];

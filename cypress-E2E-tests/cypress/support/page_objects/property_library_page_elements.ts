@@ -1,5 +1,5 @@
 export default {
-  //#################[Buttons]############
+  // #################[Buttons]############
 
   addCustomPropertyButton: "button[title='Add asset property']",
   saveNewPropertyButton: "button[title='Save']",
@@ -12,19 +12,19 @@ export default {
   cancelButton: 'button[data-cy="export-properties-cancel-btn"]',
   keyValidationMessage: 'c8y-messages[data-cy="manage-property-key-validation-error"]',
 
-  //################[Text Boxes]###########
+  // ################[Text Boxes]###########
 
   labelTextBox: "input[formcontrolname='label']",
   keyTextBox: "input[formcontrolname='name']",
   descriptionTextBox: "textarea[formcontrolname='description']",
   filterTextBox: "input[placeholder='Filter properties…']",
 
-  //################[Dropdowns]############
+  // ################[Dropdowns]############
 
   typeDropdown: "div[aria-haspopup='listbox']",
   typeText: "div[aria-haspopup='listbox']>input[type='text']",
 
-  //################[Check Boxes]##########
+  // ################[Check Boxes]##########
 
   complexPropertyCheckBox: "label[title='Complex property']>input[type='checkbox']",
   booleanCheckbox: "input[id*='boolean']",
@@ -35,7 +35,7 @@ export default {
   maximumCheckbox: "input[data-cy='c8y-field-checkbox--Maximum']",
   booleanDefaultValueCheckbox: "input[data-cy='c8y-field-checkbox--Default Value']",
 
-  //################[Others]###############
+  // ################[Others]###############
 
   propertyList: "button.c8y-stacked-item span[class*='text-truncate']"
 };

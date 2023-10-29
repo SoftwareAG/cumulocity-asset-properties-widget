@@ -3,6 +3,7 @@ import { UrlParams } from './models/data.model';
 import dtm_generic_page_elements from './page_objects/dtm_generic_page_elements';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       /**
@@ -411,7 +412,7 @@ Cypress.Commands.add('editConfirmationPopup', option => {
     .should('be.visible')
     .then(() => {
       if (option === 'Cancel') {
-        //requiredCheckbox.check({force: true})
+        // requiredCheckbox.check({force: true})
         cy.get(dtm_generic_page_elements.cancelEditPopupButton).click();
       } else {
         cy.get(dtm_generic_page_elements.confirmEditPopupButton).click();

@@ -1,6 +1,7 @@
 import asset_properties_widget_elements from './page_objects/asset_properties_widget_elements';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       /**

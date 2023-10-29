@@ -1,10 +1,11 @@
+// eslint-disable-next-line spaced-comment
 /// <reference types="cypress" />
 import asset_properties_widget_elements from '../support/page_objects/asset_properties_widget_elements';
 import { ROUTES } from 'cypress/constants/routes.constant';
 
 const propKey = 'color';
 const updatedPropValue = 'Blu';
-const propWidgetURL = `apps/sag-pkg-asset-properties-widget/index.html#/`;
+const propWidgetURL = 'apps/sag-pkg-asset-properties-widget/index.html#/';
 const dtmURL = 'apps/digital-twin-manager/index.html#/assets';
 const propValueElement = 'c8y-asset-properties-item > p';
 const propFeildElement = "input[type='text']";
