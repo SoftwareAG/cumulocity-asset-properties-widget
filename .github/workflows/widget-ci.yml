@@ -56,7 +56,7 @@ jobs:
       #     chmod +x ./.github/workflows/c8y-deploy-action/deploy.sh
 
       - name: Deploy webapp
-        uses: spau6/c8y-deploy-action@v1.2
+        uses: spau6/c8y-deploy-action
         with:
           TYPE: HOSTED
           PACKAGE_LOCATION: ${{ github.workspace }}/downloads/${{ steps.compose-file-name.outputs.app_file_name }}.zip
