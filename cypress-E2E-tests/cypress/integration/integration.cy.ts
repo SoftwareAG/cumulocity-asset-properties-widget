@@ -169,7 +169,7 @@ describe('Asset Properties Widget: Integration tests', function () {
     cy.deleteAsset(assetName);
 
     cy.visitAndWaitUntilPageLoad(propWidgetURL);
-    cy.get('asset-properties > div').should('contain.text', 'No Data');
+    cy.get('c8y-asset-properties-view > div').should('contain.text', 'No Data');
     cy.deleteCard();
   });
 

@@ -138,8 +138,8 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
 
   // Verify the presence of  Properties text, Add Prperty button, Show, Label, Key columns for the Properties section elements
   it('TC_Asset_Properties_Widget_config_003', () => {
-    const propertiesTextElement = 'asset-property-selector div label';
-    cy.get(propertiesTextElement).should('have.text', 'Properties');
+    const propertiesTextElement = 'c8y-asset-property-selector div label';
+    cy.get(propertiesTextElement).should('have.text', 'Properties ');
     cy.get(asset_properties_widget_elements.addPropertyButton);
     const columns = ['Show', 'Label', 'Key'];
     for (let i = 0; i < columns.length; i++) {
@@ -152,17 +152,17 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const labels = ['Name', 'ID', 'Asset model'];
     const keys = ['name', 'id', 'type'];
     for (let i = 0; i < labels.length; i++) {
-      cy.get('asset-property-selector td > i').eq(i).should('be.visible');
+      cy.get('c8y-asset-property-selector td > i').eq(i).should('be.visible');
       cy.get(checkboxElement).eq(i).should('be.visible');
       cy.get("td > input[class*='form-control']").eq(i).should('have.value', labels[i]);
-      cy.get('asset-property-selector td > span').eq(i).should('have.text', keys[i]);
+      cy.get('c8y-asset-property-selector td > span').eq(i).should('have.text', keys[i]);
     }
   });
 
   // Verify that removing the property reflects under Properties section
   it('TC_Asset_Properties_Widget_config_005', () => {
     const key = 'type';
-    const keyElement = 'asset-property-selector td > span';
+    const keyElement = 'c8y-asset-property-selector td > span';
     cy.get(keyElement).eq(2).should('have.text', key);
     cy.get("button[data-cy='asset-property-selector-remove-property-button']").eq(2).click();
     cy.get(keyElement).eq(2).should('not.exist');
@@ -255,7 +255,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   // Verify that checking any field and click on select, user should be able to see the selected field in configuartion properties and save it.
   it('TC_Asset_Properties_Widget_config_018', () => {
     const title = 'owner';
-    const keyElement = 'asset-property-selector > table > tbody > tr > td > span';
+    const keyElement = 'c8y-asset-property-selector > table > tbody > tr > td > span';
     cy.selectAsset(assetName);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     cy.selectAssetProperty(title);
