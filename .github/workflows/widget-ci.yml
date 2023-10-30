@@ -68,7 +68,7 @@ jobs:
 
   e2e-tests:
     needs: [deploy]
-    uses: ./.github/workflows/cypress-test.yml
+    uses: .github/workflows/cypress-test.yml
     with:
       tenantUrl: ${{github.event.inputs.tenant_url}}
       project_directory: cypress-E2E-tests
