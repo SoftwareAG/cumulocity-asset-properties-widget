@@ -1,12 +1,12 @@
-# Cumulocity Asset Properties Widget Plugin
+# Cumulocity Asset Properties Widget Plugin [<img width="35" src="https://user-images.githubusercontent.com/32765455/211497905-561e9197-18b9-43d5-a023-071d3635f4eb.png"/>](https://github.com/SoftwareAG/cumulocity-asset-properties-widget/releases/download/sag-pkg-asset-properties-widget-1.0.0/sag-pkg-asset-properties-widget-1.0.0.zip)
 
 This Asset Properties Widget is the Cumulocity module federation plugin created using c8ycli. This plugin can be used in Application Builder or Cockpit. It fetches Inventory data based on the Asset and displays the same in a widget.
 
-### Please choose Asset Properties Widget release based on Cumulocity/Application builder version:
+### Compatible:
 
-| APPLICATION BUILDER | CUMULOCITY  | ASSET PROPERTIES WIDGET PLUGIN |
-| ------------------- | ----------- | ------------------------------ |
-| 2.0.x               | >= 1018.0.0 | 1.0.0                          |
+| ASSET PROPERTIES WIDGET PLUGIN | CUMULOCITY |
+| ------------------------------ | ---------- |
+| 1.0.0                          | 1018.0.144 |
 
 ![Asset-properties](images/asset-property-image.JPG)
 
@@ -27,21 +27,22 @@ To install the Asset properties 2.0 widget plugin, you must add the plugin packa
 #### To add the plugin package to extensions
 
 1.  Navigate to Administration > Ecosystem > Extensions
-2.  Click  **Add extension package** to upload the zip file
+2.  Click **Add extension package** to upload the zip file
 
 #### To install the widget plugin on a custom application
+
 1. Navigate Adminstration > Ecosystem > Applications
 2. Click application name to view the application details.
 3. Switch to **Plugins** tab, Click **Install plugins**
 4. In the resulting dialog, search for Asset properties 2.0 widget, click **Install**
 
-
-To know more about extensions, see [Administration> Managing applications > Extensions](https://cumulocity.com/guides/users-guide/administration/#extensions) in *User guide*
+To know more about extensions, see [Administration> Managing applications > Extensions](https://cumulocity.com/guides/users-guide/administration/#extensions) in _User guide_
 Note: You need a custom application with Cumulocity IoT dashboard to see the widget in action. A quick way to achieve this is by creating a custom Cockpit application.
-To create  a custom Cockpit application, follow the steps below:
-1. Navigate to Administration > Ecosystem > Applications 
-2. click **Add application**. 
-3. In the resulting dialog, select the option **Duplicate existing application**. 
+To create a custom Cockpit application, follow the steps below:
+
+1. Navigate to Administration > Ecosystem > Applications
+2. click **Add application**.
+3. In the resulting dialog, select the option **Duplicate existing application**.
 4. From the list of applications, select Cockpit (Subscribed). Use the default values and proceed.
 
 ## QuickStart
