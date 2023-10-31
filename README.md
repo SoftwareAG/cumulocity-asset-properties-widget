@@ -37,6 +37,8 @@ To install the Asset properties 2.0 widget plugin, you must add the plugin packa
 4. In the resulting dialog, search for Asset properties 2.0 widget, click **Install**
 
 To know more about extensions, see [Administration> Managing applications > Extensions](https://cumulocity.com/guides/users-guide/administration/#extensions) in _User guide_
+
+
 Note: You need a custom application with Cumulocity IoT dashboard to see the widget in action. A quick way to achieve this is by creating a custom Cockpit application.
 To create a custom Cockpit application, follow the steps below:
 
