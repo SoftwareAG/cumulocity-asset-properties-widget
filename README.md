@@ -2,7 +2,7 @@
 
 This Asset Properties Widget is the Cumulocity module federation plugin created using c8ycli. This plugin can be used in Application Builder or Cockpit. It fetches Inventory data based on the Asset and displays the same in a widget.
 
-### Compatible:
+### Compatibility:
 
 | ASSET PROPERTIES WIDGET PLUGIN | CUMULOCITY |
 | ------------------------------ | ---------- |
