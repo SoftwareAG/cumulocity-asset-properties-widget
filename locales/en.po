@@ -6,8 +6,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Groups"
-msgstr "Assets"
-
 msgid "File could not be loaded."
 msgstr "File could not be loaded."
+
+msgid "Select an asset from the list."
+msgstr "Select an asset from the list."
+
+msgid "Add and select at least one property."
+msgstr "Add and select at least one property."

@@ -8,6 +8,9 @@
     >
       <div class="fit-h bg-inherit p-l-16 " [ngClass]="{ 'p-r-24': false }">
         <div class="p-relative bg-inherit">
+          <div class="alert alert-warning" *ngIf="!isAssetSelected">
+            {{ 'Select an asset from the list.' | translate }}
+          </div>
             <c8y-asset-selector-miller
             (onSelected)="selectionChanged($event)"
             [config]="{
