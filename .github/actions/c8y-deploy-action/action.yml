@@ -27,6 +27,7 @@ runs:
   using: "composite"
   steps:
     - run: |
-      chmod +x ${{github.action_path}}/deploy.sh      
+      echo ${{ github.action_path }}
+      chmod +x ${{ github.action_path }}/deploy.sh     
       ${{ github.action_path }}/deploy.sh "${{ inputs.TYPE }}" "${{ inputs.PACKAGE_LOCATION }}" "${{ inputs.TENANT_URL }}" "${{ inputs.AUTHORIZATION_CODE }}" "${{ inputs.APPLICATION_NAME }}" "${{ inputs.CONTEXT_PATH }}" "${{ inputs.DELETE_EXISTING }}"
       shell: bash
