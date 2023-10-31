@@ -51,12 +51,8 @@ jobs:
           name: ${{ steps.compose-file-name.outputs.app_file_name }}
           path: "./downloads"
 
-      - name: Grant permission
-        run: |
-          chmod +x ./.github/workflows/c8y-deploy-action/deploy.sh
-
       - name: Deploy webapp
-        uses: ./.github/workflows/c8y-deploy-action
+        uses: ./.github/actions/c8y-deploy-action
         with:
           TYPE: HOSTED
           PACKAGE_LOCATION: ${{ github.workspace }}/downloads/${{ steps.compose-file-name.outputs.app_file_name }}.zip

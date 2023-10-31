@@ -168,12 +168,17 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(keyElement).eq(2).should('not.exist');
   });
 
-  // Type in the title without selecting any asset, verify that save button should be disabled.
-  // it('TC_Asset_Properties_Widget_config_006', () => {
-  // cy.get(titleFieldId).clear();
-  // cy.get(titleFieldId).type(title);
-  // cy.get(asset_properties_widget_elements.saveButton).should('be.disabled');
-  // });
+  // Type in the title without selecting any asset, verify that clicking on save button should result in an alert message.
+  it('TC_Asset_Properties_Widget_config_006', () => {
+    const configElement = 'c8y-asset-properties-config';
+    const alertMessage = ' Select an asset from the list. ';
+    cy.get(titleFieldId).clear();
+    cy.get(titleFieldId).type(title);
+    cy.get(asset_properties_widget_elements.saveButton).click();
+    cy.get(configElement).should('contain.text', alertMessage);
+    cy.selectAsset(assetName);
+    cy.get(configElement).should('not.contain.text', alertMessage);
+  });
 
   // Type in the title by selecting any asset, click on save and verify if the changes are getting reflected
   it('TC_Asset_Properties_Widget_config_007', () => {
@@ -423,6 +428,20 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.selectAssetAndSave(assetName);
     cy.deleteWidgetInstances([assetProperties, assetProperties]);
   });
+
+    // If user does not select any property or unchecks all the properties and tries to click on save button,a warning error will be displayed which disappears once the asset and properties selected
+    it('TC_Asset_Properties_Widget_config_035', () => {
+    const configElement = 'c8y-asset-property-selector';
+    const alertMessage = ' Add and select at least one property. ';
+    const labels = ['Name', 'ID', 'Asset model'];    
+    for (let i = 0; i < labels.length; i++) {      
+      cy.get(checkboxElement).eq(i).should('be.visible').click();      
+    }
+    cy.get(configElement).should('contain.text', alertMessage); 
+    cy.get(checkboxElement).eq(0).click();  
+    cy.selectAsset(assetName);
+    cy.get(configElement).should('not.contain.text', alertMessage);
+    });
 
   // Verify the presence "No widgets to display" meessage in the dashboard
   it('TC_Asset_Properties_Widget_view_001', () => {
