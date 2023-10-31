@@ -433,12 +433,12 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     it('TC_Asset_Properties_Widget_config_035', () => {
     const configElement = 'c8y-asset-property-selector';
     const alertMessage = ' Add and select at least one property. ';
-    const labels = ['Name', 'ID', 'Asset model'];    
-    for (let i = 0; i < labels.length; i++) {      
-      cy.get(checkboxElement).eq(i).should('be.visible').click();      
+    const labels = ['Name', 'ID', 'Asset model'];
+    for (let i = 0; i < labels.length; i++) {
+      cy.get(checkboxElement).eq(i).should('be.visible').click();
     }
-    cy.get(configElement).should('contain.text', alertMessage); 
-    cy.get(checkboxElement).eq(0).click();  
+    cy.get(configElement).should('contain.text', alertMessage);
+    cy.get(checkboxElement).eq(0).click();
     cy.selectAsset(assetName);
     cy.get(configElement).should('not.contain.text', alertMessage);
     });
