@@ -1,7 +1,12 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { IManagedObjectBinary } from '@c8y/client';
-import { AlertService, C8yJSONSchema, gettext, FilesService } from '@c8y/ngx-components';
+import {
+  AlertService,
+  C8yJSONSchema,
+  gettext,
+  FilesService,
+} from '@c8y/ngx-components';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
@@ -9,9 +14,11 @@ import { has, get, set } from 'lodash-es';
 
 @Component({
   selector: 'c8y-asset-properties-item',
-  templateUrl: './asset-properties-item.component.html'
+  templateUrl: './asset-properties-item.component.html',
 })
-export class AssetPropertiesItemComponent implements AssetPropertiesItem, OnChanges {
+export class AssetPropertiesItemComponent
+  implements AssetPropertiesItem, OnChanges
+{
   @Input()
   key: string;
   @Input()
@@ -65,8 +72,8 @@ export class AssetPropertiesItemComponent implements AssetPropertiesItem, OnChan
   }
 
   private formComplexPropsValue() {
-    let complexProps = {};
-    this.complex.forEach(complexObj => {
+    const complexProps = {};
+    this.complex.forEach((complexObj) => {
       if (complexObj.file) {
         complexProps[complexObj.key] = complexObj.value;
       } else if (this.value[complexObj.key] || complexObj.type === 'boolean') {
@@ -79,54 +86,57 @@ export class AssetPropertiesItemComponent implements AssetPropertiesItem, OnChan
   private getModel() {
     if (this.complex && this.complex.length > 0) {
       return {
-        [this.key]: this.formComplexPropsValue()
+        [this.key]: this.formComplexPropsValue(),
       };
     } else {
       return {
-        [this.key]: this.value
+        [this.key]: this.value,
       };
     }
   }
 
   private resolveJsonSchema() {
     if (this.jsonSchema) {
-      let fieldConfig = this.c8yJsonSchemaService.toFieldConfig(this.jsonSchema as JSONSchema7, {
-        map(mappedField: FormlyFieldConfig, mapSource: JSONSchema7) {
-          let result: FormlyFieldConfig = mappedField;
+      const fieldConfig = this.c8yJsonSchemaService.toFieldConfig(
+        this.jsonSchema as JSONSchema7,
+        {
+          map(mappedField: FormlyFieldConfig, mapSource: JSONSchema7) {
+            let result: FormlyFieldConfig = mappedField;
 
-          if (has(mapSource, 'allowedFileTypes')) {
-            result = {
-              ...result,
-              type: 'file',
-              templateOptions: {
-                ...result.templateOptions,
-                accept: get(mapSource, 'allowedFileTypes').toString()
-              }
-            };
-          }
-          if (has(mapSource, 'accept')) {
-            result = {
-              ...result,
-              type: 'file',
-              templateOptions: {
-                ...result.templateOptions,
-                accept: get(mapSource, 'accept')
-              }
-            };
-          }
-          if (has(mapSource, 'maxSize')) {
-            result = {
-              ...result,
-              type: 'file',
-              templateOptions: {
-                ...result.templateOptions,
-                maxSize: get(mapSource, 'maxSize')
-              }
-            };
-          }
-          return result;
+            if (has(mapSource, 'allowedFileTypes')) {
+              result = {
+                ...result,
+                type: 'file',
+                templateOptions: {
+                  ...result.templateOptions,
+                  accept: get(mapSource, 'allowedFileTypes').toString(),
+                },
+              };
+            }
+            if (has(mapSource, 'accept')) {
+              result = {
+                ...result,
+                type: 'file',
+                templateOptions: {
+                  ...result.templateOptions,
+                  accept: get(mapSource, 'accept'),
+                },
+              };
+            }
+            if (has(mapSource, 'maxSize')) {
+              result = {
+                ...result,
+                type: 'file',
+                templateOptions: {
+                  ...result.templateOptions,
+                  maxSize: get(mapSource, 'maxSize'),
+                },
+              };
+            }
+            return result;
+          },
         }
-      });
+      );
       this.form = new FormGroup({});
       this.fields = [fieldConfig];
       this.model = this.getModel();

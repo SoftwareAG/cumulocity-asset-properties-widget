@@ -28,10 +28,10 @@ on:
     outputs:
       file_name:
         description: "name of the uploaded artifact"
-        value: ${{ jobs.build-webapp.outputs.file_name}}
+        value: ${{ jobs.build-widget.outputs.file_name}}
 
 jobs:
-  build-webapp:
+  build-widget:
     if: ${{inputs.skip_run != true }}
     runs-on: [ubuntu-latest]
     outputs:
@@ -72,7 +72,7 @@ jobs:
           retention-days: 7
 
   status-check:
-    needs: [build-webapp]
+    needs: [build-widget]
     if: always()
     runs-on: [ubuntu-latest]
     steps:

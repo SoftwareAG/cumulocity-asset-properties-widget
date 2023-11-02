@@ -10,17 +10,30 @@ describe('AssetPropertiesComponent', () => {
   let assetTypesMock: any;
   let appStateMock: any;
   let userMock: any;
-  let permissionsServiceMock:any;
+  let permissionsServiceMock: any;
 
   beforeEach(() => {
-    permissionsServiceMock = {canEdit: jest.fn()}
-    assetTypesMock = { getAssetTypeByName: jest.fn() }
-    inventoryMock = { update: jest.fn(), detail: jest.fn(), childAdditionsRemove :jest.fn(), childAdditionsAdd: jest.fn()}
-    alertMock = {success: jest.fn(), addServerFailure: jest.fn()}
-    inventoryBinaryMock = {create: jest.fn()}
-    userMock = {hasAnyRole: jest.fn()}
+    permissionsServiceMock = { canEdit: jest.fn() };
+    assetTypesMock = { getAssetTypeByName: jest.fn() };
+    inventoryMock = {
+      update: jest.fn(),
+      detail: jest.fn(),
+      childAdditionsRemove: jest.fn(),
+      childAdditionsAdd: jest.fn(),
+    };
+    alertMock = { success: jest.fn(), addServerFailure: jest.fn() };
+    inventoryBinaryMock = { create: jest.fn() };
+    userMock = { hasAnyRole: jest.fn() };
 
-    component = new AssetPropertiesComponent(assetTypesMock, inventoryMock, inventoryBinaryMock, alertMock, appStateMock, userMock, permissionsServiceMock);
+    component = new AssetPropertiesComponent(
+      assetTypesMock,
+      inventoryMock,
+      inventoryBinaryMock,
+      alertMock,
+      appStateMock,
+      userMock,
+      permissionsServiceMock
+    );
   });
 
   it('should exist', () => {
@@ -36,7 +49,7 @@ describe('AssetPropertiesComponent', () => {
         {
           id: 1,
           name: 'address',
-          active:true,
+          active: true,
           c8y_JsonSchema: {
             type: 'object',
             title: 'Address',
@@ -49,40 +62,40 @@ describe('AssetPropertiesComponent', () => {
                     minLength: 1,
                     minLengthValidate: true,
                     type: 'string',
-                    title: 'Country'
+                    title: 'Country',
                   },
                   city: {
                     minLengthValidate: true,
                     type: 'string',
-                    title: 'City'
+                    title: 'City',
                   },
                   street: {
                     minLength: 1,
                     minLengthValidate: true,
                     type: 'string',
-                    title: 'Street'
+                    title: 'Street',
                   },
                   postalCode: {
                     requiredMinimum: true,
                     type: 'number',
-                    title: 'Postal Code'
+                    title: 'Postal Code',
                   },
                   apartmentNumber: {
                     minLength: 1,
                     minLengthValidate: true,
                     type: 'string',
-                    title: 'Apartment Number'
-                  }
-                }
-              }
+                    title: 'Apartment Number',
+                  },
+                },
+              },
             },
             required: [],
-            key: 'address'
+            key: 'address',
           },
           description: '',
           label: 'Address',
           c8y_IsAssetProperty: {},
-          c8y_Global: {}
+          c8y_Global: {},
         },
         {
           id: 2,
@@ -94,15 +107,15 @@ describe('AssetPropertiesComponent', () => {
             title: 'TestName',
             properties: {
               nameTest: {
-                type: 'string'
-              }
+                type: 'string',
+              },
             },
             required: [],
-            key: 'nameTest'
+            key: 'nameTest',
           },
           description: '',
           label: 'TestName',
-          c8y_IsAssetProperty: {}
+          c8y_IsAssetProperty: {},
         },
         {
           id: 3,
@@ -115,15 +128,15 @@ describe('AssetPropertiesComponent', () => {
             properties: {
               fileTest: {
                 type: 'file',
-                allowedFileTypes: ['']
-              }
+                allowedFileTypes: [''],
+              },
             },
             required: [],
-            key: 'fileTest'
+            key: 'fileTest',
           },
           description: '',
           label: 'FileTest',
-          c8y_IsAssetProperty: {}
+          c8y_IsAssetProperty: {},
         },
         {
           id: 4,
@@ -135,15 +148,15 @@ describe('AssetPropertiesComponent', () => {
             title: 'TestDate1',
             properties: {
               dateTest1: {
-                type: 'date'
-              }
+                type: 'date',
+              },
             },
             required: [],
-            key: 'dateTest1'
+            key: 'dateTest1',
           },
           description: '',
           label: 'TestDate1',
-          c8y_IsAssetProperty: {}
+          c8y_IsAssetProperty: {},
         },
         {
           id: 5,
@@ -155,16 +168,16 @@ describe('AssetPropertiesComponent', () => {
             title: 'TestDate2',
             properties: {
               dateTest2: {
-                type: 'date'
-              }
+                type: 'date',
+              },
             },
             required: [],
-            key: 'dateTest2'
+            key: 'dateTest2',
           },
           description: '',
           label: 'TestDate2',
-          c8y_IsAssetProperty: {}
-        }
+          c8y_IsAssetProperty: {},
+        },
       ] as any as IManagedObject[];
       asset = {
         id: 12,
@@ -174,103 +187,113 @@ describe('AssetPropertiesComponent', () => {
           city: 'Düsseldorf',
           street: 'Toulouser Allee',
           postalCode: 40211,
-          apartmentNumber: '25'
+          apartmentNumber: '25',
         },
         fileTest: [
           {
             file: new File([new Blob(['some content'])], 'values.json', {
-              type: 'application/JSON'
-            })
-          }
+              type: 'application/JSON',
+            }),
+          },
         ],
         nameTest: 'test123',
         dateTest1: date.toISOString(),
-        dateTest2: ''
+        dateTest2: '',
       } as any as IManagedObject;
     });
 
     it('should use correct labels on complex object', async () => {
-      //given
+      // given
       const result = await component.parseItem(
         properties[0],
         properties[0].c8y_JsonSchema.properties,
         asset
       );
 
-      //then
+      // then
       expect(result).toBeTruthy();
-      const labels = result[0].complex.map(obj => obj.label);
+      const labels = result[0].complex.map((obj) => obj.label);
       expect(result[0].label).toEqual('Address');
-      expect(labels).toEqual(['Country', 'City', 'Street', 'Postal Code', 'Apartment Number']);
+      expect(labels).toEqual([
+        'Country',
+        'City',
+        'Street',
+        'Postal Code',
+        'Apartment Number',
+      ]);
     });
 
     it('should use correct label on simple text', async () => {
-      //when
+      // when
       const result = await component.parseItem(
         properties[1],
         properties[1].c8y_JsonSchema.properties,
         asset
       );
 
-      //then
+      // then
       expect(result).toBeTruthy();
       expect(result[0].label).toEqual('TestName');
     });
 
     it('should parse date string to date object', async () => {
-      //when
+      // when
       const result = await component.parseItem(
         properties[3],
         properties[3].c8y_JsonSchema.properties,
         asset
       );
 
-      //then
+      // then
       expect(result[0].value instanceof Date).toBeTruthy();
       expect(result[0].value).toEqual(date);
     });
 
     it('should set value to null if type of property is date but value is not valid date string', async () => {
-      //when
+      // when
       const result = await component.parseItem(
         properties[4],
         properties[4].c8y_JsonSchema.properties,
         asset
       );
 
-      //then
+      // then
       expect(result[0].value).toBeNull();
     });
 
     it('should set empty value of complex object if no value is provided', async () => {
-      //given
+      // given
       const assetWitNoValue = { ...asset, address: undefined };
 
-      //when
+      // when
       const result = await component.parseItem(
         properties[0],
         properties[0].c8y_JsonSchema.properties,
         assetWitNoValue
       );
 
-      //then
+      // then
       expect(result[0].value).toEqual({
         country: undefined,
         city: undefined,
         street: undefined,
         postalCode: undefined,
-        apartmentNumber: undefined
+        apartmentNumber: undefined,
       });
     });
 
     it('should try to upload files and attach it as childAddition', async () => {
-      //given
-      const inventoryBinarySpy = jest.spyOn(inventoryBinaryMock, 'create').mockReturnValue(
-        Promise.resolve({
-          data: { id: 1 }
-        })
-      );
-      const inventorySpy = jest.spyOn(inventoryMock, 'childAdditionsAdd').mockReturnValue(Promise.resolve());
+      // given
+      const inventoryBinarySpy = jest
+        .spyOn(inventoryBinaryMock, 'create')
+        .mockReturnValue(
+          Promise.resolve({
+            data: { id: 1 },
+          })
+        );
+      const inventorySpy = jest
+        .spyOn(inventoryMock, 'childAdditionsAdd')
+        .mockReturnValue(Promise.resolve());
       const result = await component.parseItem(
         properties[2],
         properties[2].c8y_JsonSchema.properties,
@@ -278,21 +301,23 @@ describe('AssetPropertiesComponent', () => {
       );
       component.asset = asset;
 
-      //when
+      // when
       await component.save(asset, result[0]);
 
-      //then
+      // then
       expect(result[0].label).toEqual('FileTest');
       expect(inventoryBinarySpy).toHaveBeenCalled();
       expect(inventorySpy).toHaveBeenCalledWith(1, 12);
     });
 
     it('should try to upload files and attach it as childAddition, if one exist remove it', async () => {
-      //given
-      const inventoryBinarySpy = jest.spyOn(inventoryBinaryMock, 'create').mockResolvedValue(
-        {data: { id: 1 }}
-      );
-      const inventoryRemoveSpy = jest.spyOn(inventoryMock, 'childAdditionsRemove').mockResolvedValue(Promise.resolve());
+      // given
+      const inventoryBinarySpy = jest
+        .spyOn(inventoryBinaryMock, 'create')
+        .mockResolvedValue({ data: { id: 1 } });
+      const inventoryRemoveSpy = jest
+        .spyOn(inventoryMock, 'childAdditionsRemove')
+        .mockResolvedValue(Promise.resolve());
       const result = await component.parseItem(
         properties[2],
         properties[2].c8y_JsonSchema.properties,
@@ -301,25 +326,27 @@ describe('AssetPropertiesComponent', () => {
       component.asset = asset;
       result[0].value[0] = 2;
 
-      //when
+      // when
       await component.save(asset, result[0]);
 
-      //then
+      // then
       expect(result[0].label).toEqual('FileTest');
       expect(inventoryBinarySpy).toHaveBeenCalled();
       expect(inventoryRemoveSpy).toHaveBeenCalledWith(2, 12);
     });
 
     it('should save to backend if model has only undefined values and property type is string', async () => {
-      //given
-      const inventoryUpdateSpy = jest.spyOn(inventoryMock, 'update').mockResolvedValue({ data: {} });
+      // given
+      const inventoryUpdateSpy = jest
+        .spyOn(inventoryMock, 'update')
+        .mockResolvedValue({ data: {} });
       const prop = { isEdit: true, type: 'string' };
       component.asset = { id: '1' } as IManagedObject as any;
 
-      //when
+      // when
       await component.save({ test: undefined }, prop as any);
 
-      //then
+      // then
       expect(inventoryUpdateSpy).toHaveBeenCalledWith({ id: '1', test: null });
       expect(prop.isEdit).toBe(false);
     });
@@ -328,8 +355,8 @@ describe('AssetPropertiesComponent', () => {
       // given
       jest.spyOn(assetTypesMock, 'getAssetTypeByName').mockReturnValue({
         c8y_IsAssetType: {
-          properties: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]
-        }
+          properties: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
+        },
       });
       component.properties = properties;
       component.asset = asset;
@@ -345,8 +372,8 @@ describe('AssetPropertiesComponent', () => {
       // given
       jest.spyOn(assetTypesMock, 'getAssetTypeByName').mockReturnValue({
         c8y_IsAssetType: {
-          properties: [{ id: 1, isRequired: true }]
-        }
+          properties: [{ id: 1, isRequired: true }],
+        },
       });
       component.properties = properties;
       component.asset = asset;
@@ -357,30 +384,36 @@ describe('AssetPropertiesComponent', () => {
       // then
       expect(component.customProperties[0].jsonSchema.required).toEqual([]);
       expect(
-        (component.customProperties[0].jsonSchema.properties['address'] as JSONSchema7).required
+        (
+          component.customProperties[0].jsonSchema.properties[
+            'address'
+          ] as JSONSchema7
+        ).required
       ).toEqual(['country', 'city', 'street', 'postalCode', 'apartmentNumber']);
     });
 
     it('should delete a title form MO jsonSchema', async () => {
-      //when
+      // when
       const result = await component.parseItem(
         properties[0],
         properties[0].c8y_JsonSchema.properties,
         asset
       );
 
-      //then
-      expect(result[0].jsonSchema.properties.address).not.toHaveProperty('title');
+      // then
+      expect(result[0].jsonSchema.properties.address).not.toHaveProperty(
+        'title'
+      );
     });
 
     it('should disabled properties edit icon', async () => {
       // given
       jest.spyOn(permissionsServiceMock, 'canEdit').mockReturnValue(true);
 
-      //when
-      await component.ngOnInit()
+      // when
+      await component.ngOnInit();
 
-      //then
+      // then
       expect(component.isEditDisabled).toBe(false);
     });
 
@@ -388,10 +421,10 @@ describe('AssetPropertiesComponent', () => {
       // given
       jest.spyOn(permissionsServiceMock, 'canEdit').mockReturnValue(false);
 
-      //when
-      await component.ngOnInit()
+      // when
+      await component.ngOnInit();
 
-      //then
+      // then
       expect(component.isEditDisabled).toBe(true);
     });
   });

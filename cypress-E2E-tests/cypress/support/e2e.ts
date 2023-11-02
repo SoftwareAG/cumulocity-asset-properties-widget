@@ -33,7 +33,7 @@ Cypress.on('test:after:run', (test, runnable) => {
 });
 
 Cypress.on('uncaught:exception', (err, runnable) => {
-  //window.location.reload()
+  // window.location.reload()
   // returning false here prevents Cypress from
   // failing the test
   return false;

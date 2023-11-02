@@ -1,6 +1,7 @@
 import cockpit_page_elements from './page_objects/cockpit_page_elements';
 
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Cypress {
         interface Chainable {
             /**

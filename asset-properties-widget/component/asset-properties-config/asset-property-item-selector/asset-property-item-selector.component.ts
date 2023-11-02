@@ -3,53 +3,51 @@ import { IManagedObject } from '@c8y/client';
 import * as cloneDeep from 'lodash/cloneDeep';
 
 @Component({
-    selector: 'asset-property-item-selector-component',
-    templateUrl: './asset-property-item-selector.component.html',
+  selector: 'c8y-asset-property-item-selector-component',
+  templateUrl: './asset-property-item-selector.component.html',
 })
-export class assetPropertyItemSelectorCtrl {
-    @Input() title?: string;
-    @Input() customProperties?: any;
-    @Input() propertiesList?: any;
-    
-    @Output() savePropertySelection = new EventEmitter<object>();
-    @Output() cancelPropertySelection = new EventEmitter<void>();
+export class assetPropertyItemSelectorCtrlComponent {
+  @Input() title?: string;
+  @Input() customProperties?: any;
+  @Input() propertiesList?: any;
 
-    selectedProperty:IManagedObject[] =[]
-    search:string =''
+  @Output() savePropertySelection = new EventEmitter<object>();
+  @Output() cancelPropertySelection = new EventEmitter<void>();
 
-    constructor() {}
+  selectedProperty: IManagedObject[] = [];
+  search: string = '';
 
-    ngOnInit(): void {}
-
-    onSelectProperty(property) {
-        
-        if(property.active){
-            this.selectedProperty.push(cloneDeep(property));
-        }else{
-            var removeIndex = this.selectedProperty.map(function(item) { return item.name; }).indexOf(property.name);
-            if(removeIndex > -1)
-            this.selectedProperty.splice(removeIndex, 1);
-        }
+  onSelectProperty(property) {
+    if (property.active) {
+      this.selectedProperty.push(cloneDeep(property));
+    } else {
+      const removeIndex = this.selectedProperty
+        .map(function (item) {
+          return item.name;
+        })
+        .indexOf(property.name);
+      if (removeIndex > -1) this.selectedProperty.splice(removeIndex, 1);
     }
+  }
 
-    onSaveButtonClicked(): void {
-        this.savePropertySelection.emit(
-            this.selectedProperty
-        );
-    }
+  onSaveButtonClicked(): void {
+    this.savePropertySelection.emit(this.selectedProperty);
+  }
 
-    onCancelButtonClicked(): void {
-        this.cancelPropertySelection.emit();
-    }
+  onCancelButtonClicked(): void {
+    this.cancelPropertySelection.emit();
+  }
 
-    selectIsDisabled() {
-        return this.customProperties.every(({ active }) => !active);
-    }
+  selectIsDisabled() {
+    return this.customProperties.every(({ active }) => !active);
+  }
 
-    isComplexProperty (prop) {
-        if(!prop.c8y_JsonSchema){
-            return false
-        }
-        return (prop.c8y_JsonSchema.properties[prop.c8y_JsonSchema.key]?.type === 'object');
+  isComplexProperty(prop) {
+    if (!prop.c8y_JsonSchema) {
+      return false;
     }
+    return (
+      prop.c8y_JsonSchema.properties[prop.c8y_JsonSchema.key]?.type === 'object'
+    );
+  }
 }

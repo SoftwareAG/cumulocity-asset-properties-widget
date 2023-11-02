@@ -12,6 +12,6 @@ export interface AssetPropertiesItem {
   isEdit: boolean;
   jsonSchema?: JSONSchema7;
   lastUpdated: string;
-  isEditable:boolean;
-  active:boolean;
+  isEditable: boolean;
+  active: boolean;
 }

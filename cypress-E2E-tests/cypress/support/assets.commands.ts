@@ -2,6 +2,7 @@ import assets_page_elements from './page_objects/assets_page_elements';
 import asset_types_page_elements from './page_objects/asset_types_page_elements';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       /**
@@ -455,7 +456,6 @@ Cypress.Commands.add('deleteAsset', assetName => {
 
 Cypress.Commands.add('verifyTheAbsenceOfAsset', assetName => {
   // added wait to resolve flakyness
-  // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.wait(3000);
   const selector = `a[title='${assetName}']`;
 
@@ -469,13 +469,13 @@ Cypress.Commands.add('verifyTheAbsenceOfAsset', assetName => {
 });
 
 Cypress.Commands.add('navigateToAssetPageThroughSubAssetsTable', assetName => {
-  //added wait to resolve flakyness
-  cy.wait(2000); //eslint-disable-line cypress/no-unnecessary-waiting
+  // added wait to resolve flakyness
+  cy.wait(2000);
   cy.get(`a[title='${assetName}']`)
     .eq(0)
     .click({ force: true });
-  //added wait to resolve flakyness
-  cy.wait(1000); //eslint-disable-line cypress/no-unnecessary-waiting
+  // added wait to resolve flakyness
+  cy.wait(1000);
   cy.get('.c8y-ui-title > .text-truncate')
     .should('be.visible')
     .then($e1 => {
@@ -639,9 +639,9 @@ Cypress.Commands.add('searchDevices', (deviceName, option, index) => {
   const applyButton = "button[title='Name']+ul button[title='Apply']";
   const filterTextField = "button[title='Name']+ul input";
   if (option === 'subasset') {
-    index = 1;
+    index = 1; // eslint-disable-line no-param-reassign
   } else {
-    index = 0;
+    index = 0; // eslint-disable-line no-param-reassign
   }
   cy.get(filterIcon)
     .eq(index)
@@ -663,8 +663,8 @@ Cypress.Commands.add('removeDevice', (deviceName, instance) => {
 Cypress.Commands.add('clickOnActionButton', assetName => {
   const actionButton = "button[title='Actions']";
   cy.get(actionButton).should('be.visible');
-  //added wait to resolve flakyness
-  cy.wait(1000); //eslint-disable-line cypress/no-unnecessary-waiting
+  // added wait to resolve flakyness
+  cy.wait(1000);
   cy.get(`a[title='${assetName}']`)
     .parents("div[class*='c8y-tree-view-node']")
     .siblings('div')

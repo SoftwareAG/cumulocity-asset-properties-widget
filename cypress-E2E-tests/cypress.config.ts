@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress';
-const { isFileExist, findFiles } = require('cy-verify-downloads');
+const { isFileExist, findFiles } = require('cy-verify-downloads');// eslint-disable-line @typescript-eslint/no-var-requires
 
 export default defineConfig({
   defaultCommandTimeout: 20000,

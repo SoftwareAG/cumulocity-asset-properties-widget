@@ -8,8 +8,8 @@ on:
       - develop
 
 jobs:
-  build-webapp:
-    uses: ./.github/workflows/build-webapp.yml
+  build-widget:
+    uses: ./.github/workflows/build-widget.yml
     with:
       skip_run: true
       build_command: ""

@@ -1,6 +1,7 @@
 import property_library_page_elements from './page_objects/property_library_page_elements';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       /**
