@@ -30,6 +30,15 @@ jobs:
     runs-on: [ubuntu-latest]
     needs: [build-widget]
     steps:
+      - name: Determine target tenant
+        id: determine-target-tenant
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "tenantUrl=${{ github.event.inputs.tenant_url }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
+            echo "tenantUrl=${{ secrets.TENANT_URL }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -56,7 +65,7 @@ jobs:
         with:
           TYPE: HOSTED
           PACKAGE_LOCATION: ${{ github.workspace }}/downloads/${{ steps.compose-file-name.outputs.app_file_name }}.zip
-          TENANT_URL: ${{github.event.inputs.tenant_url}}
+          TENANT_URL: ${{ steps.determine-target-tenant.outputs.tenantUrl }}
           AUTHORIZATION_CODE: ${{ secrets.AUTHORIZATION_CODE }}
           APPLICATION_NAME: "Asset properties widget"
           CONTEXT_PATH: ${{env.APP_CONTEXT_PATH}}
@@ -66,7 +75,7 @@ jobs:
     needs: [deploy]
     uses: ./.github/workflows/cypress-test.yml
     with:
-      tenantUrl: ${{github.event.inputs.tenant_url}}
+      tenantUrl: ${{ needs.deploy.determine-target-tenant.outputs.tenantUrl }}
       project_directory: cypress-E2E-tests
       spec_files: "cypress/integration/**/*"
       browser: "chrome"
