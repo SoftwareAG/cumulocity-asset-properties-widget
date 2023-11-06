@@ -23,7 +23,7 @@ describe('AssetPropertiesComponent', () => {
     };
     alertMock = { success: jest.fn(), addServerFailure: jest.fn() };
     inventoryBinaryMock = { create: jest.fn() };
-    dashboardChildMock = {changeEnd: jest.fn()}
+    dashboardChildMock = {changeEnd: jest.fn()};
 
     component = new AssetPropertiesComponent(
       assetTypesMock,
