@@ -3,6 +3,7 @@ import { UrlParams } from './models/data.model';
 import dtm_generic_page_elements from './page_objects/dtm_generic_page_elements';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       /**
