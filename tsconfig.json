@@ -9,10 +9,8 @@
     "experimentalDecorators": true,
     "target": "es6",
     "module": "es2020",
-    "lib": ["dom", "es2015", "es2016"]
+    "lib": ["dom", "es2015", "es2016"],
+    "allowSyntheticDefaultImports": true,
   },
-  "exclude": ["cypress-E2E-tests"],
-  "angularCompilerOptions": {
-    "enableIvy": true
-  }
+  "exclude": ["cypress-E2E-tests"]
 }
