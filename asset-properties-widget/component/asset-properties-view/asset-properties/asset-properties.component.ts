@@ -5,31 +5,34 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import {
   IManagedObject,
   IManagedObjectBinary,
   InventoryBinaryService,
   InventoryService,
-  UserService,
 } from '@c8y/client';
 import {
   AlertService,
-  AppStateService,
   AssetTypesService,
+  DashboardChildComponent,
   gettext,
 } from '@c8y/ngx-components';
 import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
 import { Permissions } from '@c8y/ngx-components';
+import { filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { AssetLocationComponent } from '@c8y/ngx-components/sub-assets';
 
 @Component({
   selector: 'c8y-asset-properties',
   templateUrl: './asset-properties.component.html',
 })
 export class AssetPropertiesComponent implements OnChanges {
-  @Input()
-  asset: IManagedObject;
+  @Input() asset: IManagedObject;
+  @Output() assetChange = new EventEmitter<IManagedObject>();
   @Input()
   properties: IManagedObject[] = [];
   assetType: IManagedObject;
@@ -37,29 +40,29 @@ export class AssetPropertiesComponent implements OnChanges {
   isEdit = false;
   isLoading = false;
   isEditDisabled: boolean = false;
+  private destroy$ = new Subject();
+  @ViewChild(AssetLocationComponent)
+  clusterMap: AssetLocationComponent;
+  component: { changeEnd: any; };
 
   constructor(
     private assetTypes: AssetTypesService,
     private inventory: InventoryService,
     private inventoryBinary: InventoryBinaryService,
     private alert: AlertService,
-    protected appState: AppStateService,
-    protected user: UserService,
-    private permissionsService: Permissions
+    private permissionsService: Permissions,
+    public dashboardChild: DashboardChildComponent
   ) {}
 
   async ngOnInit() {
-    this.isEditDisabled = !(await this.permissionsService.canEdit(
-      [],
-      this.asset,
-      {
-        skipOwnerCheck: true,
-        skipRolesCheck: true,
-      }
-    ));
+    this.isEditDisabled = !(await this.permissionsService.canEdit([], this.asset, {
+      skipOwnerCheck: true,
+      skipRolesCheck: true
+    }));
+    this.listenToWidgetResizeEvent(this.dashboardChild);
   }
 
-  async ngOnChanges(changes: SimpleChanges): Promise<void> {
+ async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (changes.asset?.currentValue || changes.properties?.currentValue) {
       this.assetType = undefined;
       this.customProperties = [];
@@ -78,23 +81,12 @@ export class AssetPropertiesComponent implements OnChanges {
     const properties = [];
     for (const mo of managedObjects) {
       if (mo.c8y_JsonSchema && mo.active) {
-        const [item] = await this.parseItem(
-          mo,
-          mo.c8y_JsonSchema.properties,
-          this.asset
-        );
+        const [item] = await this.parseItem(mo, mo.c8y_JsonSchema.properties, this.asset);
         this.setItemRequired(item, mo);
         properties.push(item);
       }
     }
     return properties;
-  }
-  getKey(properties) {
-    const arr = [];
-    Object.keys(properties).forEach(function (item) {
-      if (properties[item].active) arr.push(item);
-    });
-    return arr;
   }
 
   deleteTitleFromMOJsonSchema(mo: IManagedObject) {
@@ -117,6 +109,7 @@ export class AssetPropertiesComponent implements OnChanges {
       if (properties[key]) {
         let value = asset[key];
         const {type} = properties[key];
+        const {title} = properties[key];
         let file;
         if (type === 'file' && value) {
           const fileId = typeof value === 'object' ? value[0]?.file?.id : value;
@@ -127,11 +120,6 @@ export class AssetPropertiesComponent implements OnChanges {
           const valueDate = new Date(value);
           value = !isNaN(valueDate.getTime()) ? valueDate : null;
         }
-        if (value && type === 'boolean' && typeof value != 'boolean') {
-          value = value ? value == 'true' : false;
-          asset[key] = asset[key] ? asset[key] == 'true' : false;
-        }
-
         if (type === 'object') {
           // remove title to avoid excessive property name on asset complex properties form
           this.deleteTitleFromMOJsonSchema(mo);
@@ -143,23 +131,22 @@ export class AssetPropertiesComponent implements OnChanges {
             }
           }
         }
-        const assetKey = asset[key] ? asset[key] : '';
         items.push({
           key,
           value,
-          label: asset.id ? mo.label : properties[key].title,
+          label: title || mo.label,
           type,
           description: mo.description,
           file,
           complex:
             type === 'object'
-              ? await this.parseItem(mo, properties[key].properties, assetKey)
+              ? await this.parseItem(mo, properties[key].properties, value)
               : undefined,
           isEdit: false,
           jsonSchema: mo.c8y_JsonSchema,
-          lastUpdated: mo.lastUpdated,
-          isEditable: mo.isEditable,
-          active: properties[key].active as boolean,
+            lastUpdated: mo.lastUpdated,
+            isEditable: mo.isEditable,
+            active: properties[key].active as boolean,
         });
       }
     }
@@ -182,10 +169,7 @@ export class AssetPropertiesComponent implements OnChanges {
   async save(propertyValue, prop: AssetPropertiesItem): Promise<void> {
     try {
       if (prop.type === 'object') {
-        propertyValue[prop.key] = await this.uploadFiles(
-          propertyValue[prop.key],
-          prop.value
-        );
+        propertyValue[prop.key] = await this.uploadFiles(propertyValue[prop.key], prop.value);
       } else {
         for (const [key, value] of Object.entries(propertyValue)) {
           if (value === undefined) {
@@ -197,9 +181,7 @@ export class AssetPropertiesComponent implements OnChanges {
       }
 
       // Avoid making a PUT request containing just the id, as response body might be incomplete
-      const hasValues = Object.values(propertyValue).some(
-        (value) => value !== undefined
-      );
+      const hasValues = Object.values(propertyValue).some(value => value !== undefined);
       if (!hasValues) {
         this.toggleEdit(prop);
         return;
@@ -208,36 +190,31 @@ export class AssetPropertiesComponent implements OnChanges {
       const { data } = await this.inventory.update(updatedAsset);
       this.toggleEdit(prop);
       this.asset = data;
+      this.assetChange.emit(this.asset);
       await this.loadAsset();
-      this.alert.success(gettext('Properties changes saved.'));
+      this.alert.success(gettext('Asset properties updated.'));
     } catch (ex) {
       this.alert.addServerFailure(ex);
-      this.toggleEdit(prop);
     }
   }
 
-  private async uploadFiles(
-    model: object,
-    moId?: IManagedObjectBinary[]
-  ): Promise<object> {
+  private async uploadFiles(model: object, moId?: IManagedObjectBinary[]): Promise<object> {
     const keys = Object.keys(model);
     for (const key of keys) {
       if (Array.isArray(model[key]) && model[key][0]?.file instanceof File) {
-        // eslint-disable-next-line no-useless-catch
         try {
           const upload = await this.inventoryBinary.create(model[key][0].file);
-          // eslint-disable-next-line no-useless-catch
           try {
             if (moId && moId[0]) {
               await this.inventory.childAdditionsRemove(moId[0], this.asset.id);
             }
           } catch (ex) {
-            throw ex;
+            this.alert.addServerFailure(ex);
           }
           model[key] = upload.data.id;
           await this.inventory.childAdditionsAdd(upload.data.id, this.asset.id);
         } catch (ex) {
-          throw ex;
+          this.alert.addServerFailure(ex);
         }
       }
     }
@@ -245,20 +222,29 @@ export class AssetPropertiesComponent implements OnChanges {
   }
 
   private setItemRequired(item: AssetPropertiesItem, mo: IManagedObject): void {
-    const isAssetPropertyRequired =
-      !!this.assetType?.c8y_IsAssetType?.properties.find((p) => p.id === mo.id)
-        ?.isRequired;
+    const isAssetPropertyRequired = !!this.assetType?.c8y_IsAssetType?.properties.find(
+      p => p.id === mo.id
+    )?.isRequired;
     if (!isAssetPropertyRequired) {
       return;
     }
     const isComplexProperty = !!item?.complex?.length;
     if (isComplexProperty) {
-      const complexProperty = item.jsonSchema?.properties?.[
-        mo.c8y_JsonSchema.key
-      ] as JSONSchema7;
+      const complexProperty = item.jsonSchema?.properties?.[mo.c8y_JsonSchema.key] as JSONSchema7;
       complexProperty.required = item.complex.map(({ key }) => key);
     } else {
       item.jsonSchema.required = [mo.c8y_JsonSchema.key];
     }
   }
+ private async listenToWidgetResizeEvent(dashboardChild: DashboardChildComponent) {
+        dashboardChild.changeEnd
+          .pipe(
+            filter(child => child.lastChange === 'resize'),
+            takeUntil(this.destroy$)
+          )
+          .subscribe(async () => {
+            this.clusterMap.ngOnDestroy();
+           await this.clusterMap.ngAfterViewInit();
+          });
+      }
 }

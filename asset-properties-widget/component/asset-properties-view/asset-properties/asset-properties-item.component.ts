@@ -10,7 +10,7 @@ import {
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
-import { has, get, set } from 'lodash-es';
+import { clone } from 'lodash-es';
 
 @Component({
   selector: 'c8y-asset-properties-item',
@@ -54,7 +54,7 @@ export class AssetPropertiesItemComponent
   ) {}
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    if (changes) {
+    if (changes.isEdit) {
       this.resolveJsonSchema();
       await this.resolveFile();
     }
@@ -73,10 +73,10 @@ export class AssetPropertiesItemComponent
 
   private formComplexPropsValue() {
     const complexProps = {};
-    this.complex.forEach((complexObj) => {
+    this.complex.forEach(complexObj => {
       if (complexObj.file) {
         complexProps[complexObj.key] = complexObj.value;
-      } else if (this.value[complexObj.key] || complexObj.type === 'boolean') {
+      } else if (this.value[complexObj.key] != null) {
         complexProps[complexObj.key] = this.value[complexObj.key];
       }
     });
@@ -86,57 +86,17 @@ export class AssetPropertiesItemComponent
   private getModel() {
     if (this.complex && this.complex.length > 0) {
       return {
-        [this.key]: this.formComplexPropsValue(),
-      };
-    } else {
-      return {
-        [this.key]: this.value,
+        [this.key]: this.formComplexPropsValue()
       };
     }
+    return {
+      [this.key]: clone(this.value)
+    };
   }
 
   private resolveJsonSchema() {
     if (this.jsonSchema) {
-      const fieldConfig = this.c8yJsonSchemaService.toFieldConfig(
-        this.jsonSchema as JSONSchema7,
-        {
-          map(mappedField: FormlyFieldConfig, mapSource: JSONSchema7) {
-            let result: FormlyFieldConfig = mappedField;
-
-            if (has(mapSource, 'allowedFileTypes')) {
-              result = {
-                ...result,
-                type: 'file',
-                templateOptions: {
-                  ...result.templateOptions,
-                  accept: get(mapSource, 'allowedFileTypes').toString(),
-                },
-              };
-            }
-            if (has(mapSource, 'accept')) {
-              result = {
-                ...result,
-                type: 'file',
-                templateOptions: {
-                  ...result.templateOptions,
-                  accept: get(mapSource, 'accept'),
-                },
-              };
-            }
-            if (has(mapSource, 'maxSize')) {
-              result = {
-                ...result,
-                type: 'file',
-                templateOptions: {
-                  ...result.templateOptions,
-                  maxSize: get(mapSource, 'maxSize'),
-                },
-              };
-            }
-            return result;
-          },
-        }
-      );
+      const fieldConfig = this.c8yJsonSchemaService.toFieldConfig(this.jsonSchema, this.jsonSchema);
       this.form = new FormGroup({});
       this.fields = [fieldConfig];
       this.model = this.getModel();
