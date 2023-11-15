@@ -7,11 +7,10 @@ describe('AssetPropertiesConfigComponent', () => {
   let component: AssetPropertiesConfigComponent;
   let asset;
   let properties;
-  let inventoryServiceMock;
+  let assetPropertiesServiceMock: any;
 
   beforeEach(() => {
-    inventoryServiceMock = { detail: jest.fn() };
-    component = new AssetPropertiesConfigComponent(inventoryServiceMock);
+    assetPropertiesServiceMock = { fetchAssetData: jest.fn() };
     properties = [
       {
         c8y_JsonSchema: {
@@ -68,7 +67,7 @@ describe('AssetPropertiesConfigComponent', () => {
     // given
     component.config = { settings: true, asset: asset };
     jest
-      .spyOn(inventoryServiceMock, 'detail')
+      .spyOn(assetPropertiesServiceMock, 'fetchAssetData')
       .mockReturnValue(Promise.resolve({ data: asset }));
 
     // when

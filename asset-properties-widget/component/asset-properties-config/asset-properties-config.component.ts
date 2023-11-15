@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { ControlContainer, NgForm } from '@angular/forms';
-import { IManagedObject, InventoryService } from '@c8y/client';
+import { IManagedObject } from '@c8y/client';
 import { DynamicComponent, OnBeforeSave } from '@c8y/ngx-components';
 import { AssetSelectionChangeEvent } from '@c8y/ngx-components/assets-navigator';
+import { AssetPropertiesService } from '../asset-properties-config/asset-properties.service';
 
 @Component({
   selector: 'c8y-asset-properties-config',
@@ -16,14 +17,14 @@ export class AssetPropertiesConfigComponent
   selectedAsset: IManagedObject;
   isAssetSelected = true;
 
-  constructor(private inventoryService: InventoryService) {}
+  constructor(
+    private assetPropertiesService: AssetPropertiesService,
+  ) {}
 
   async ngOnInit(): Promise<void> {
     if (this.config.settings) {
       try {
-        this.selectedAsset = (
-          await this.inventoryService.detail(this.config.asset.id)
-        ).data;
+        this.selectedAsset = await this.assetPropertiesService.fetchAssetData(this.config.asset.id);
       } catch (er) {
         // intended empty
       }
