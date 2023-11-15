@@ -3,7 +3,7 @@
     "baseUrl": "./",
     "lib": ["es5", "dom"],
     "target": "es5",
-    "types": ["node", "cypress", "cy-verify-downloads"],
+    "types": ["node", "cypress", "cy-verify-downloads", "cypress-real-events"],
     "moduleResolution": "node",
     "module": "es2020",
     "skipLibCheck": true
