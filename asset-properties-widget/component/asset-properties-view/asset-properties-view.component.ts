@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IManagedObject, InventoryService } from '@c8y/client';
-import { ManagedObjectRealtimeService, gettext } from '@c8y/ngx-components';
+import { IManagedObject } from '@c8y/client';
+import { ManagedObjectRealtimeService } from '@c8y/ngx-components';
 import { AssetPropertiesService } from '../asset-properties-config/asset-properties.service';
 
 @Component({
@@ -17,17 +17,14 @@ export class AssetPropertiesViewComponent implements OnInit {
   @Input() config: any;
 
   constructor(
-    protected inventoryService: InventoryService,
     protected moRealtimeService: ManagedObjectRealtimeService,
-    private assetPropertiesService: AssetPropertiesService
+    private assetPropertiesService: AssetPropertiesService,
   ) {}
 
   async ngOnInit(): Promise<void> {
     if (this.config.asset) {
       try {
-        this.selectedAsset = (
-          await this.inventoryService.detail(this.config.asset.id)
-        ).data;
+        this.selectedAsset = await this.assetPropertiesService.fetchAssetData(this.config.asset.id);
         setTimeout(async () => {
           this.customProperties =
             await this.assetPropertiesService.getCustomProperties(
