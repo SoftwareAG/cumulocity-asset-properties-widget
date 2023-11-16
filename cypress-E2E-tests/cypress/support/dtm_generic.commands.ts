@@ -52,22 +52,6 @@ declare global {
       configureColumns(option: string, columnName: string): void;
 
       /**
-       * This command is being used to filter the particular column by specified text.
-       * @param columnName Name of the column that needs to be filtered.
-       * @param filterText The text.
-       * Usage: filterTheColumn("Key", "Building");
-       */
-      filterTheColumn(columnName: string, filterText: string): void;
-
-      /**
-       * This command is being used to remove column filter.
-       * @param columnName Name of the column.
-       * Usage: resetTheColumnFilter("Key");
-       *
-       */
-      resetTheColumnFilter(columnName: string): void;
-
-      /**
        * This command is being used to clear the data in the application.
        * Usage: cy.cleanup();
        */
@@ -211,12 +195,6 @@ declare global {
       ): Chainable<any>;
 
       /**
-       *This command is being used to change the language of the application.
-       * @param languageKey Specify the key of the language. Eg.'de'is the key for language'Deutsch'.
-       */
-      changeLanguage(languageKey: string): void;
-
-      /**
        * This command is being used to delete the grid configuration
        * @param fragmentName Specify the fragment name based on the page. Options are listed below.
        * ( dtm-asset-types-grid-config, dtm-assets-grid-config, sub-assets-grid, dtm-translation-grid-config )
@@ -275,33 +253,6 @@ Cypress.Commands.add('configureColumns', (option, columnName) => {
     cy.log('Mentioned option is incorrect');
   }
   cy.get(dtm_generic_page_elements.configureCloumnsButton).click();
-});
-
-Cypress.Commands.add('filterTheColumn', (columnName, filterText) => {
-  const filterIcon = `button[title='${columnName}']>i`;
-  const applyButton = `button[title='${columnName}']+ul button[title='Apply']`;
-  const filterTextField = `button[title='${columnName}']+ul input`;
-  cy.get(filterIcon)
-    .eq(0)
-    .click({ force: true });
-  cy.get(filterTextField).clear();
-  cy.get(filterTextField).type(filterText);
-  cy.get(applyButton).click({ force: true });
-  // added wait to resolve flakyness
-  cy.wait(1000);
-});
-
-Cypress.Commands.add('resetTheColumnFilter', columnName => {
-  const filterIcon = `button[title='${columnName}']>i`;
-  const resetButton = `button[title='${columnName}']+ul button[title='Reset']`;
-  cy.intercept('PUT', '/inventory/managedObjects/**').as('reset');
-  cy.get(filterIcon).click({ force: true });
-  cy.get(resetButton).click({ force: true });
-  cy.wait('@reset', { timeout: 10000 })
-    .its('response.statusCode')
-    .should('eq', 200);
-  // added wait to resolve flakyness
-  cy.wait(1000);
 });
 
 Cypress.Commands.add('cleanup', () => {
@@ -657,34 +608,6 @@ Cypress.Commands.add(
       });
   }
 );
-
-Cypress.Commands.add('changeLanguage', languageKey => {
-  const rightToggleButton = "c8y-header-bar button[data-cy='right-drawer-toggle-button']";
-  cy.apiRequest({
-    method: 'GET',
-    url: `/inventory/managedObjects?fragmentType=language${Cypress.env('username')}`,
-    failOnStatusCode: false
-  }).then(response => {
-    const [{id}] = response.body.managedObjects;
-    cy.log(`Change language ${id}`);
-    cy.apiRequest({
-      method: 'PUT',
-      url: `/inventory/managedObjects/${id}`,
-      body: {
-        [`language${Cypress.env('username')}`]: `${languageKey}`,
-        type: 'c8y_UserPreference',
-        id: `${id}`
-      },
-      failOnStatusCode: false
-    }).then(responce => {
-      expect(responce.status).to.eq(200);
-      cy.reload();
-      // added wait to resolve flakyness
-      cy.wait(2000);
-      cy.get(rightToggleButton, { timeout: 30000 }).should('be.visible');
-    });
-  });
-});
 
 Cypress.Commands.add('apiDeleteGridConfig', fragmentName => {
   cy.apiRequest({
