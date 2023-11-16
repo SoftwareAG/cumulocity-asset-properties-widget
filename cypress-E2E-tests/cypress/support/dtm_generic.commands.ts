@@ -287,8 +287,7 @@ Cypress.Commands.add('filterTheColumn', (columnName, filterText) => {
   cy.get(filterTextField).clear();
   cy.get(filterTextField).type(filterText);
   cy.get(applyButton).click({ force: true });
-  //added wait to resolve flakyness
-  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  // added wait to resolve flakyness
   cy.wait(1000);
 });
 
@@ -301,8 +300,7 @@ Cypress.Commands.add('resetTheColumnFilter', columnName => {
   cy.wait('@reset', { timeout: 10000 })
     .its('response.statusCode')
     .should('eq', 200);
-  //added wait to resolve flakyness
-  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  // added wait to resolve flakyness
   cy.wait(1000);
 });
 
@@ -446,7 +444,7 @@ Cypress.Commands.add('editConfirmationPopup', option => {
     .should('be.visible')
     .then(() => {
       if (option === 'Cancel') {
-        //requiredCheckbox.check({force: true})
+        // requiredCheckbox.check({force: true})
         cy.get(dtm_generic_page_elements.cancelEditPopupButton).click();
       } else {
         cy.get(dtm_generic_page_elements.confirmEditPopupButton).click();
@@ -667,7 +665,7 @@ Cypress.Commands.add('changeLanguage', languageKey => {
     url: `/inventory/managedObjects?fragmentType=language${Cypress.env('username')}`,
     failOnStatusCode: false
   }).then(response => {
-    const id = response.body.managedObjects[0].id;
+    const [{id}] = response.body.managedObjects;
     cy.log(`Change language ${id}`);
     cy.apiRequest({
       method: 'PUT',
@@ -682,7 +680,7 @@ Cypress.Commands.add('changeLanguage', languageKey => {
       expect(responce.status).to.eq(200);
       cy.reload();
       // added wait to resolve flakyness
-      cy.wait(2000); //eslint-disable-line cypress/no-unnecessary-waiting
+      cy.wait(2000);
       cy.get(rightToggleButton, { timeout: 30000 }).should('be.visible');
     });
   });
@@ -695,7 +693,7 @@ Cypress.Commands.add('apiDeleteGridConfig', fragmentName => {
     failOnStatusCode: false
   }).then(response => {
     if (response.body.managedObjects[0]) {
-      const id = response.body.managedObjects[0].id;
+      const [{id}] = response.body.managedObjects;
       cy.log(`Deleting grid-config ${id}`);
       cy.apiRequest({
         method: 'DELETE',
@@ -716,5 +714,5 @@ Cypress.Commands.add('dragTo', { prevSubject: 'element' }, function(subject, tar
     .first()
     .realMouseMove(10, 0, { position: 'center', scrollBehavior: 'nearest' })
     .realMouseUp({ position: 'center', scrollBehavior: 'center' });
-  cy.wait(1000); // eslint-disable-line cypress/no-unnecessary-waiting
+  cy.wait(1000);
 });
