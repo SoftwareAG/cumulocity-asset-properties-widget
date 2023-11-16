@@ -49,7 +49,7 @@ describe('AssetPropertiesViewComponent', () => {
 
   it('should get selected asset details', async () => {
     // given
-    component.config = { asset: asset };
+    component.config = { device: asset };
     jest
       .spyOn(inventoryMock, 'detail')
       .mockReturnValue(Promise.resolve({ data: asset }));
@@ -65,7 +65,7 @@ describe('AssetPropertiesViewComponent', () => {
 
   it('should shown blank widget if asset is deleted', async () => {
     // given
-    component.config = { asset: asset };
+    component.config = { device: asset };
     jest.spyOn(inventoryMock, 'detail').mockRejectedValue('');
 
     // when

@@ -44,7 +44,7 @@ export class AssetPropertiesSelectorComponent {
   ) {}
 
   async ngOnChanges(changes: IManagedObject): Promise<void> {
-    if (changes.asset.firstChange && this.config?.properties) {
+    if ((changes.asset.firstChange && this.config?.properties) || (!changes.asset.previousValue && this.config?.properties)) {
       this.properties = this.config.properties;
       this.customProperties = this.customProperties.concat(
         this.getConstructCustomProperties(
