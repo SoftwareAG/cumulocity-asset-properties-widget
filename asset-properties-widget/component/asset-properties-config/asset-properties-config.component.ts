@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { ControlContainer, NgForm } from '@angular/forms';
 import { IManagedObject, InventoryService } from '@c8y/client';
 import { DynamicComponent, OnBeforeSave } from '@c8y/ngx-components';
@@ -9,7 +9,7 @@ import { DynamicComponent, OnBeforeSave } from '@c8y/ngx-components';
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 })
 export class AssetPropertiesConfigComponent
-  implements DynamicComponent, OnBeforeSave
+  implements DynamicComponent, OnBeforeSave, OnChanges
 {
   @Input() config: any = {};
   selectedAsset: IManagedObject;
