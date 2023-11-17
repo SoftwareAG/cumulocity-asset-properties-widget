@@ -34,9 +34,9 @@ jobs:
         id: determine-target-tenant
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "tenantUrl=${{ github.event.inputs.tenant_url }}" >> $GITHUB_OUTPUT
+            echo "tenantUrl=${{ secrets.TENANT_URL }}" >> $GITHUB_OUTPUT            
           elif [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
-            echo "tenantUrl=${{ secrets.TENANT_URL }}" >> $GITHUB_OUTPUT
+            echo "tenantUrl=${{ github.event.inputs.tenant_url }}" >> $GITHUB_OUTPUT
           fi
 
       - name: Checkout
