@@ -72,7 +72,7 @@ jobs:
           DELETE_EXISTING: false
 
       - name: E2E tests
-        uses: ./.github/workflows/cypress-test.yml
+        uses: ./.github/workflows/cypress-test.yml@develop
         with:
           tenantUrl: ${{ steps.determine-target-tenant.outputs.tenantUrl }}
           project_directory: cypress-E2E-tests
