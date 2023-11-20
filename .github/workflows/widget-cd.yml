@@ -34,9 +34,9 @@ jobs:
         id: determine-target-tenant
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "tenantUrl=${{ secrets.TENANT_URL }}" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
             echo "tenantUrl=${{ github.event.inputs.tenant_url }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
+            echo "tenantUrl=${{ secrets.TENANT_URL }}" >> $GITHUB_OUTPUT
           fi
 
       - name: Checkout
@@ -76,7 +76,7 @@ jobs:
     needs: [deploy]
     uses: ./.github/workflows/cypress-test.yml
     with:
-      tenantUrl: ""
+      tenantUrl: ${{ needs.deploy.determine-target-tenant.outputs.tenantUrl }}
       project_directory: cypress-E2E-tests
       spec_files: "cypress/integration/**/*"
       browser: "chrome"
@@ -92,7 +92,7 @@ jobs:
     needs: [deploy]
     uses: ./.github/workflows/cypress-test.yml
     with:
-      tenantUrl: ${{ needs.deploy.determine-target-tenant.outputs.tenantUrl }}
+      tenantUrl: ""
       project_directory: cypress-E2E-tests
       spec_files: "cypress/integration/**/*"
       browser: "chrome"
