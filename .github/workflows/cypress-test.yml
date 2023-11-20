@@ -29,6 +29,8 @@ on:
         required: true
       AUTOTEST_USERNAME2_PASSWORD:
         required: true
+      TENANT_URL:
+        required: true
 
 jobs:
   cypress-run:
@@ -50,10 +52,19 @@ jobs:
         run: yarn install --frozen-lockfile --prefer-offline
         working-directory: ${{ inputs.project_directory }}
 
+      - name: Get baseUrl
+        id: determine-tenant-url
+        run: |
+          if [[ "${{ inputs.tenantUrl }}" == "" ]]; then
+            echo "tenantUrl=${{ secrets.TENANT_URL }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ inputs.tenantUr }}" != "" ]]; then
+            echo "tenantUrl=${{ inputs.tenantUrl }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: "Begin Testing"
         run: |
           yarn test:ci \
-            -- --config baseUrl=${{ inputs.tenantUrl }} \
+            -- --config baseUrl=${{ steps.determine-tenant-url.outputs.tenantUrl }} \
             --env username=${{ secrets.AUTOTEST_USERNAME1  }},password=${{ secrets.AUTOTEST_USERNAME1_PASSWORD }} \
             --browser ${{inputs.browser}} \
             --spec ${{inputs.spec_files}}
