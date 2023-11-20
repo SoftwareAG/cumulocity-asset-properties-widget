@@ -76,7 +76,7 @@ jobs:
     needs: [deploy]
     uses: ./.github/workflows/cypress-test.yml
     with:
-      tenantUrl: ${{ needs.deploy.determine-target-tenant.outputs.tenantUrl }}
+      tenantUrl: ${{ github.event.inputs.tenant_url }}
       project_directory: cypress-E2E-tests
       spec_files: "cypress/integration/**/*"
       browser: "chrome"
