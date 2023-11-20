@@ -76,7 +76,7 @@ jobs:
     needs: [deploy]
     uses: ./.github/workflows/cypress-test.yml
     with:
-      tenantUrl: "https://dtmsecurity.latest.stage.c8y.io"
+      tenantUrl: ""
       project_directory: cypress-E2E-tests
       spec_files: "cypress/integration/**/*"
       browser: "chrome"
