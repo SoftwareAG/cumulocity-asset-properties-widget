@@ -16,6 +16,7 @@ on:
 
 env:
   APP_CONTEXT_PATH: "sag-pkg-asset-properties-widget"
+  TENANT_URL: ${{ secrets.TENANT_URL }}
 
 jobs:
   build-widget:
@@ -26,19 +27,24 @@ jobs:
       app_context_path: "sag-pkg-asset-properties-widget"
       upload_artifact: true
 
-  deploy:
+  setup-variables:
     runs-on: [ubuntu-latest]
     needs: [build-widget]
+    outputs:
+      tenant_url: ${{ steps.variables.outputs.tenant_url }}
     steps:
-      - name: Determine target tenant
-        id: determine-target-tenant
+      - id: variables
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "tenantUrl=${{ secrets.TENANT_URL }}" >> $GITHUB_OUTPUT
+            echo "tenant_url=${{ env.TENANT_URL }}" >> $GITHUB_OUTPUT            
           elif [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
-            echo "tenantUrl=${{ github.event.inputs.tenant_url }}" >> $GITHUB_OUTPUT
+            echo "tenant_url=${{ github.event.inputs.tenant_url }}" >> $GITHUB_OUTPUT
           fi
 
+  deploy:
+    runs-on: [ubuntu-latest]
+    needs: [build-widget, setup-variables]
+    steps:
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -65,33 +71,17 @@ jobs:
         with:
           TYPE: HOSTED
           PACKAGE_LOCATION: ${{ github.workspace }}/downloads/${{ steps.compose-file-name.outputs.app_file_name }}.zip
-          TENANT_URL: ${{ steps.determine-target-tenant.outputs.tenantUrl }}
+          TENANT_URL: ${{ needs.setup-variables.outputs.tenant_url }}
           AUTHORIZATION_CODE: ${{ secrets.AUTHORIZATION_CODE }}
           APPLICATION_NAME: "Asset properties widget"
           CONTEXT_PATH: ${{env.APP_CONTEXT_PATH}}
           DELETE_EXISTING: false
 
   e2e-tests:
-    if: ${{ github.event_name == 'workflow_dispatch' }}
-    needs: [deploy]
+    needs: [deploy, setup-variables]
     uses: ./.github/workflows/cypress-test.yml
     with:
-      tenantUrl: "https://dtmsecurity.latest.stage.c8y.io"
-      project_directory: cypress-E2E-tests
-      spec_files: "cypress/integration/**/*"
-      browser: "chrome"
-    secrets:
-      AUTOTEST_USERNAME1: ${{ secrets.AUTOTEST_USERNAME1 }}
-      AUTOTEST_USERNAME1_PASSWORD: ${{ secrets.AUTOTEST_USERNAME1_PASSWORD }}
-      AUTOTEST_USERNAME2: ${{ secrets.AUTOTEST_USERNAME2 }}
-      AUTOTEST_USERNAME2_PASSWORD: ${{ secrets.AUTOTEST_USERNAME2_PASSWORD }}
-
-  e2e-tests1:
-    if: ${{ github.event_name != 'workflow_dispatch' }}
-    needs: [deploy]
-    uses: ./.github/workflows/cypress-test.yml
-    with:
-      tenantUrl: ${{ needs.deploy.determine-target-tenant.outputs.tenantUrl }}
+      tenantUrl: ${{ needs.setup-variables.outputs.tenant_url }}
       project_directory: cypress-E2E-tests
       spec_files: "cypress/integration/**/*"
       browser: "chrome"
