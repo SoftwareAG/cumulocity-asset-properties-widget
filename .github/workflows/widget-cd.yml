@@ -71,8 +71,11 @@ jobs:
           CONTEXT_PATH: ${{env.APP_CONTEXT_PATH}}
           DELETE_EXISTING: false
 
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: E2E tests
-        uses: ./.github/workflows/cypress-test.yml@develop
+        uses: ./.github/workflows/cypress-test.yml
         with:
           tenantUrl: ${{ steps.determine-target-tenant.outputs.tenantUrl }}
           project_directory: cypress-E2E-tests
