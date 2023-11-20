@@ -26,7 +26,7 @@ jobs:
       app_context_path: "sag-pkg-asset-properties-widget"
       upload_artifact: true
 
-  deploy-and-e2e-tests:
+  deploy:
     runs-on: [ubuntu-latest]
     needs: [build-widget]
     steps:
@@ -71,18 +71,32 @@ jobs:
           CONTEXT_PATH: ${{env.APP_CONTEXT_PATH}}
           DELETE_EXISTING: false
 
-      - name: Checkout
-        uses: actions/checkout@v3
+  e2e-tests:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    needs: [deploy]
+    uses: ./.github/workflows/cypress-test.yml
+    with:
+      tenantUrl: ${{ secrets.TENANT_URL }}
+      project_directory: cypress-E2E-tests
+      spec_files: "cypress/integration/**/*"
+      browser: "chrome"
+    secrets:
+      AUTOTEST_USERNAME1: ${{ secrets.AUTOTEST_USERNAME1 }}
+      AUTOTEST_USERNAME1_PASSWORD: ${{ secrets.AUTOTEST_USERNAME1_PASSWORD }}
+      AUTOTEST_USERNAME2: ${{ secrets.AUTOTEST_USERNAME2 }}
+      AUTOTEST_USERNAME2_PASSWORD: ${{ secrets.AUTOTEST_USERNAME2_PASSWORD }}
 
-      - name: E2E tests
-        uses: ./.github/workflows/cypress-test.yml@feature/workflows
-        with:
-          tenantUrl: ${{ steps.determine-target-tenant.outputs.tenantUrl }}
-          project_directory: cypress-E2E-tests
-          spec_files: "cypress/integration/**/*"
-          browser: "chrome"
-          secrets:
-          AUTOTEST_USERNAME1: ${{ secrets.AUTOTEST_USERNAME1 }}
-          AUTOTEST_USERNAME1_PASSWORD: ${{ secrets.AUTOTEST_USERNAME1_PASSWORD }}
-          AUTOTEST_USERNAME2: ${{ secrets.AUTOTEST_USERNAME2 }}
-          AUTOTEST_USERNAME2_PASSWORD: ${{ secrets.AUTOTEST_USERNAME2_PASSWORD }}
+   e2e-tests1:
+    if: ${{ github.event_name != 'workflow_dispatch' }}
+    needs: [deploy]
+    uses: ./.github/workflows/cypress-test.yml
+    with:
+      tenantUrl: ${{ needs.deploy.determine-target-tenant.outputs.tenantUrl }}
+      project_directory: cypress-E2E-tests
+      spec_files: "cypress/integration/**/*"
+      browser: "chrome"
+    secrets:
+      AUTOTEST_USERNAME1: ${{ secrets.AUTOTEST_USERNAME1 }}
+      AUTOTEST_USERNAME1_PASSWORD: ${{ secrets.AUTOTEST_USERNAME1_PASSWORD }}
+      AUTOTEST_USERNAME2: ${{ secrets.AUTOTEST_USERNAME2 }}
+      AUTOTEST_USERNAME2_PASSWORD: ${{ secrets.AUTOTEST_USERNAME2_PASSWORD }}
