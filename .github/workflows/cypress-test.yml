@@ -57,7 +57,7 @@ jobs:
         run: |
           if [[ "${{ inputs.tenantUrl }}" == "" ]]; then
             echo "tenantUrl=${{ secrets.TENANT_URL }}" >> $GITHUB_OUTPUT
-          elif [[ "${{ inputs.tenantUr }}" != "" ]]; then
+          elif [[ "${{ inputs.tenantUrl }}" != "" ]]; then
             echo "tenantUrl=${{ inputs.tenantUrl }}" >> $GITHUB_OUTPUT
           fi
 
