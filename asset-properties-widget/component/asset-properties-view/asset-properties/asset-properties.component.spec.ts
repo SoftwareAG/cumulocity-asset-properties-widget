@@ -1,6 +1,7 @@
 import { IManagedObject } from '@c8y/client';
 import { AssetPropertiesComponent } from './asset-properties.component';
 import { JSONSchema7 } from 'json-schema';
+import { of } from 'rxjs';
 
 describe('AssetPropertiesComponent', () => {
   let component: AssetPropertiesComponent;
@@ -8,9 +9,8 @@ describe('AssetPropertiesComponent', () => {
   let inventoryBinaryMock: any;
   let inventoryMock: any;
   let assetTypesMock: any;
-  let appStateMock: any;
-  let userMock: any;
   let permissionsServiceMock: any;
+  let dashboardChildMock:any;
 
   beforeEach(() => {
     permissionsServiceMock = { canEdit: jest.fn() };
@@ -23,16 +23,15 @@ describe('AssetPropertiesComponent', () => {
     };
     alertMock = { success: jest.fn(), addServerFailure: jest.fn() };
     inventoryBinaryMock = { create: jest.fn() };
-    userMock = { hasAnyRole: jest.fn() };
+    dashboardChildMock = {changeEnd: jest.fn()};
 
     component = new AssetPropertiesComponent(
       assetTypesMock,
       inventoryMock,
       inventoryBinaryMock,
       alertMock,
-      appStateMock,
-      userMock,
-      permissionsServiceMock
+      permissionsServiceMock,
+      dashboardChildMock
     );
   });
 
@@ -201,6 +200,12 @@ describe('AssetPropertiesComponent', () => {
         dateTest2: '',
       } as any as IManagedObject;
     });
+    const control = {
+      changeEnd: {
+        pipe: () => of(null)
+      }
+    } as any;
+    const clusterMap = {ngOnDestroy: jest.fn(), ngAfterViewInit: jest.fn()} as any;
 
     it('should use correct labels on complex object', async () => {
       // given
@@ -213,7 +218,7 @@ describe('AssetPropertiesComponent', () => {
       // then
       expect(result).toBeTruthy();
       const labels = result[0].complex.map((obj) => obj.label);
-      expect(result[0].label).toEqual('Address');
+      expect(result[0].label).toEqual('address');
       expect(labels).toEqual([
         'Country',
         'City',
@@ -408,6 +413,8 @@ describe('AssetPropertiesComponent', () => {
 
     it('should disabled properties edit icon', async () => {
       // given
+      component.dashboardChild= control;
+      component.clusterMap = clusterMap;
       jest.spyOn(permissionsServiceMock, 'canEdit').mockReturnValue(true);
 
       // when
@@ -419,6 +426,8 @@ describe('AssetPropertiesComponent', () => {
 
     it('should enable properties edit icon', async () => {
       // given
+      component.dashboardChild= control;
+      component.clusterMap = clusterMap;
       jest.spyOn(permissionsServiceMock, 'canEdit').mockReturnValue(false);
 
       // when
