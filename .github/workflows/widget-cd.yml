@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tenant_url:
-        required: false
+        required: true
         description: "Tenant URL"
         type: string
 
@@ -34,9 +34,9 @@ jobs:
         id: determine-target-tenant
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "tenantUrl=${{ secrets.TENANT_URL }}" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then            
             echo "tenantUrl=${{ github.event.inputs.tenant_url }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
+            echo "tenantUrl=${{ secrets.TENANT_URL }}" >> $GITHUB_OUTPUT
           fi
 
       - name: Checkout
@@ -84,3 +84,4 @@ jobs:
       AUTOTEST_USERNAME1_PASSWORD: ${{ secrets.AUTOTEST_USERNAME1_PASSWORD }}
       AUTOTEST_USERNAME2: ${{ secrets.AUTOTEST_USERNAME2 }}
       AUTOTEST_USERNAME2_PASSWORD: ${{ secrets.AUTOTEST_USERNAME2_PASSWORD }}
+      TENANT_URL: ${{ secrets.TENANT_URL }}
