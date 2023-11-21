@@ -21,6 +21,7 @@ import './asset_types.commands';
 import './assets.commands';
 import './cockpit.commands';
 import './asset_properties_widget.commands';
+import 'cypress-real-events';
 
 const addContext = require('mochawesome/addContext'); //eslint-disable-line
 

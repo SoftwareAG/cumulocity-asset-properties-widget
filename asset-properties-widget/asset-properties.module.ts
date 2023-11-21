@@ -14,6 +14,7 @@ import { AssetPropertiesComponent } from './component/asset-properties-view/asse
 import { AssetPropertiesItemComponent } from './component/asset-properties-view/asset-properties/asset-properties-item.component';
 import { assetPropertyItemSelectorCtrlComponent } from './component/asset-properties-config/asset-property-item-selector/asset-property-item-selector.component';
 import { AssetPropertiesSelectorComponent } from './component/asset-properties-config/asset-property-selector/asset-property-selector.component';
+import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { AssetPropertiesSelectorComponent } from './component/asset-properties-c
     Ng2SearchPipeModule,
     DragDropModule,
     RealtimeModule,
+    SubAssetsModule,
   ],
   providers: [
     {
