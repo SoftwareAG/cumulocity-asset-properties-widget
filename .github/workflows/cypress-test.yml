@@ -29,8 +29,6 @@ on:
         required: true
       AUTOTEST_USERNAME2_PASSWORD:
         required: true
-      TENANT_URL:
-        required: true
 
 jobs:
   cypress-run:
