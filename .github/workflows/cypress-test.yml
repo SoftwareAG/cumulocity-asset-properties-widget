@@ -55,7 +55,7 @@ jobs:
       - name: "Begin Testing"
         run: |
           yarn test:ci \
-            -- --config baseUrl=${{ inputs.tenantUrl }} || ${{ secrets.TENANT_URL }} \
+            -- --config baseUrl=${{ inputs.tenantUrl || secrets.TENANT_URL }} \
             --env username=${{ secrets.AUTOTEST_USERNAME1  }},password=${{ secrets.AUTOTEST_USERNAME1_PASSWORD }} \
             --browser ${{inputs.browser}} \
             --spec ${{inputs.spec_files}}
