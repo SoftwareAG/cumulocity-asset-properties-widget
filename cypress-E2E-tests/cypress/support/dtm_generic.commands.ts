@@ -209,6 +209,27 @@ declare global {
         selection: string,
         label: string
       ): Chainable<any>;
+
+      /**
+       *This command is being used to change the language of the application.
+       * @param languageKey Specify the key of the language. Eg.'de'is the key for language'Deutsch'.
+       */
+      changeLanguage(languageKey: string): void;
+
+      /**
+       * This command is being used to delete the grid configuration
+       * @param fragmentName Specify the fragment name based on the page. Options are listed below.
+       * ( dtm-asset-types-grid-config, dtm-assets-grid-config, sub-assets-grid, dtm-translation-grid-config )
+       * usage: cy.apiDeleteGridConfig('dtm-asset-types-grid-config');
+       */
+      apiDeleteGridConfig(page: string): void;
+
+      /**
+       * This command is being used to drop an element to the target locator.
+       * @param dropSelector Provide the target selector
+       * Usage: cy.get(sourceElement).dragTo(targetElement);
+       */
+      dragTo(dropSelector: string): void;
     }
   }
 }
@@ -266,13 +287,23 @@ Cypress.Commands.add('filterTheColumn', (columnName, filterText) => {
   cy.get(filterTextField).clear();
   cy.get(filterTextField).type(filterText);
   cy.get(applyButton).click({ force: true });
+  //added wait to resolve flakyness
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(1000);
 });
 
 Cypress.Commands.add('resetTheColumnFilter', columnName => {
   const filterIcon = `button[title='${columnName}']>i`;
   const resetButton = `button[title='${columnName}']+ul button[title='Reset']`;
+  cy.intercept('PUT', '/inventory/managedObjects/**').as('reset');
   cy.get(filterIcon).click({ force: true });
   cy.get(resetButton).click({ force: true });
+  cy.wait('@reset', { timeout: 10000 })
+    .its('response.statusCode')
+    .should('eq', 200);
+  //added wait to resolve flakyness
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(1000);
 });
 
 Cypress.Commands.add('cleanup', () => {
@@ -288,7 +319,8 @@ Cypress.Commands.add('cleanup', () => {
         cy.log('Deleting ', mo.id);
         cy.apiRequest({
           method: 'DELETE',
-          url: `/inventory/managedObjects/${mo.id}`
+          url: `/inventory/managedObjects/${mo.id}`,
+          failOnStatusCode: false
         });
       }
     });
@@ -303,7 +335,8 @@ Cypress.Commands.add('cleanup', () => {
         cy.log('Deleting ', mo.id);
         cy.apiRequest({
           method: 'DELETE',
-          url: `/inventory/managedObjects/${mo.id}`
+          url: `/inventory/managedObjects/${mo.id}`,
+          failOnStatusCode: false
         });
       }
     });
@@ -318,7 +351,8 @@ Cypress.Commands.add('cleanup', () => {
         cy.log('Deleting ', mo.id);
         cy.apiRequest({
           method: 'DELETE',
-          url: `/inventory/managedObjects/${mo.id}`
+          url: `/inventory/managedObjects/${mo.id}`,
+          failOnStatusCode: false
         });
       }
     });
@@ -412,7 +446,7 @@ Cypress.Commands.add('editConfirmationPopup', option => {
     .should('be.visible')
     .then(() => {
       if (option === 'Cancel') {
-        // requiredCheckbox.check({force: true})
+        //requiredCheckbox.check({force: true})
         cy.get(dtm_generic_page_elements.cancelEditPopupButton).click();
       } else {
         cy.get(dtm_generic_page_elements.confirmEditPopupButton).click();
@@ -510,6 +544,7 @@ Cypress.Commands.add('getManagedObjectsByQuery', (query, urlParams) => {
   const baseUrl = '/inventory/managedObjects';
   let url;
   const params = Object.entries(urlParams)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .filter(([key, value]) => value !== undefined && value !== null)
     .map(([key, value]) => `${key}=${value}`)
     .join('&');
@@ -624,3 +659,62 @@ Cypress.Commands.add(
       });
   }
 );
+
+Cypress.Commands.add('changeLanguage', languageKey => {
+  const rightToggleButton = "c8y-header-bar button[data-cy='right-drawer-toggle-button']";
+  cy.apiRequest({
+    method: 'GET',
+    url: `/inventory/managedObjects?fragmentType=language${Cypress.env('username')}`,
+    failOnStatusCode: false
+  }).then(response => {
+    const id = response.body.managedObjects[0].id;
+    cy.log(`Change language ${id}`);
+    cy.apiRequest({
+      method: 'PUT',
+      url: `/inventory/managedObjects/${id}`,
+      body: {
+        [`language${Cypress.env('username')}`]: `${languageKey}`,
+        type: 'c8y_UserPreference',
+        id: `${id}`
+      },
+      failOnStatusCode: false
+    }).then(responce => {
+      expect(responce.status).to.eq(200);
+      cy.reload();
+      // added wait to resolve flakyness
+      cy.wait(2000); //eslint-disable-line cypress/no-unnecessary-waiting
+      cy.get(rightToggleButton, { timeout: 30000 }).should('be.visible');
+    });
+  });
+});
+
+Cypress.Commands.add('apiDeleteGridConfig', fragmentName => {
+  cy.apiRequest({
+    method: 'GET',
+    url: `/inventory/managedObjects?fragmentType=${fragmentName}${Cypress.env('username')}`,
+    failOnStatusCode: false
+  }).then(response => {
+    if (response.body.managedObjects[0]) {
+      const id = response.body.managedObjects[0].id;
+      cy.log(`Deleting grid-config ${id}`);
+      cy.apiRequest({
+        method: 'DELETE',
+        url: `/inventory/managedObjects/${id}`,
+        failOnStatusCode: false
+      });
+    }
+  });
+});
+
+Cypress.Commands.add('dragTo', { prevSubject: 'element' }, function(subject, targetEl) {
+  // Currently realMouseDown etc. only works in browsers based on Chromium.
+  cy.wrap(subject)
+    .first()
+    .realMouseDown({ button: 'left', position: 'center', scrollBehavior: 'nearest' })
+    .realMouseMove(10, 0, { position: 'center', scrollBehavior: 'nearest' });
+  cy.get(targetEl)
+    .first()
+    .realMouseMove(10, 0, { position: 'center', scrollBehavior: 'nearest' })
+    .realMouseUp({ position: 'center', scrollBehavior: 'center' });
+  cy.wait(1000); // eslint-disable-line cypress/no-unnecessary-waiting
+});
