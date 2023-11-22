@@ -38,7 +38,7 @@ jobs:
           elif [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
             echo "tenantUrl=${{ secrets.TENANT_URL }}" >> $GITHUB_OUTPUT
           fi
- 
+
       - name: Checkout
         uses: actions/checkout@v3
 
