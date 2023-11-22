@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { IManagedObject } from '@c8y/client';
 import { AssetTypesService, gettext } from '@c8y/ngx-components';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
@@ -23,7 +23,7 @@ type ModalInitialState = {
   selector: 'c8y-asset-property-selector',
   templateUrl: './asset-property-selector.component.html',
 })
-export class AssetPropertiesSelectorComponent {
+export class AssetPropertiesSelectorComponent implements OnChanges {
   @Input() config: IManagedObject;
   @Input() asset: IManagedObject;
   isLoading: boolean = false;
@@ -44,7 +44,7 @@ export class AssetPropertiesSelectorComponent {
   ) {}
 
   async ngOnChanges(changes: IManagedObject): Promise<void> {
-    if (changes.asset.firstChange && this.config?.properties) {
+    if ((changes.asset.firstChange || !changes.asset.previousValue) && this.config?.properties) {
       this.properties = this.config.properties;
       this.customProperties = this.customProperties.concat(
         this.getConstructCustomProperties(
