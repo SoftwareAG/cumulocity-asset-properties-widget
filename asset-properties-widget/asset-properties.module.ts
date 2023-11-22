@@ -47,13 +47,14 @@ import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
         data: {
           ng1: {
             options: {
-              noDeviceTarget: true,
+              noDeviceTarget: false,
               noNewWidgets: false,
               deviceTargetNotRequired: false,
               groupsSelectable: true,
               showUnassignedDevices: false,
               upgrade: true,
               configComponent: true,
+              showChildDevices: false,
             },
           },
         },
