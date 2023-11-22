@@ -8,7 +8,7 @@ const title = 'Asset Properties Updated';
 const titleTextElement = 'c8y-form-group > label';
 const titleFieldId = '#widgetTitle';
 const searchElement = "input[placeholder='Search for groups or assets…']";
-const assetsTextElement = "p[title='Assets']";
+const assetsTextElement = "p[title='Groups']";
 const textElement = "c8y-asset-selector p[class*='text-12']";
 const selectPropElement = "h3[id='modal-title']";
 const backArrowElement = "i[c8yicon='angle-left']";
@@ -168,16 +168,13 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(keyElement).eq(2).should('not.exist');
   });
 
-  // Type in the title without selecting any asset, verify that clicking on save button should result in an alert message.
+  // Type in the title without selecting any asset, verify that clicking on save button should be disabled until asset is selected.
   it('TC_Asset_Properties_Widget_config_006', () => {
-    const configElement = 'c8y-asset-properties-config';
-    const alertMessage = ' Select an asset from the list. ';
     cy.get(titleFieldId).clear();
     cy.get(titleFieldId).type(title);
-    cy.get(asset_properties_widget_elements.saveButton).click();
-    cy.get(configElement).should('contain.text', alertMessage);
+    cy.get(asset_properties_widget_elements.saveButton).should('be.disabled');
     cy.selectAsset(assetName);
-    cy.get(configElement).should('not.contain.text', alertMessage);
+    cy.get(asset_properties_widget_elements.saveButton).should('be.enabled');
   });
 
   // Type in the title by selecting any asset, click on save and verify if the changes are getting reflected
@@ -185,6 +182,8 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(titleFieldId).clear();
     cy.get(titleFieldId).type(title);
     cy.selectAsset(assetName);
+    // added wait to resolve flakyness after selecting asset its takes few ms to enabled save button
+    cy.wait(1000);
     cy.get(asset_properties_widget_elements.saveButton).click();
     cy.get(cardTitleElement).should('contain.text', title);
     cy.deleteCard();
@@ -283,7 +282,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const selectionTextElement = 'c8y-asset-selector > div > p';
     cy.get(selectionTextElement).should('have.text', ' Asset selection ');
     cy.get(searchElement).should('be.visible');
-    cy.get(assetsTextElement).should('have.text', ' Assets ');
+    cy.get(assetsTextElement).should('have.text', ' Groups ');
   });
 
   // User should be able to select the asset.
@@ -299,7 +298,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const subassetName = 'check 2';
     cy.get(asset_properties_widget_elements.loadMoreButton).click();
     cy.get(`p[title='${assetName1}']`).click();
-    cy.get(textElement).should('contains.text', 'Assets > ' + assetName1);
+    cy.get(textElement).should('contains.text', ' Groups > ' + assetName1);
     cy.get(`p[title='${subassetName}']`).should('be.visible');
   });
 
@@ -309,10 +308,10 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const subassetName = 'check 2';
     cy.get(asset_properties_widget_elements.loadMoreButton).click();
     cy.get(`p[title='${assetName1}']`).click();
-    cy.get(textElement).should('contains.text', 'Assets > ' + assetName1);
+    cy.get(textElement).should('contains.text', 'Groups > ' + assetName1);
     cy.get(`p[title='${subassetName}']`).should('be.visible');
     cy.get(backArrowElement).click();
-    cy.get(assetsTextElement).should('contain.text', 'Assets');
+    cy.get(assetsTextElement).should('contain.text', 'Groups');
   });
 
   // User can select only one asset at a time.
@@ -322,7 +321,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(asset_properties_widget_elements.loadMoreButton).click();
     cy.selectAsset(assetName);
     cy.selectAsset(assetName1);
-    cy.get(`div[title='Assets > ${assetName}']`)
+    cy.get(`div[title='Groups > ${assetName}']`)
       .children('div[class*="checkbox"]')
       .children('label')
       .children('input[type="radio"]')
@@ -334,11 +333,11 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const assetName = 'check 1';
     cy.get(searchElement).type(assetName);
     cy.get(searchResultsElement).should('have.text', 'Search results');
-    cy.get('c8y-li > div').eq(1).should('contains.text', assetName).click();
+    cy.get('[title="check 1"] > :nth-child(1) > .c8y-list__item__block > .c8y-list__item__body').should('contains.text', assetName).click();
     cy.get(asset_properties_widget_elements.radioButton).should('be.checked');
     cy.get(`p[title='${assetName}']`).should('contains.text', assetName);
     cy.get("button[title='Search']").click();
-    cy.get(assetsTextElement).should('contain.text', 'Assets');
+    cy.get(assetsTextElement).should('contain.text', 'Groups');
   });
 
   // On selecting the asset,user should be able to view all asset properties associated with that asset.Verify if checkboxes for properties are selected by default
@@ -347,7 +346,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const assetName = 'check 1';
     const subassetName = 'check 1 > check 2 > check 4';
     cy.get(searchElement).type(assetName);
-    cy.get('c8y-li > div').eq(1).should('contains.text', assetName).click();
+    cy.get('[title="check 1"] > :nth-child(1) > .c8y-list__item__block > .c8y-list__item__body').should('contains.text', assetName).click();
     cy.get('i[c8yicon="angle-right"]').click();
     cy.selectSubasset(subassetName);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
@@ -381,17 +380,17 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(searchElement).type(assetName);
     cy.get(searchResultsElement).should('have.text', 'Search results');
     cy.get(strongTextElement).should('have.text', 'No match found.');
-    cy.get(smallTextElement).should('have.text', 'Try to rephrase your search word.');
+    cy.get(smallTextElement).should('have.text', ' Try to rephrase your search word. ');
   });
 
   // Verify that on click of an asset in Asset selection section it should navigate to the next screen displaying empty state message
   it('TC_Asset_Properties_Widget_config_030', () => {
     const assetName = 'check 3';
     const filterElement = "button[title='Apply filter']";
-    cy.get(assetsTextElement).should('contain.text', 'Assets');
+    cy.get(assetsTextElement).should('contain.text', 'Groups');
     cy.get(asset_properties_widget_elements.loadMoreButton).click();
     cy.get(`p[title='${assetName}']`).click();
-    cy.get(textElement).should('contains.text', 'Assets > ' + assetName);
+    cy.get(textElement).should('contains.text', 'Groups > ' + assetName);
     cy.get(backArrowElement).should('be.visible');
     cy.get('input[placeholder="Filter this column…"]').click();
     cy.get(filterElement).should('be.visible');

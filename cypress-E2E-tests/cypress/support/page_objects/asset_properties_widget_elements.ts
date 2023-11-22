@@ -14,7 +14,7 @@ export default {
   editWidgetButton: "button[title='Edit widget']",
   removeWidgetButton: "button[title='Remove widget']",
   removeButton: "button[title='Remove']",
-  loadMoreButton: "button[title='Assets > Load more']",
+  loadMoreButton: "button[title='Groups > Load more']",
   changeButton: "button[title='Change']",
   widgetDashboardAddWidgetButton: "[data-cy='widget-dashboard--Add-widget']",
   saveAssetTypeButton: '.card-footer.separator.sticky-bottom>.btn.btn-primary',
