@@ -1,43 +1,9 @@
-<div class="row flex-grow">
-  <div
-    class="a-s-stretch"
-    [ngClass]="{
-      'bg-level-1 col-sm-4 p-r-0': true,
-      'bg-level-0 col-sm-12': false
-    }"
-  >
-    <div class="fit-h bg-inherit p-l-16" [ngClass]="{ 'p-r-24': false }">
-      <div class="p-relative bg-inherit">
-        <div class="alert alert-warning" *ngIf="!isAssetSelected">
-          {{ "Select an asset from the list." | translate }}
-        </div>
-        <c8y-asset-selector-miller
-          (onSelected)="selectionChanged($event)"
-          [config]="{
-            view: 'miller',
-            groupsSelectable: true,
-            showChildDevices: false,
-            columnHeaders: true,
-            showUnassignedDevices: false,
-            search: true,
-            showFilter: true,
-            singleColumn: true
-          }"
-          [asset]="settings?.context"
-          [selectedDevice]="selectedAsset"
-          class="d-block bg-inherit p-relative"
-          style="height: calc(100vh - 406px)"
-        ></c8y-asset-selector-miller>
-      </div>
-    </div>
-  </div>
-  <div>
-    <c8y-asset-property-selector
-      class="d-block bg-inherit p-relative"
-      style="height: calc(100vh - 406px)"
-      [ngClass]="{ 'inner-scroll': true }"
-      [asset]="config.asset"
-      [config]="config"
-    ></c8y-asset-property-selector>
-  </div>
+<div class="container">
+  <textarea
+    name="roleExplanation"
+    [(ngModel)]="query"
+    [ngModelOptions]="{ standalone: true }"
+    style="width: 500px"
+    rows="3"
+  ></textarea>
 </div>

@@ -9,8 +9,7 @@ import { AssetPropertiesService } from '../asset-properties-config/asset-propert
   providers: [ManagedObjectRealtimeService],
 })
 export class AssetPropertiesViewComponent implements OnInit {
-  selected = { id: 'asset-properties-widget' };
-  selectedAsset: IManagedObject;
+  assetProperties: IManagedObject;
   isEmptyWidget: boolean = false;
   customProperties: IManagedObject[];
   properties: IManagedObject[];
@@ -18,41 +17,24 @@ export class AssetPropertiesViewComponent implements OnInit {
 
   constructor(
     protected moRealtimeService: ManagedObjectRealtimeService,
-    private assetPropertiesService: AssetPropertiesService,
+    private assetPropertiesService: AssetPropertiesService
   ) {}
 
   async ngOnInit(): Promise<void> {
-    if (this.config.asset) {
+    if (this.config.device) {
       try {
-        this.selectedAsset = await this.assetPropertiesService.fetchAssetData(this.config.asset.id);
-        setTimeout(async () => {
-          this.customProperties =
-            await this.assetPropertiesService.getCustomProperties(
-              this.selectedAsset
-            );
-          this.properties = this.config.properties.filter((property) => {
-            if (
-              property.isExistingProperty ||
-              (this.customProperties.length != 0 &&
-                this.customProperties.find((prop) => prop.id === property.id))
-            ) {
-              return property;
-            }
-          });
-          this.config.properties = this.properties;
-          this.handleRealtime();
-        }, 1000);
+        this.assetProperties = await this.assetPropertiesService.fetchAssetData(this.config.device.id, this.config.query);
       } catch (error) {
         this.isEmptyWidget = true;
       }
     }
   }
 
-  private handleRealtime() {
-    this.moRealtimeService
-      .onUpdate$(this.selectedAsset.id)
-      .subscribe((asset: IManagedObject) => {
-        this.selectedAsset = asset;
-      });
-  }
+  // private handleRealtime() {
+  //   this.moRealtimeService
+  //     .onUpdate$(this.selectedAsset.id)
+  //     .subscribe((asset: IManagedObject) => {
+  //       this.selectedAsset = asset;
+  //     });
+  // }
 }

@@ -1,6 +1,5 @@
 import { IManagedObject } from '@c8y/client';
 import { AssetPropertiesConfigComponent } from './asset-properties-config.component';
-import { AssetSelectionChangeEvent } from '@c8y/ngx-components/assets-navigator';
 
 describe('AssetPropertiesConfigComponent', () => {
   const date = new Date();
@@ -63,45 +62,8 @@ describe('AssetPropertiesConfigComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should get selected asset MOs', async () => {
-    // given
-    component.config = { settings: true, asset: asset };
-    jest
-      .spyOn(assetPropertiesServiceMock, 'fetchAssetData')
-      .mockReturnValue(Promise.resolve({ data: asset }));
-
-    // when
-    await component.ngOnInit();
-
-    // then
-    expect(component.selectedAsset).toEqual(asset);
-  });
-
-  it('should assign selected asset MOs to widget config', () => {
-    // given
-    const selection = {
-      change: { item: asset },
-    } as unknown as AssetSelectionChangeEvent;
-
-    // when
-    component.selectionChanged(selection);
-
-    // then
-    expect(component.config.asset).toEqual(asset);
-    expect(component.isAssetSelected).toBeTruthy();
-  });
-
   describe('onBeforeSave', () => {
-    it('should return false if asset is not selected', async () => {
-      // when
-      const result = await component.onBeforeSave({});
-
-      // expect
-      expect(result).toEqual(false);
-      expect(component.isAssetSelected).toBeFalsy();
-    });
-
-    it('should return true if asset is selected and at least one property is selected', async () => {
+    it('should return true if at least one property is selected', async () => {
       // given
       const config = { asset: { asset }, properties: properties };
 
@@ -110,7 +72,6 @@ describe('AssetPropertiesConfigComponent', () => {
 
       // expect
       expect(result).toEqual(true);
-      expect(component.isAssetSelected).toBeTruthy();
     });
 
     it('should return false if non of property is selected', async () => {
@@ -122,7 +83,6 @@ describe('AssetPropertiesConfigComponent', () => {
 
       // expect
       expect(result).toEqual(false);
-      expect(component.isAssetSelected).toBeTruthy();
     });
   });
 });

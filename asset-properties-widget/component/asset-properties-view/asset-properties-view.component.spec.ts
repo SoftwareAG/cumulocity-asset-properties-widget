@@ -47,7 +47,7 @@ describe('AssetPropertiesViewComponent', () => {
 
   it('should get selected asset details', async () => {
     // given
-    component.config = { asset: asset };
+    component.config = { device: asset };
     jest
       .spyOn(assetPropertiesServiceMock, 'fetchAssetData')
       .mockResolvedValue(asset);
@@ -57,7 +57,7 @@ describe('AssetPropertiesViewComponent', () => {
     await component.ngOnInit();
 
     // then
-    expect(component.selectedAsset).toEqual(asset);
+    expect(component.assetProperties).toEqual(asset);
     expect(component.isEmptyWidget).toBe(false);
   });
 
@@ -72,7 +72,7 @@ describe('AssetPropertiesViewComponent', () => {
     await component.ngOnInit();
 
     // then
-    expect(component.selectedAsset).toEqual(undefined);
+    expect(component.assetProperties).toEqual(undefined);
     expect(component.isEmptyWidget).toBe(true);
   });
 });

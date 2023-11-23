@@ -14,26 +14,28 @@ export class AssetPropertiesService {
   ) {}
 
   async getCustomProperties(group: IManagedObject): Promise<IManagedObject[]> {
-    const assetType = this.assetTypes.getAssetTypeByName(group.type);
-    if (assetType) {
-      const { data } = await this.inventoryService.childAdditionsList(
-        assetType,
-        {
-          pageSize: 2000,
-          query: "$filter=(has('c8y_IsAssetProperty'))",
-        }
-      );
-      return data;
+    if(group && group.type){
+      const assetType = this.assetTypes.getAssetTypeByName(group.type);
+      if (assetType) {
+        const { data } = await this.inventoryService.childAdditionsList(
+          assetType,
+          {
+            pageSize: 2000,
+            query: "$filter=(has('c8y_IsAssetProperty'))",
+          }
+        );
+        return data;
+      }
     }
     return [];
   }
 
-  async fetchAssetData(assetId: string): Promise<IManagedObject> {
-    const GRAPHQL_ENDPOINT = `/service/dtm-assets-synchro/graphql`;
+  async fetchAssetData(assetId: string, query:string): Promise<IManagedObject> {
+    const GRAPHQL_ENDPOINT = '/service/dtm-assets-synchro/graphql';
     const requestBody = {
       query: `query {
         c8y_asset(id: "${assetId}") {
-          id name properties { name value } subassets { id name type } type
+          ${query}
         }
       }`
     };
@@ -46,6 +48,7 @@ export class AssetPropertiesService {
       body: JSON.stringify(requestBody)
     };
 
+    // eslint-disable-next-line no-useless-catch
     try {
       const response = await this.fetchClient.fetch(GRAPHQL_ENDPOINT, fetchOptions);
 
