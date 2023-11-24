@@ -5,9 +5,29 @@
   (assetChange)="assetChange($event)"
   class="d-contents"
 ></c8y-asset-properties> -->
-<div *ngFor="let item of assetProperties | keyvalue">
-  <span>{{ item.key | translate }}</span
-  >: {{ item.value }}
+<div>
+  <div><strong>id:</strong> {{ assetProperties.id }}</div>
+  <div><strong>name:</strong> {{ assetProperties.name }}</div>
+
+  <div><strong>Properties:</strong>
+    <ul>
+      <li *ngFor="let prop of assetProperties.properties">
+        <strong>{{ prop.name | translate }}:</strong> {{ prop.value }}
+      </li>
+    </ul>
+  </div>
+
+  <div><strong>Subassets:</strong>
+    <ul>
+      <li *ngFor="let subasset of assetProperties.subassets">
+        <div><strong>id:</strong> {{ subasset.id }}</div>
+        <div><strong>name:</strong> {{ subasset.name | translate }}</div>
+        <div><strong>type:</strong> {{ subasset.type | translate }}</div>
+      </li>
+    </ul>
+  </div>
+
+  <div><strong>type:</strong> {{ assetProperties.type }}</div>
 </div>
 
 <div *ngIf="isEmptyWidget" style="text-align: center">
