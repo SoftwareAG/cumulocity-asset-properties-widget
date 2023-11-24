@@ -1,8 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { ControlContainer, NgForm } from '@angular/forms';
 import { IManagedObject } from '@c8y/client';
 import { DynamicComponent, OnBeforeSave } from '@c8y/ngx-components';
-import { AssetPropertiesService } from '../asset-properties-config/asset-properties.service';
 
 @Component({
   selector: 'c8y-asset-properties-config',
@@ -10,18 +9,22 @@ import { AssetPropertiesService } from '../asset-properties-config/asset-propert
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 })
 export class AssetPropertiesConfigComponent
-  implements DynamicComponent, OnBeforeSave
+  implements DynamicComponent, OnBeforeSave, OnChanges
 {
   @Input() config: any = {};
   assetProperties: IManagedObject;
   query: string = 'id name properties { name value } subassets { id name type } type';
 
-  constructor(
-    private assetPropertiesService: AssetPropertiesService
-  ) {}
-
+  async ngOnChanges(){
+    if (this.config.query) {
+      this.query = this.config.query;
+    }
+  }
+  
  async onBeforeSave(config: any): Promise<boolean> {
   this.config.query = this.query;
-    return true;
+  return !!(
+    config.query
+  );
   }
 }
