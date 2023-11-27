@@ -30,6 +30,14 @@ export class AssetPropertiesViewComponent implements OnInit {
     }
   }
 
+  isObjectType(value: any): boolean {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+  }
+
+  getSubassetProperties(subasset: any): {key: string, value: any}[] {
+    return Object.keys(subasset).map(key => ({ key, value: subasset[key] }));
+  }
+
   // private handleRealtime() {
   //   this.moRealtimeService
   //     .onUpdate$(this.selectedAsset.id)
