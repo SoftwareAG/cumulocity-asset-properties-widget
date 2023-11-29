@@ -1,56 +1,10 @@
-<!-- <c8y-asset-properties
-  *ngIf="!isEmptyWidget && selectedAsset && properties"
-  [properties]="properties"
-  [asset]="selectedAsset"
-  (assetChange)="assetChange($event)"
-  class="d-contents"
-></c8y-asset-properties> -->
-<div class="container">
-  <!-- Asset ID and Name -->
-  <div><label>{{ "Asset ID" | translate }}</label>: {{ assetProperties.id }}</div>
-  <div><label>{{ "Asset Name" | translate }}</label>: {{ assetProperties.name }}</div>
-
-  <!-- Asset Properties -->
-  <div *ngIf="assetProperties.properties">
-    <label>{{ "Asset Properties" | translate }}</label>:
-    <ul *ngIf="assetProperties.properties.length; else noProperties">
-      <li *ngFor="let prop of assetProperties.properties">
-        <strong>{{ prop.name | translate }}:</strong>&nbsp;
-        <ng-container *ngIf="isObjectType(prop.value)">
-          <pre>{{ prop.value | json }}</pre>
-        </ng-container>
-        <ng-container *ngIf="!isObjectType(prop.value)">
-          {{ prop.value }}
-        </ng-container>
-      </li>
-    </ul>
-  </div>
-  <ng-template #noProperties>
-    <div class="alert alert-warning">{{ "No properties available." | translate }}</div>
-  </ng-template>
-
-  <!-- Subassets -->
-  <div *ngIf="assetProperties.subassets">
-    <label>{{ "Subassets" | translate }}</label>:
-    <ul *ngIf="assetProperties.subassets.length; else noSubassets">
-      <li *ngFor="let subasset of assetProperties.subassets">
-        <div><strong>{{ "Subasset ID" | translate }}:</strong> {{ subasset.id }}</div>
-        <div><strong>{{ "Subasset Name" | translate }}:</strong> {{ subasset.name }}</div>
-        <div *ngIf="subasset.type"><strong>{{ "Subasset Type" | translate }}:</strong> {{ subasset.type }}</div>
-      </li>
-    </ul>
-  </div>
-  <ng-template #noSubassets>
-    <div class="alert alert-warning">{{ "No subassets available." | translate }}</div>
-  </ng-template>
-
-  <!-- Asset Type -->
-  <div *ngIf="assetProperties.type">
-    <label>{{ "Asset Type" | translate }}</label>: {{ assetProperties.type }}
-  </div>
+<div *ngFor="let item of assetProperties | keyvalue" class="card-block">
+  <div class="text-medium text-truncate">{{ item.key | translate }}</div>
+  <app-recursive-display [value]="item.value"></app-recursive-display>
 </div>
 
-<!-- No Data Warning -->
-<div *ngIf="isEmptyWidget" class="alert alert-warning" style="text-align: center">
+<div *ngIf="isEmptyWidget" class="alert alert-warning text-center">
   {{ "No Data" | translate }}
 </div>
+
+

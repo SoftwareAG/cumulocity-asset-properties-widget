@@ -15,6 +15,7 @@ import { AssetPropertiesItemComponent } from './component/asset-properties-view/
 import { assetPropertyItemSelectorCtrlComponent } from './component/asset-properties-config/asset-property-item-selector/asset-property-item-selector.component';
 import { AssetPropertiesSelectorComponent } from './component/asset-properties-config/asset-property-selector/asset-property-selector.component';
 import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
+import { RecursiveDisplayComponent } from './component/asset-properties-view/recursive-display.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
     AssetPropertiesViewComponent,
     AssetPropertiesComponent,
     AssetPropertiesItemComponent,
+    RecursiveDisplayComponent
   ],
   imports: [
     CoreModule,
