@@ -11,6 +11,7 @@ import { AssetPropertiesService } from '../asset-properties-config/asset-propert
 export class AssetPropertiesViewComponent implements OnInit {
   assetProperties: IManagedObject;
   isEmptyWidget: boolean = false;
+  errorMessage: string = '';
   @Input() config: any;
 
   constructor(
@@ -28,6 +29,7 @@ export class AssetPropertiesViewComponent implements OnInit {
         }
       } catch (error) {
         this.isEmptyWidget = true;
+        this.errorMessage = error;
       }
     }
   }
