@@ -162,7 +162,7 @@ describe('Asset Properties Widget: Integration tests', function () {
   it('TC_Asset_Properties_Widget_Integration_003', () => {
     const assetName = 'Test Asset3';
     cy.selectAssetPropertyAndSave(assetName, propKey);
-    cy.get(propValueElement).should('contain.text', 'Not Defined');
+    cy.get(propValueElement).should('contain.text', ' Undefined ');
 
     // delete asset in digital twin manager
     cy.visitAndWaitUntilPageLoad(dtmURL);
@@ -178,7 +178,7 @@ describe('Asset Properties Widget: Integration tests', function () {
     const assetName = 'Test Asset2';
     const confirmButton = "button[title='Confirm']";
     cy.selectAssetPropertyAndSave(assetName, propKey);
-    cy.get(propValueElement).should('contain.text', 'Not Defined');
+    cy.get(propValueElement).should('contain.text', ' Undefined ');
     cy.deleteCard();
 
     // remove property in digital twin manager
