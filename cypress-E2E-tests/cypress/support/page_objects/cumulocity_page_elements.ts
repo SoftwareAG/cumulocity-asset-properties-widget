@@ -4,17 +4,17 @@ export default {
   deviceManagementApp: "a[title='Device management']",
   administrationApp: "a[title='Administration']",
 
-  //#######[Text Boxes]###############
+  // #######[Text Boxes]###############
 
   userNameTextBoxC8y: 'input#user',
   pwdTextBoxC8y: 'input#password',
 
-  //#######[Buttons]##################
+  // #######[Buttons]##################
 
   loginButtonC8y: "button[type='submit']",
   menuButtonC8y: 'button#appSwitcherDropdown',
 
-  //#######[Icons]####################
+  // #######[Icons]####################
 
   c8yUserIcon: "button[data-cy='right-drawer-toggle-button']",
   c8yLogoutUserIcon: "button[data-cy='user-menu-logout-button']"

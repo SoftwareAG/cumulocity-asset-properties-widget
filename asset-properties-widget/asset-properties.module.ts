@@ -1,5 +1,9 @@
 import { NgModule } from '@angular/core';
-import { CoreModule, HOOK_COMPONENTS, RealtimeModule } from '@c8y/ngx-components';
+import {
+  CoreModule,
+  HOOK_COMPONENTS,
+  RealtimeModule,
+} from '@c8y/ngx-components';
 import * as preview from './common/preview';
 import { AssetPropertiesViewComponent } from './component/asset-properties-view/asset-properties-view.component';
 import { AssetPropertiesConfigComponent } from './component/asset-properties-config/asset-properties-config.component';
@@ -8,24 +12,26 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { AssetPropertiesComponent } from './component/asset-properties-view/asset-properties/asset-properties.component';
 import { AssetPropertiesItemComponent } from './component/asset-properties-view/asset-properties/asset-properties-item.component';
-import { assetPropertyItemSelectorCtrl } from './component/asset-properties-config/asset-property-item-selector/asset-property-item-selector.component';
+import { assetPropertyItemSelectorCtrlComponent } from './component/asset-properties-config/asset-property-item-selector/asset-property-item-selector.component';
 import { AssetPropertiesSelectorComponent } from './component/asset-properties-config/asset-property-selector/asset-property-selector.component';
+import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
 
 @NgModule({
   declarations: [
     AssetPropertiesConfigComponent,
     AssetPropertiesSelectorComponent,
-    assetPropertyItemSelectorCtrl,
+    assetPropertyItemSelectorCtrlComponent,
     AssetPropertiesViewComponent,
     AssetPropertiesComponent,
-    AssetPropertiesItemComponent
+    AssetPropertiesItemComponent,
   ],
   imports: [
     CoreModule,
     AssetSelectorModule,
     Ng2SearchPipeModule,
     DragDropModule,
-    RealtimeModule
+    RealtimeModule,
+    SubAssetsModule,
   ],
   providers: [
     {
@@ -41,13 +47,14 @@ import { AssetPropertiesSelectorComponent } from './component/asset-properties-c
         data: {
           ng1: {
             options: {
-              noDeviceTarget: true,
+              noDeviceTarget: false,
               noNewWidgets: false,
               deviceTargetNotRequired: false,
               groupsSelectable: true,
               showUnassignedDevices: false,
-              upgrade:true,
-              configComponent:true
+              upgrade: true,
+              configComponent: true,
+              showChildDevices: false,
             },
           },
         },

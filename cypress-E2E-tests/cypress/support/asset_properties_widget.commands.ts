@@ -1,6 +1,7 @@
 import asset_properties_widget_elements from './page_objects/asset_properties_widget_elements';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       /**
@@ -78,7 +79,7 @@ declare global {
 }
 
 Cypress.Commands.add('selectAsset', assetName => {
-  cy.get(`div[title='Assets > ${assetName}']`)
+  cy.get(`div[title='Groups > ${assetName}']`)
     .children('div[class*="checkbox"]')
     .children('label')
     .children('input[type="radio"]')
@@ -167,7 +168,10 @@ Cypress.Commands.add('deleteWidgetInstances', title => {
 });
 
 Cypress.Commands.add('selectAssetAndSave', assetName => {
+  
   cy.selectAsset(assetName);
+  // added wait to resolve flakyness after selecting asset its takes few ms to enabled save button
+  cy.wait(1000);
   cy.get(asset_properties_widget_elements.saveButton).click();
 });
 

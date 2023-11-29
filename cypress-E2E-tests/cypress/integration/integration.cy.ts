@@ -1,10 +1,11 @@
+// eslint-disable-next-line spaced-comment
 /// <reference types="cypress" />
 import asset_properties_widget_elements from '../support/page_objects/asset_properties_widget_elements';
 import { ROUTES } from 'cypress/constants/routes.constant';
 
 const propKey = 'color';
 const updatedPropValue = 'Blu';
-const propWidgetURL = `apps/sag-pkg-asset-properties-widget/index.html#/`;
+const propWidgetURL = 'apps/sag-pkg-asset-properties-widget/index.html#/';
 const dtmURL = 'apps/digital-twin-manager/index.html#/assets';
 const propValueElement = 'c8y-asset-properties-item > p';
 const propFeildElement = "input[type='text']";
@@ -161,14 +162,14 @@ describe('Asset Properties Widget: Integration tests', function () {
   it('TC_Asset_Properties_Widget_Integration_003', () => {
     const assetName = 'Test Asset3';
     cy.selectAssetPropertyAndSave(assetName, propKey);
-    cy.get(propValueElement).should('contain.text', 'Not Defined');
+    cy.get(propValueElement).should('contain.text', ' Undefined ');
 
     // delete asset in digital twin manager
     cy.visitAndWaitUntilPageLoad(dtmURL);
     cy.deleteAsset(assetName);
 
     cy.visitAndWaitUntilPageLoad(propWidgetURL);
-    cy.get('asset-properties > div').should('contain.text', 'No Data');
+    cy.get('c8y-asset-properties-view > div').should('contain.text', 'No Data');
     cy.deleteCard();
   });
 
@@ -177,7 +178,7 @@ describe('Asset Properties Widget: Integration tests', function () {
     const assetName = 'Test Asset2';
     const confirmButton = "button[title='Confirm']";
     cy.selectAssetPropertyAndSave(assetName, propKey);
-    cy.get(propValueElement).should('contain.text', 'Not Defined');
+    cy.get(propValueElement).should('contain.text', ' Undefined ');
     cy.deleteCard();
 
     // remove property in digital twin manager

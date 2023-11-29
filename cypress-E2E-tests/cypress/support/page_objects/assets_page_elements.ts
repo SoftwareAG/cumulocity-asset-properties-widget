@@ -1,5 +1,5 @@
 export default {
-  //###############[Buttons]##############
+  // ###############[Buttons]##############
   addAssetButton: "button[title='Add asset']",
   cancelButton: '.card-footer.separator.sticky-bottom>.btn.btn-default',
   nextButton: '.card-footer.separator.sticky-bottom>.btn.btn-primary',
@@ -40,10 +40,10 @@ export default {
   assignButtonInChildDeviceWindow: "c8y-assign-child-devices button[title='Assign']",
   cancelButtonInChildDeviceWindow: "c8y-assign-child-devices button[title='Cancel']",
 
-  //###############[Dropdowns]############
+  // ###############[Dropdowns]############
   chooseAssetTypeDropdown: '.c8y-select-wrapper.fit-w>ng-select',
 
-  //###############[Textbox]##############
+  // ###############[Textbox]##############
   datePicker: "input[id*='date']",
   searchTextBox: "#searchDropdown input[type='text']"
 };

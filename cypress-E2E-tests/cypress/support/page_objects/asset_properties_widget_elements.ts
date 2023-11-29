@@ -1,5 +1,5 @@
 export default {
-  //###############[Buttons]##############
+  // ###############[Buttons]##############
   addWidgetButton: "div > button[title='Add widget']",
   saveButton: "button[title='Save']",
   cancelButton: "button[title='Cancel']",
@@ -14,16 +14,16 @@ export default {
   editWidgetButton: "button[title='Edit widget']",
   removeWidgetButton: "button[title='Remove widget']",
   removeButton: "button[title='Remove']",
-  loadMoreButton: "button[title='Assets > Load more']",
+  loadMoreButton: "button[title='Groups > Load more']",
   changeButton: "button[title='Change']",
   widgetDashboardAddWidgetButton: "[data-cy='widget-dashboard--Add-widget']",
   saveAssetTypeButton: '.card-footer.separator.sticky-bottom>.btn.btn-primary',
 
-  //###############[Dropdowns]############
+  // ###############[Dropdowns]############
 
-  //###############[Textbox]##############
+  // ###############[Textbox]##############
 
-  //###############[Other]################
+  // ###############[Other]################
   cardElement: "div[title='Editable form for asset properties widget']",
   filterProperties: "input[placeholder='Filter properties']"
 };

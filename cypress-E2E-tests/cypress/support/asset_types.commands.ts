@@ -2,6 +2,7 @@ import asset_types__page_elements from './page_objects/asset_types_page_elements
 import home_page_elements from './page_objects/home_page_elements';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       /**

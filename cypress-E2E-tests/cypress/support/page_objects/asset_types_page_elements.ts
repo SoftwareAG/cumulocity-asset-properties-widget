@@ -1,5 +1,5 @@
 export default {
-  //################[Buttons]#################
+  // ################[Buttons]#################
   addAssetTypeButton: "button[title='Add asset model']",
   deleteSelectedItemsButton: "button.btnbar-btn[title='Delete']",
   cancelSelectedItemsButton: "button[title='Cancel']",
@@ -25,17 +25,17 @@ export default {
   exportAssetModelHeading: 'c8y-tree-view[data-cy="export-asset-models-grid"] div[id="treeTitle"]',
   keyValidationMessage: 'c8y-messages[data-cy="manage-asset-model-key-validation-error"]',
 
-  //################[Text Boxes]##############
+  // ################[Text Boxes]##############
   labelTextBox: "input[formcontrolname='label']",
   keyTextBox: "input[formcontrolname='name']",
   descriptionTextBox: "textarea[formcontrolname='description']",
   filterTextBox: 'c8y-filtering-form-renderer>div>input',
 
-  //#################[Dropdowns]##############
+  // #################[Dropdowns]##############
   selectAssetTypeDropdown: "div[aria-haspopup='listbox']",
   selectCustomPropertyDropdown: "div[aria-haspopup='listbox']",
 
-  //#################[Check Box]##############
+  // #################[Check Box]##############
   isRequiredCheckBox: "input[type='checkbox']",
 
   assetTypeChildren: 'c8y-manage-asset-type .text-medium.m-b-4',

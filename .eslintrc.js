@@ -2,28 +2,36 @@ module.exports = {
   root: true,
   env: {
     browser: true,
-    es6: true,
-    node: true,
-    'cypress/globals': true
+    es2021: true
   },
   overrides: [
     {
-      files: ['./cypress/**/*.ts'],
+      files: ['*.ts'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
         ecmaVersion: 'latest',
-        sourceType: 'module',
-        project: ['./tsconfig.json']
+        sourceType: 'module'
       },
-      plugins: ['import', '@typescript-eslint', 'cypress'],
+      plugins: ['import', '@typescript-eslint', '@angular-eslint'],
       extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
-        'plugin:cypress/recommended'
+        'plugin:@angular-eslint/recommended',
+        // This is required if you use inline templates in Components
+        'plugin:@angular-eslint/template/process-inline-templates'
       ],
       rules: {
         semi: ['error'],
-        'spaced-comment': 'off',
+        'spaced-comment': [
+          'error',
+          'always',
+          {
+            line: {
+              exceptions: ['/']
+            },
+            markers: ['//////////']
+          }
+        ],
         'func-names': ['error', 'never'],
         'no-use-before-define': 'off',
         'comma-dangle': [
@@ -36,6 +44,13 @@ module.exports = {
             functions: 'never'
           }
         ],
+        strict: ['error', 'function'],
+        'no-param-reassign': [
+          'error',
+          {
+            props: false
+          }
+        ],
         'no-plusplus': 'off',
         'no-redeclare': 'off',
         'no-extra-semi': 'error',
@@ -45,6 +60,23 @@ module.exports = {
         'no-underscore-dangle': 'warn',
         'prefer-template': 'warn',
         'linebreak-style': 'off',
+        'object-property-newline': 'off',
+        'prefer-destructuring': [
+          'error',
+          {
+            VariableDeclarator: {
+              array: true,
+              object: true
+            },
+            AssignmentExpression: {
+              array: false,
+              object: false
+            }
+          },
+          {
+            enforceForRenamedProperties: false
+          }
+        ],
         'max-len': 'off',
         'arrow-parens': 'off',
         'function-paren-newline': 'off',
@@ -77,8 +109,29 @@ module.exports = {
             }
           }
         ],
-        '@typescript-eslint/no-namespace': 'off'
+        'no-prototype-builtins': 'warn',
+        '@angular-eslint/directive-selector': [
+          'error',
+          { type: 'attribute', prefix: 'c8y', style: 'camelCase' }
+        ],
+        '@angular-eslint/component-selector': [
+          'error',
+          { type: 'element', prefix: 'c8y', style: 'kebab-case' }
+        ],
+        'import/no-unused-modules': 'error'
       }
+    },
+    {
+      files: ['*.component.html'],
+      plugins: ['@angular-eslint/template'],
+      extends: ['plugin:@angular-eslint/template/recommended'],
+      parser: '@angular-eslint/template-parser',
+      parserOptions: {
+        project: './tsconfig.json',
+        ecmaVersion: 'latest',
+        sourceType: 'module'
+      },
+      rules: {}
     }
   ]
 };

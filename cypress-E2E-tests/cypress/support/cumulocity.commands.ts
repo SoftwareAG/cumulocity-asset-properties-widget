@@ -3,6 +3,7 @@ import cumulocity_page_elements from './page_objects/cumulocity_page_elements';
 import { IManagedObject, IUserGroup, IUserInventoryRole } from '@c8y/client';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       /**

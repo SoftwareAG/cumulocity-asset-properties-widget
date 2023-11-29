@@ -1,9 +1,6 @@
 <ng-container>
   <div class="card-block">
-    <div
-      class="text-center"
-      *ngIf="isLoading"
-    >
+    <div class="text-center" *ngIf="isLoading">
       <c8y-loading></c8y-loading>
     </div>
 
@@ -14,14 +11,8 @@
         *ngFor="let prop of customProperties"
         [ngClass]="{ 'card-highlight': prop.isEdit }"
       >
-        <div
-          class="card-block"
-          [ngClass]="{ 'p-b-0': prop.isEdit }"
-        >
-          <div
-            class="d-flex p-b-8 a-i-center"
-            *ngIf="!prop.isEdit"
-          >
+        <div class="card-block" [ngClass]="{ 'p-b-0': prop.isEdit }">
+          <div class="d-flex p-b-8 a-i-center" *ngIf="!prop.isEdit">
             <p
               class="text-medium text-truncate"
               title="{{ prop?.label | translate }}"
@@ -37,8 +28,8 @@
               type="button"
               [delay]="500"
               (click)="toggleEdit(prop)"
-              *ngIf="prop.isEditable || prop.isEditable === undefined "
-              [disabled] = 'isEditDisabled'
+              *ngIf="prop.isEditable || prop.isEditable === undefined"
+              [disabled]="isEditDisabled"
             >
               <i c8yIcon="pencil"></i>
             </button>
@@ -53,11 +44,15 @@
             [isEdit]="prop.isEdit"
             [jsonSchema]="prop.jsonSchema"
           ></c8y-asset-properties-item>
+          <div *ngIf="prop.key === 'c8y_Position'">
+            <c8y-location
+              [locationMO]="asset"
+              [isEdit]="prop.isEdit"
+              [form]="assetProps.form"
+            ></c8y-location>
+          </div>
         </div>
-        <div
-          class="card-footer p-t-0"
-          *ngIf="prop.isEdit"
-        >
+        <div class="card-footer p-t-0" *ngIf="prop.isEdit">
           <button
             class="btn btn-default btn-sm"
             title="{{ 'Cancel' | translate }}"
@@ -65,7 +60,7 @@
             type="button"
             (click)="toggleEdit(prop)"
           >
-            {{ 'Cancel' | translate }}
+            {{ "Cancel" | translate }}
           </button>
           <button
             class="btn btn-primary btn-sm"
@@ -75,7 +70,7 @@
             [disabled]="!assetProps?.form?.valid"
             (click)="save(assetProps.form.value, prop)"
           >
-            {{ 'Save' | translate }}
+            {{ "Save" | translate }}
           </button>
         </div>
       </div>

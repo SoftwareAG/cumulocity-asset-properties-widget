@@ -21,6 +21,7 @@ import './asset_types.commands';
 import './assets.commands';
 import './cockpit.commands';
 import './asset_properties_widget.commands';
+import 'cypress-real-events';
 
 const addContext = require('mochawesome/addContext'); //eslint-disable-line
 
@@ -33,7 +34,7 @@ Cypress.on('test:after:run', (test, runnable) => {
 });
 
 Cypress.on('uncaught:exception', (err, runnable) => {
-  //window.location.reload()
+  // window.location.reload()
   // returning false here prevents Cypress from
   // failing the test
   return false;

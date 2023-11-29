@@ -4,5 +4,5 @@
  * combined to one JSON file per language and are loaded if the specific language is needed.
  */
 import './locales/de.po'; // <- adding additional strings to the german translation.
-import './locales/en.po'
+import './locales/en.po';
 import './i18n';
