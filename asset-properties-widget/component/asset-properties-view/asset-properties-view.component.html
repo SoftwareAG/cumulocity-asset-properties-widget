@@ -1,8 +1,10 @@
-<div *ngFor="let item of assetProperties | keyvalue" class="card-block">
-  <div class="text-medium text-truncate">{{ item.key | translate }}</div>
-  <app-recursive-display [value]="item.value"></app-recursive-display>
-</div>
+<div class="box-container">
+  <div *ngFor="let item of assetProperties | keyvalue" class="card-block">
+    <div class="text-medium text-truncate">{{ item.key | translate }}</div>
+    <app-recursive-display [value]="item.value"></app-recursive-display>
+  </div>
 
-<div *ngIf="isEmptyWidget" class="alert alert-warning text-center">
-  {{ errorMessage }}
+  <div *ngIf="isEmptyWidget" class="alert alert-warning text-center">
+    {{ errorMessage }}
+  </div>
 </div>

@@ -1,0 +1,7 @@
+.box-container {
+    border: 1px solid #ddd; /* Light grey border */
+    padding: 15px; /* Some padding inside the box */
+    border-radius: 5px; /* Rounded corners */
+    margin: 10px 0; /* Margin for spacing outside the box */
+    background-color: #f9f9f9; /* Light grey background */
+  }  

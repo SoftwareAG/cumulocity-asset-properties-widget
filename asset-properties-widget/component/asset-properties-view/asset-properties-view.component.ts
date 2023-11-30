@@ -6,6 +6,7 @@ import { AssetPropertiesService } from '../asset-properties-config/asset-propert
 @Component({
   selector: 'c8y-asset-properties-view',
   templateUrl: './asset-properties-view.component.html',
+  styleUrls: ['./asset-properties-view.component.css'],
   providers: [ManagedObjectRealtimeService],
 })
 export class AssetPropertiesViewComponent implements OnInit {
