@@ -1,7 +1,13 @@
-<c8y-asset-property-selector
-  class="d-block bg-inherit p-relative"
-  style="height: calc(100vh - 406px)"
-  [ngClass]="{ 'inner-scroll': true }"
-  [asset]="selectedAsset"
-  [config]="config"
-></c8y-asset-property-selector>
+<label>{{ "Asset properties query" | translate }} </label>
+<div class="alert alert-warning" *ngIf="!query">
+  {{ "Asset properties query field should not be empty." | translate }}
+</div>
+<div class="container">
+  <textarea
+    name="roleExplanation"
+    [(ngModel)]="query"
+    [ngModelOptions]="{ standalone: true }"
+    style="width: 500px"
+    rows="3"
+  ></textarea>
+</div>

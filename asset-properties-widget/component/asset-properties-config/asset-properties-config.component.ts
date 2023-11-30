@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { ControlContainer, NgForm } from '@angular/forms';
-import { IManagedObject, InventoryService } from '@c8y/client';
+import { IManagedObject } from '@c8y/client';
 import { DynamicComponent, OnBeforeSave } from '@c8y/ngx-components';
 
 @Component({
@@ -12,26 +12,19 @@ export class AssetPropertiesConfigComponent
   implements DynamicComponent, OnBeforeSave, OnChanges
 {
   @Input() config: any = {};
-  selectedAsset: IManagedObject;
-
-  constructor(private inventoryService: InventoryService) {}
+  assetProperties: IManagedObject;
+  query: string = 'id name properties { name value } subassets { id name type } type';
 
   async ngOnChanges(){
-    if (this.config.device) {
-      try {
-        this.selectedAsset = (
-          await this.inventoryService.detail(this.config.device.id)
-        ).data;
-      } catch (er) {
-        // intended empty
-      }
+    if (this.config.query) {
+      this.query = this.config.query;
     }
   }
-
-  onBeforeSave(config: any): boolean {
-    return !!(
-      config.properties &&
-      config.properties.some((value) => value.active === true)
-    );
+  
+ async onBeforeSave(config: any): Promise<boolean> {
+  this.config.query = this.query;
+  return !!(
+    config.query
+  );
   }
 }

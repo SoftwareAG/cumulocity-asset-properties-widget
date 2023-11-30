@@ -6,11 +6,10 @@ describe('AssetPropertiesConfigComponent', () => {
   let component: AssetPropertiesConfigComponent;
   let asset;
   let properties;
-  let inventoryServiceMock;
+  let assetPropertiesServiceMock: any;
 
   beforeEach(() => {
-    inventoryServiceMock = { detail: jest.fn() };
-    component = new AssetPropertiesConfigComponent(inventoryServiceMock);
+    assetPropertiesServiceMock = { fetchAssetData: jest.fn() };
     properties = [
       {
         c8y_JsonSchema: {
@@ -61,20 +60,6 @@ describe('AssetPropertiesConfigComponent', () => {
 
   it('should exist', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should get selected asset MOs', async () => {
-    // given
-    component.config = { settings: true, device: asset };
-    jest
-      .spyOn(inventoryServiceMock, 'detail')
-      .mockReturnValue(Promise.resolve({ data: asset }));
-
-    // when
-    await component.ngOnChanges();
-
-    // then
-    expect(component.selectedAsset).toEqual(asset);
   });
 
   describe('onBeforeSave', () => {

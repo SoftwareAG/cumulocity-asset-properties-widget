@@ -5,7 +5,7 @@ on:
   workflow_call:
     inputs:
       tenantUrl:
-        required: false
+        required: true
         type: string
       project_directory:
         description: "Cypress folder path"
@@ -29,8 +29,6 @@ on:
         required: true
       AUTOTEST_USERNAME2_PASSWORD:
         required: true
-      TENANT_URL:
-        required: false
 
 jobs:
   cypress-run:
@@ -55,7 +53,7 @@ jobs:
       - name: "Begin Testing"
         run: |
           yarn test:ci \
-            -- --config baseUrl=${{ inputs.tenantUrl || secrets.TENANT_URL }} \
+            -- --config baseUrl=${{ inputs.tenantUrl }} \
             --env username=${{ secrets.AUTOTEST_USERNAME1  }},password=${{ secrets.AUTOTEST_USERNAME1_PASSWORD }} \
             --browser ${{inputs.browser}} \
             --spec ${{inputs.spec_files}}

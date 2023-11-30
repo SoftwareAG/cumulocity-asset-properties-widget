@@ -5,19 +5,17 @@ import { of } from 'rxjs';
 describe('AssetPropertiesViewComponent', () => {
   const date = new Date();
   let component: AssetPropertiesViewComponent;
-  let inventoryMock: any;
   let moRealtimeServiceMock: any;
   let assetPropertiesServiceMock: any;
   let asset;
 
   beforeEach(() => {
-    inventoryMock = { detail: jest.fn() };
+    assetPropertiesServiceMock = { fetchAssetData: jest.fn() };
     moRealtimeServiceMock = { onUpdate$: jest.fn() };
 
     component = new AssetPropertiesViewComponent(
-      inventoryMock,
       moRealtimeServiceMock,
-      assetPropertiesServiceMock
+      assetPropertiesServiceMock,
     );
 
     asset = {
@@ -51,28 +49,30 @@ describe('AssetPropertiesViewComponent', () => {
     // given
     component.config = { device: asset };
     jest
-      .spyOn(inventoryMock, 'detail')
-      .mockReturnValue(Promise.resolve({ data: asset }));
+      .spyOn(assetPropertiesServiceMock, 'fetchAssetData')
+      .mockResolvedValue(asset);
     jest.spyOn(moRealtimeServiceMock, 'onUpdate$').mockReturnValue(of(asset));
 
     // when
     await component.ngOnInit();
 
     // then
-    expect(component.selectedAsset).toEqual(asset);
+    expect(component.assetProperties).toEqual(asset);
     expect(component.isEmptyWidget).toBe(false);
   });
 
   it('should shown blank widget if asset is deleted', async () => {
     // given
-    component.config = { device: asset };
-    jest.spyOn(inventoryMock, 'detail').mockRejectedValue('');
+    component.config = { asset: asset };
+    jest
+      .spyOn(assetPropertiesServiceMock, 'fetchAssetData')
+      .mockRejectedValue(new Error('Asset not found'));
 
     // when
     await component.ngOnInit();
 
     // then
-    expect(component.selectedAsset).toEqual(undefined);
+    expect(component.assetProperties).toEqual(undefined);
     expect(component.isEmptyWidget).toBe(true);
   });
 });

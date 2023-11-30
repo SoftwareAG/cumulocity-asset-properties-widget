@@ -52,6 +52,22 @@ declare global {
       configureColumns(option: string, columnName: string): void;
 
       /**
+       * This command is being used to filter the particular column by specified text.
+       * @param columnName Name of the column that needs to be filtered.
+       * @param filterText The text.
+       * Usage: filterTheColumn("Key", "Building");
+       */
+      filterTheColumn(columnName: string, filterText: string): void;
+
+      /**
+       * This command is being used to remove column filter.
+       * @param columnName Name of the column.
+       * Usage: resetTheColumnFilter("Key");
+       *
+       */
+      resetTheColumnFilter(columnName: string): void;
+
+      /**
        * This command is being used to clear the data in the application.
        * Usage: cy.cleanup();
        */
@@ -193,21 +209,6 @@ declare global {
         selection: string,
         label: string
       ): Chainable<any>;
-
-      /**
-       * This command is being used to delete the grid configuration
-       * @param fragmentName Specify the fragment name based on the page. Options are listed below.
-       * ( dtm-asset-types-grid-config, dtm-assets-grid-config, sub-assets-grid, dtm-translation-grid-config )
-       * usage: cy.apiDeleteGridConfig('dtm-asset-types-grid-config');
-       */
-      apiDeleteGridConfig(page: string): void;
-
-      /**
-       * This command is being used to drop an element to the target locator.
-       * @param dropSelector Provide the target selector
-       * Usage: cy.get(sourceElement).dragTo(targetElement);
-       */
-      dragTo(dropSelector: string): void;
     }
   }
 }
@@ -255,6 +256,25 @@ Cypress.Commands.add('configureColumns', (option, columnName) => {
   cy.get(dtm_generic_page_elements.configureCloumnsButton).click();
 });
 
+Cypress.Commands.add('filterTheColumn', (columnName, filterText) => {
+  const filterIcon = `button[title='${columnName}']>i`;
+  const applyButton = `button[title='${columnName}']+ul button[title='Apply']`;
+  const filterTextField = `button[title='${columnName}']+ul input`;
+  cy.get(filterIcon)
+    .eq(0)
+    .click({ force: true });
+  cy.get(filterTextField).clear();
+  cy.get(filterTextField).type(filterText);
+  cy.get(applyButton).click({ force: true });
+});
+
+Cypress.Commands.add('resetTheColumnFilter', columnName => {
+  const filterIcon = `button[title='${columnName}']>i`;
+  const resetButton = `button[title='${columnName}']+ul button[title='Reset']`;
+  cy.get(filterIcon).click({ force: true });
+  cy.get(resetButton).click({ force: true });
+});
+
 Cypress.Commands.add('cleanup', () => {
   cy.getUniqueId().then(id => {
     cy.apiRequest({
@@ -268,8 +288,7 @@ Cypress.Commands.add('cleanup', () => {
         cy.log('Deleting ', mo.id);
         cy.apiRequest({
           method: 'DELETE',
-          url: `/inventory/managedObjects/${mo.id}`,
-          failOnStatusCode: false
+          url: `/inventory/managedObjects/${mo.id}`
         });
       }
     });
@@ -284,8 +303,7 @@ Cypress.Commands.add('cleanup', () => {
         cy.log('Deleting ', mo.id);
         cy.apiRequest({
           method: 'DELETE',
-          url: `/inventory/managedObjects/${mo.id}`,
-          failOnStatusCode: false
+          url: `/inventory/managedObjects/${mo.id}`
         });
       }
     });
@@ -300,8 +318,7 @@ Cypress.Commands.add('cleanup', () => {
         cy.log('Deleting ', mo.id);
         cy.apiRequest({
           method: 'DELETE',
-          url: `/inventory/managedObjects/${mo.id}`,
-          failOnStatusCode: false
+          url: `/inventory/managedObjects/${mo.id}`
         });
       }
     });
@@ -493,7 +510,6 @@ Cypress.Commands.add('getManagedObjectsByQuery', (query, urlParams) => {
   const baseUrl = '/inventory/managedObjects';
   let url;
   const params = Object.entries(urlParams)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .filter(([key, value]) => value !== undefined && value !== null)
     .map(([key, value]) => `${key}=${value}`)
     .join('&');
@@ -608,34 +624,3 @@ Cypress.Commands.add(
       });
   }
 );
-
-Cypress.Commands.add('apiDeleteGridConfig', fragmentName => {
-  cy.apiRequest({
-    method: 'GET',
-    url: `/inventory/managedObjects?fragmentType=${fragmentName}${Cypress.env('username')}`,
-    failOnStatusCode: false
-  }).then(response => {
-    if (response.body.managedObjects[0]) {
-      const [{id}] = response.body.managedObjects;
-      cy.log(`Deleting grid-config ${id}`);
-      cy.apiRequest({
-        method: 'DELETE',
-        url: `/inventory/managedObjects/${id}`,
-        failOnStatusCode: false
-      });
-    }
-  });
-});
-
-Cypress.Commands.add('dragTo', { prevSubject: 'element' }, function(subject, targetEl) {
-  // Currently realMouseDown etc. only works in browsers based on Chromium.
-  cy.wrap(subject)
-    .first()
-    .realMouseDown({ button: 'left', position: 'center', scrollBehavior: 'nearest' })
-    .realMouseMove(10, 0, { position: 'center', scrollBehavior: 'nearest' });
-  cy.get(targetEl)
-    .first()
-    .realMouseMove(10, 0, { position: 'center', scrollBehavior: 'nearest' })
-    .realMouseUp({ position: 'center', scrollBehavior: 'center' });
-  cy.wait(1000);
-});

@@ -1,10 +1,10 @@
-<c8y-asset-properties
-  *ngIf="!isEmptyWidget && selectedAsset && properties"
-  [properties]="properties"
-  [asset]="selectedAsset"
-  (assetChange)="assetChange($event)"
-  class="d-contents"
-></c8y-asset-properties>
-<div *ngIf="isEmptyWidget" style="text-align: center">
-  {{ "No Data" | translate }}
+<div class="box-container">
+  <div *ngFor="let item of assetProperties | keyvalue" class="card-block">
+    <div class="text-medium text-truncate">{{ item.key | translate }}</div>
+    <app-recursive-display [value]="item.value"></app-recursive-display>
+  </div>
+
+  <div *ngIf="isEmptyWidget" class="alert alert-warning text-center">
+    {{ errorMessage }}
+  </div>
 </div>
