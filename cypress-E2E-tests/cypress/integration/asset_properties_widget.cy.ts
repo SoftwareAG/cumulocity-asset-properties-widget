@@ -560,7 +560,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const invalidFileSizeErrorMessage= 'The selected file is too large. The size limit is 102.4 kB.'
     const editPropertyCancelButton = "button[title='Cancel']";
     const complexPropertyTitle = 'ComplexProperty';
-    cy.selectAssetPropertyAndSave(assetName, propKey);
+    cy.selectAssetPropertyAndSave('Test Asset3', propKey);
     cy.clickPropertyEditButton('File');
     cy.get('.dlt-c8y-icon-plus-square').click();
     selectFile('File', invalidFileSize);
@@ -570,6 +570,8 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(editPropertyCancelButton).click();
     cy.get(asset_properties_widget_elements.settingsButton).click();
     cy.get(asset_properties_widget_elements.editWidgetButton).click();
+    // added wait to resolve flakyness after selecting editWidget its take few second to get properties.
+    cy.wait(1000)
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     cy.selectAssetProperty(complexPropertyTitle);
     cy.get(asset_properties_widget_elements.selectButton).click();
