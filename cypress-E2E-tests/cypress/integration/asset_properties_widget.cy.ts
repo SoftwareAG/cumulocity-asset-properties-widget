@@ -24,6 +24,7 @@ const assetNameElement = 'c8y-asset-properties-item > p';
 const removePopupElement = 'h3 span';
 const propFeildElement = "input[type='text']";
 const saveElement = 'button[data-cy="asset-properties-save-button"]';
+const assetTitleName = '[title="check 1"] ';
 const groupObject = {
   label: 'Group',
   name: 'group',
@@ -333,7 +334,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const assetName = 'check 1';
     cy.get(searchElement).type(assetName);
     cy.get(searchResultsElement).should('have.text', 'Search results');
-    cy.get('[title="check 1"] > :nth-child(1) > .c8y-list__item__block > .c8y-list__item__body').should('contains.text', assetName).click();
+    cy.get(assetTitleName).should('contains.text', assetName).click();
     cy.get(asset_properties_widget_elements.radioButton).should('be.checked');
     cy.get(`p[title='${assetName}']`).should('contains.text', assetName);
     cy.get("button[title='Search']").click();
@@ -346,7 +347,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const assetName = 'check 1';
     const subassetName = 'check 1 > check 2 > check 4';
     cy.get(searchElement).type(assetName);
-    cy.get('[title="check 1"] > :nth-child(1) > .c8y-list__item__block > .c8y-list__item__body').should('contains.text', assetName).click();
+    cy.get(assetTitleName).should('contains.text', assetName).click();
     cy.get('i[c8yicon="angle-right"]').click();
     cy.selectSubasset(subassetName);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();

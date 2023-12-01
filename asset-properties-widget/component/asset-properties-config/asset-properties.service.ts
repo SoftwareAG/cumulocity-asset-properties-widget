@@ -11,16 +11,18 @@ export class AssetPropertiesService {
   ) {}
 
   async getCustomProperties(group: IManagedObject): Promise<IManagedObject[]> {
-    const assetType = this.assetTypes.getAssetTypeByName(group.type);
-    if (assetType) {
-      const { data } = await this.inventoryService.childAdditionsList(
-        assetType,
-        {
-          pageSize: 2000,
-          query: "$filter=(has('c8y_IsAssetProperty'))",
-        }
-      );
-      return data;
+    if(group && group.type){
+      const assetType = this.assetTypes.getAssetTypeByName(group.type);
+      if (assetType) {
+        const { data } = await this.inventoryService.childAdditionsList(
+          assetType,
+          {
+            pageSize: 2000,
+            query: "$filter=(has('c8y_IsAssetProperty'))",
+          }
+        );
+        return data;
+      }
     }
     return [];
   }

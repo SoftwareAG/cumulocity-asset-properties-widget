@@ -159,16 +159,6 @@ declare global {
       verifyThePresenceOfAssignedDevice(location: string, deviceName: string): void;
 
       /**
-       * This command is being used to serach the device in Assign device window.
-       * @param deviceName Name of the device
-       * @param option From where the device is geeting added(multilpe/subasset)
-       * @param intance If you are adding multiple instances then specify the instence in terms of number(Ex:2)
-       * Note:If you are adding single instances during hierarchy creation then no need to specify option & instance
-       * Usage: cy.searchDevices('Device1', 'multiple', 2)
-       */
-      searchDevices(deviceName: string, option?: string, index?: number): void;
-
-      /**
        * This command is being used to remove the added device during hierarchy creation
        * @param deviceName Name of the device
        * @param instance Specify the instance in terms of number
@@ -697,22 +687,6 @@ Cypress.Commands.add('verifyThePresenceOfAssignedDevice', (location, deviceName)
   } else if (location == 'subassets') {
     cy.get(`a[title='${deviceName}']`).should('be.visible');
   }
-});
-
-Cypress.Commands.add('searchDevices', (deviceName, option, index) => {
-  const filterIcon = "button[title='Name']>i";
-  const applyButton = "button[title='Name']+ul button[title='Apply']";
-  const filterTextField = "button[title='Name']+ul input";
-  if (option === 'subasset') {
-    index = 1; // eslint-disable-line no-param-reassign
-  } else {
-    index = 0; // eslint-disable-line no-param-reassign
-  }
-  cy.get(filterIcon)
-    .eq(index)
-    .click({ force: true });
-  cy.get(filterTextField).type(deviceName);
-  cy.get(applyButton).click();
 });
 
 Cypress.Commands.add('removeDevice', (deviceName, instance) => {
