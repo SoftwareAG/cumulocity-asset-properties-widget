@@ -195,6 +195,7 @@ export class AssetPropertiesComponent implements OnChanges {
       this.alert.success(gettext('Asset properties updated.'));
     } catch (ex) {
       this.alert.addServerFailure(ex);
+      this.toggleEdit(prop);
     }
   }
 
@@ -244,7 +245,7 @@ export class AssetPropertiesComponent implements OnChanges {
           )
           .subscribe(async () => {
             this.clusterMap.ngOnDestroy();
-           await this.clusterMap.ngAfterViewInit();
+            await this.clusterMap.ngOnInit();
           });
       }
 }
