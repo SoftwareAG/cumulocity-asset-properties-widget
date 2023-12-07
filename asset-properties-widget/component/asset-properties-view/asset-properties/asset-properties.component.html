@@ -45,11 +45,11 @@
             [jsonSchema]="prop.jsonSchema"
           ></c8y-asset-properties-item>
           <div *ngIf="prop.key === 'c8y_Position'">
-            <c8y-location
+            <c8y-asset-location
               [locationMO]="asset"
               [isEdit]="prop.isEdit"
               [form]="assetProps.form"
-            ></c8y-location>
+            ></c8y-asset-location>
           </div>
         </div>
         <div class="card-footer p-t-0" *ngIf="prop.isEdit">
