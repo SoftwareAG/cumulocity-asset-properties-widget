@@ -168,7 +168,6 @@ Cypress.Commands.add('deleteWidgetInstances', title => {
 });
 
 Cypress.Commands.add('selectAssetAndSave', assetName => {
-  
   cy.selectAsset(assetName);
   // added wait to resolve flakyness after selecting asset its takes few ms to enabled save button
   cy.wait(1000);
