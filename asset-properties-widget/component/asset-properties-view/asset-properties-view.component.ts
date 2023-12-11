@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { IManagedObject, InventoryService } from '@c8y/client';
 import { ManagedObjectRealtimeService } from '@c8y/ngx-components';
 import { AssetPropertiesService } from '../asset-properties-config/asset-properties.service';
+import { some, cloneDeep } from 'lodash-es';
 
 @Component({
   selector: 'c8y-asset-properties-view',
@@ -36,19 +37,62 @@ export class AssetPropertiesViewComponent implements OnInit {
           this.properties = this.config.properties.filter((property) => {
             if (
               property.isExistingProperty ||
-              (this.customProperties.length != 0 &&
-                this.customProperties.find((prop) => prop.id === property.id))
+              ((this.customProperties.length != 0 &&
+                this.customProperties.find((prop) => prop.id === property.id)) || this.validateComplexProperty(property))
             ) {
               return property;
             }
           });
-          this.config.properties = this.properties;
+          this.config.properties = cloneDeep(this.properties);
+          this.constructComplexPropertyKeys();
           this.handleRealtime();
         }, 1000);
       } catch (error) {
         this.isEmptyWidget = true;
       }
     }
+  }
+
+  constructComplexPropertyKeys(){
+    const customizedProperty =[];
+    this.properties.forEach(element => {
+      if(element.keyPath){
+        const property = this.properties.find((prop) => prop.name === element.keyPath?.[0]) || this.customProperties.find((prop) => prop.name === element.keyPath?.[0]);
+        if(property){
+          if(!property.isHide){
+            property.isHide = true;
+            property.active = true;
+            property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key].properties = {};
+          }
+          property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key].properties[element.keyPath?.[1]] = {...element};
+        }
+        if(!customizedProperty.find((prop) => prop.id === property.id)){
+          customizedProperty.push(property);
+        }
+      }else if (!customizedProperty.find((prop) => prop.name === element.name)){
+        customizedProperty.push(element);
+      }
+    });
+    this.properties = customizedProperty;
+  }
+
+  validateComplexProperty(item): boolean{
+    if(item.keyPath){
+      const property = this.customProperties.find((prop) => prop.name === item.keyPath?.[0]);
+      return some(Object.keys(property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key].properties), function(key) {
+        return (key === item.keyPath?.[1]);
+      });
+    }
+    return false;
+  }
+
+  isComplexProperty(prop) {
+    if (!prop.c8y_JsonSchema) {
+      return false;
+    }
+    return (
+      prop.c8y_JsonSchema.properties[prop.c8y_JsonSchema.key]?.type === 'object'
+    );
   }
 
   private handleRealtime() {

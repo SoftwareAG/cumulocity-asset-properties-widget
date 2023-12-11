@@ -127,12 +127,13 @@
         <input
           data-cy="asset-property-selector-label"
           class="form-control property-label"
-          [(ngModel)]="property.label"
+          [(ngModel)]="property.label || property.title"
         />
       </td>
       <td style="width: 28%" *ngIf="!property.isHide">
         <span data-cy="asset-property-selector-name">{{
-          property.name | translate
+          (property.name | translate) ||
+            (property.keyPath?.join(".") | translate)
         }}</span>
       </td>
       <td style="width: 5%" *ngIf="!property.isHide">
