@@ -56,7 +56,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   constructComplexPropertyKeys(){
     const customizedProperty =[];
     this.properties.forEach(element => {
-      if(element.keyPath){
+      if(element.keyPath && element.active){
         const property = this.properties.find((prop) => prop.name === element.keyPath?.[0]) || this.customProperties.find((prop) => prop.name === element.keyPath?.[0]);
         if(property){
           if(!property.isHide){
@@ -69,7 +69,7 @@ export class AssetPropertiesViewComponent implements OnInit {
         if(!customizedProperty.find((prop) => prop.id === property.id)){
           customizedProperty.push(property);
         }
-      }else if (!customizedProperty.find((prop) => prop.name === element.name)){
+      }else if (element.active && !customizedProperty.find((prop) => prop.name === element.name)){
         customizedProperty.push(element);
       }
     });
