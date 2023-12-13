@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { IManagedObjectBinary } from '@c8y/client';
 import {
   AlertService,
@@ -11,6 +11,21 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
 import { clone } from 'lodash-es';
+import { has } from 'lodash-es';
+
+export class ForceLengthValidators {
+  static maxLength(maxLength: number) {
+    return (control: FormControl): ValidationErrors => {
+      if (!control.value) {
+        return null;
+      }
+      if (control.value.length > maxLength) {
+         control.setValue(control.value.substring(0, maxLength));
+      }
+      return null;
+    };
+  }
+}
 
 @Component({
   selector: 'c8y-asset-properties-item',
@@ -96,7 +111,18 @@ export class AssetPropertiesItemComponent
 
   private resolveJsonSchema() {
     if (this.jsonSchema) {
-      const fieldConfig = this.c8yJsonSchemaService.toFieldConfig(this.jsonSchema, this.jsonSchema);
+      const fieldConfig = this.c8yJsonSchemaService.toFieldConfig(this.jsonSchema as JSONSchema7, {
+        map(mappedField: FormlyFieldConfig) {
+          const result: FormlyFieldConfig = mappedField;
+          if (has(mappedField, 'key')) {
+            console.log(mappedField);
+          }
+          if(mappedField.key === 'name'){
+            mappedField.validators = {...{validation: [ForceLengthValidators.maxLength(254)]}};
+          }
+          return result;
+        }
+      });
       this.form = new FormGroup({});
       this.fields = [fieldConfig];
       this.model = this.getModel();
