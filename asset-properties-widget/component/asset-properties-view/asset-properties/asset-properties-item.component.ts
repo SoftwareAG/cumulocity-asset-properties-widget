@@ -10,8 +10,7 @@ import {
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
-import { clone } from 'lodash-es';
-import { has } from 'lodash-es';
+import { clone, has } from 'lodash-es';
 
 export class ForceLengthValidators {
   static maxLength(maxLength: number) {
