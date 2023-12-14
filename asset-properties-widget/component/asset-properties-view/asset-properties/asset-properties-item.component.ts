@@ -113,9 +113,6 @@ export class AssetPropertiesItemComponent
       const fieldConfig = this.c8yJsonSchemaService.toFieldConfig(this.jsonSchema as JSONSchema7, {
         map(mappedField: FormlyFieldConfig) {
           const result: FormlyFieldConfig = mappedField;
-          if (has(mappedField, 'key')) {
-            console.log(mappedField);
-          }
           if(mappedField.key === 'name'){
             mappedField.validators = {...{validation: [ForceLengthValidators.maxLength(254)]}};
           }
