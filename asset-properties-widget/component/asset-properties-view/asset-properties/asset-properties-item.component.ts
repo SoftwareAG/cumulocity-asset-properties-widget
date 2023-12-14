@@ -12,7 +12,7 @@ import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
 import { clone } from 'lodash-es';
 
-export class ForceLengthValidators {
+export class MaxLengthValidator {
   static maxLength(maxLength: number) {
     return (control: FormControl): ValidationErrors => {
       if (!control.value) {
