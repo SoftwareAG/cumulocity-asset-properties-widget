@@ -115,7 +115,7 @@ export class AssetPropertiesItemComponent
         map(mappedField: FormlyFieldConfig) {
           const result: FormlyFieldConfig = mappedField;
           if(mappedField.key === 'name'){
-            mappedField.validators = {...{validation: [ForceLengthValidators.maxLength(assetNameMaxLength)]}};
+            mappedField.validators = {...{validation: [MaxLengthValidator.maxLength(assetNameMaxLength)]}};
           }
           return result;
         }
