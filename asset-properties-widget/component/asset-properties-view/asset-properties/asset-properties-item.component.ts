@@ -10,7 +10,7 @@ import {
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
-import { clone, has } from 'lodash-es';
+import { clone } from 'lodash-es';
 
 export class ForceLengthValidators {
   static maxLength(maxLength: number) {
@@ -59,7 +59,7 @@ export class AssetPropertiesItemComponent
   form: FormGroup;
   fields: FormlyFieldConfig[];
   model: any;
-  previewImage;
+  previewImage: string;
 
   constructor(
     private alert: AlertService,
@@ -109,12 +109,13 @@ export class AssetPropertiesItemComponent
   }
 
   private resolveJsonSchema() {
+    const assetNameMaxLength: number = 254;
     if (this.jsonSchema) {
       const fieldConfig = this.c8yJsonSchemaService.toFieldConfig(this.jsonSchema as JSONSchema7, {
         map(mappedField: FormlyFieldConfig) {
           const result: FormlyFieldConfig = mappedField;
           if(mappedField.key === 'name'){
-            mappedField.validators = {...{validation: [ForceLengthValidators.maxLength(254)]}};
+            mappedField.validators = {...{validation: [ForceLengthValidators.maxLength(assetNameMaxLength)]}};
           }
           return result;
         }
