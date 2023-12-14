@@ -14,7 +14,8 @@ import { AssetPropertiesComponent } from './component/asset-properties-view/asse
 import { AssetPropertiesItemComponent } from './component/asset-properties-view/asset-properties/asset-properties-item.component';
 import { assetPropertyItemSelectorCtrlComponent } from './component/asset-properties-config/asset-property-item-selector/asset-property-item-selector.component';
 import { AssetPropertiesSelectorComponent } from './component/asset-properties-config/asset-property-selector/asset-property-selector.component';
-import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
+import { AssetLocationComponent } from './component/asset-properties-view/asset-properties/location/asset-location.component';
+import { MapModule } from '@c8y/ngx-components/map';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
     AssetPropertiesViewComponent,
     AssetPropertiesComponent,
     AssetPropertiesItemComponent,
+    AssetLocationComponent
   ],
   imports: [
     CoreModule,
@@ -31,7 +33,7 @@ import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
     Ng2SearchPipeModule,
     DragDropModule,
     RealtimeModule,
-    SubAssetsModule,
+    MapModule
   ],
   providers: [
     {

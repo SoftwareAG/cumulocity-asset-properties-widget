@@ -24,7 +24,7 @@ import { JSONSchema7 } from 'json-schema';
 import { Permissions } from '@c8y/ngx-components';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { AssetLocationComponent } from '@c8y/ngx-components/sub-assets';
+import { AssetLocationComponent } from './location/asset-location.component';;
 
 @Component({
   selector: 'c8y-asset-properties',
@@ -244,8 +244,8 @@ export class AssetPropertiesComponent implements OnChanges {
             takeUntil(this.destroy$)
           )
           .subscribe(async () => {
-            this.clusterMap.ngOnDestroy();
-            await this.clusterMap.ngOnInit();
+            this.clusterMap.resizeMap();
+            
           });
       }
 }
