@@ -244,8 +244,7 @@ export class AssetPropertiesComponent implements OnChanges {
             takeUntil(this.destroy$)
           )
           .subscribe(async () => {
-            this.clusterMap.ngOnDestroy();
-            await this.clusterMap.ngOnInit();
+            this.clusterMap.mapView.map.invalidateSize();
           });
       }
 }
