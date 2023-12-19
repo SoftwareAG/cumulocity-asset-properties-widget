@@ -16,6 +16,7 @@ const editWidgetHeadetElement = "div[title='Edit widget']";
 const cardTitleElement = 'c8y-dashboard-child-title';
 const devices = ['Device1', 'Device2'];
 const assetName = 'Test Asset2';
+const assetName1 = 'Test Asset3';
 const url = 'apps/sag-pkg-asset-properties-widget/index.html#/';
 const searchResultsElement = 'c8y-list-group span';
 const strongTextElement = "c8y-ui-empty-state p[class*='text-medium']";
@@ -442,7 +443,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(`p[title='${assetName}']`).click();
     cy.get(textElement).should('contains.text', 'Groups > ' + assetName);
     cy.get(backArrowElement).should('be.visible');
-    cy.get('input[placeholder="Filter this column…"]').click();
+    cy.get('input[placeholder="Filter…"]').click();
     cy.get(filterElement).should('be.visible');
     cy.get(strongTextElement).should('have.text', 'No results to display.');
     cy.get("c8y-ui-empty-state  p[class*='small']").should(
@@ -586,7 +587,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   // The marker should be visible at the center of the map.
   // If any one of the values(lat or lng) is not available then map will be hidden. If map is hidden ,full screen button won't be visible.
   it('TC_Asset_Properties_Widget_Location_View_001', () => {
-    cy.selectAssetPropertyAndSave(assetName, locationPropertyKey);
+    cy.selectAssetPropertyAndSave(assetName1, locationPropertyKey);
     cy.get(assetNameElement).eq(4).should('contain.text', 77.6904);
     cy.get(assetNameElement).eq(5).should('contain.text', 'Undefined');
     cy.get(assetNameElement).eq(6).should('contain.text', 12.9322);
@@ -602,7 +603,8 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.clickPropertyEditButton(location);
     cy.get(lng).clear();
     cy.get(saveElement).click();
-    cy.get(map).scrollIntoView().should('not.exist');    
+    cy.get(map).scrollIntoView().should('not.exist'); 
+    // resetting the earlier value   
     cy.clickPropertyEditButton(location);
     cy.get(lng).clear();
     cy.get(lng).type('77.6904');
@@ -612,7 +614,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
 
     // On click of Cancel the values should not get saved in location property.
     it('TC_Asset_Properties_Widget_Location_Edit_002', () => {    
-      cy.selectAssetPropertyAndSave(assetName, locationPropertyKey);
+      cy.selectAssetPropertyAndSave(assetName1, locationPropertyKey);
       cy.clickPropertyEditButton(location);    
       cy.get(lng).should('contain.value', 77.6904);
       cy.get(lng).clear();
@@ -630,13 +632,18 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     // If any one of the values(lat or lng) is not available then map will be shown but marker will not be available anywhere on the map.
     // User has to click anywhere on the map, then the marker will be visible.
     it('TC_Asset_Properties_Widget_Location_Edit_003', () => {
-      cy.selectAssetPropertyAndSave(assetName, locationPropertyKey);
+      cy.selectAssetPropertyAndSave(assetName1, locationPropertyKey);
       cy.clickPropertyEditButton(location);
       cy.get(lat).clear();
       cy.get(lng).click();
       cy.get(marker).should('not.be.visible');
       cy.get(map).click();
       cy.get(marker).scrollIntoView().should('be.visible');
+      cy.get(saveElement).click();
+      // resetting the earlier value 
+      cy.clickPropertyEditButton(location);
+      cy.get(lat).clear();
+      cy.get(lat).type('12.9322');
       cy.get(saveElement).click();
       cy.deleteCard();
     });
@@ -651,7 +658,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   // On click of anywhere on the map the marker should get updated and the values in the form should get updated with the values in respective fields. 
   it('TC_Asset_Properties_Widget_Location_Edit_004', () => {
     const leafletMarker = "div[class*='leaflet-marker-icon']";
-    cy.selectAssetPropertyAndSave(assetName, locationPropertyKey);
+    cy.selectAssetPropertyAndSave(assetName1, locationPropertyKey);
     cy.clickPropertyEditButton(location);
     cy.get(leafletMarker).should('have.css', 'height', '12px')
     cy.get(leafletMarker).should('have.css', 'width', '12px')
