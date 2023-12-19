@@ -25,6 +25,8 @@ const removePopupElement = 'h3 span';
 const propFeildElement = "input[type='text']";
 const saveElement = 'button[data-cy="asset-properties-save-button"]';
 const cancelElement = 'button[data-cy="asset-properties-cancel-button"]';
+const locationPropertyKey = 'c8y_Position';
+const location = 'Location';
 
 const assetTitleName = '[title="check 1"] ';
 const groupObject = {
@@ -89,14 +91,14 @@ const roomProperties = [{ label: 'Color', isRequired: 'false' }, { label: 'Locat
 const marker = "div[class*='dlt-c8y-icon-marker']"; 
 const mapZoomIn = "a[title='Zoom in']";
 const mapZoomOut = "a[title='Zoom out']";
-const mapFullScreen = "c8y-location button[title='Full screen']";
+const mapFullScreen = "c8y-asset-location button[title='Full screen']";
 const moveBars = 'c8y-asset-property-selector td > i';
-const map = "c8y-location c8y-map";
+const map = "c8y-asset-location c8y-map";
 const moveBars1 = ":nth-child(1) > .cdk-drag-handle";
 const moveBars3 = ":nth-child(3) > .cdk-drag-handle";
 const labelElement = "td > input[class*='form-control']";
-const lat="input[id='formly_5_number_lat_2']";
-const lng="input[id='formly_5_number_lng_0']";
+const lat="input[min='-90']";
+const lng="input[min='-180']";
 const alt="input[id='formly_5_number_alt_1']";
 
 describe('Asset Properties Widget: Configuration/View screen tests', function () {
@@ -582,26 +584,36 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   // Full screen button is shown on click of which the map opens in full screen.
   // The user will not be able to click on the map or drag the marker
   // The marker should be visible at the center of the map.
-  it('TC_Asset_Properties_Widget_Location_001', () => {
-    cy.selectAssetPropertyAndSave(assetName, 'c8y_Position');
+  // If any one of the values(lat or lng) is not available then map will be hidden. If map is hidden ,full screen button won't be visible.
+  it('TC_Asset_Properties_Widget_Location_View_001', () => {
+    cy.selectAssetPropertyAndSave(assetName, locationPropertyKey);
     cy.get(assetNameElement).eq(4).should('contain.text', 77.6904);
     cy.get(assetNameElement).eq(5).should('contain.text', 'Undefined');
     cy.get(assetNameElement).eq(6).should('contain.text', 12.9322);
     cy.get(map).scrollIntoView().should('be.visible');
     cy.get(mapFullScreen).scrollIntoView().should('be.visible');
+    cy.get(mapFullScreen).scrollIntoView().should('be.enabled');
     cy.get(mapZoomIn).scrollIntoView().should('be.visible');
     cy.get(mapZoomOut).scrollIntoView().should('be.visible');
     cy.get(marker).scrollIntoView().should('be.visible');
     cy.get(map).should('not.be.enabled');
     cy.get(marker).should('not.be.enabled');
-    // cy.get(mapFullScreen).scrollIntoView().trigger("click"); // works intermittently
+    //cy.get(mapFullScreen).scrollIntoView().trigger("click"); // works intermittently
+    cy.clickPropertyEditButton(location);
+    cy.get(lng).clear();
+    cy.get(saveElement).click();
+    cy.get(map).scrollIntoView().should('not.exist');    
+    cy.clickPropertyEditButton(location);
+    cy.get(lng).clear();
+    cy.get(lng).type('77.6904');
+    cy.get(saveElement).click();
     cy.deleteCard();
   });
 
-    //  On click of Cancel the values should not get saved.
-    it('TC_Asset_Properties_Widget_Location_002', () => {    
-      cy.selectAssetPropertyAndSave(assetName, 'c8y_Position');
-      cy.clickPropertyEditButton('Location');    
+    // On click of Cancel the values should not get saved in location property.
+    it('TC_Asset_Properties_Widget_Location_Edit_002', () => {    
+      cy.selectAssetPropertyAndSave(assetName, locationPropertyKey);
+      cy.clickPropertyEditButton(location);    
       cy.get(lng).should('contain.value', 77.6904);
       cy.get(lng).clear();
       cy.get(alt).should('contain.value', '');
@@ -610,22 +622,37 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
       cy.get(lat).clear();
       cy.get(cancelElement).click();
       cy.get(assetNameElement).eq(4).should('contain.text', 77.6904);
-      cy.get(assetNameElement).eq(5).should('contain.text', 'Undefined');
+      cy.get(assetNameElement).eq(5).should('contain.text', '');
       cy.get(assetNameElement).eq(6).should('contain.text', 12.9322);
+      cy.deleteCard();
+    });
+
+    // If any one of the values(lat or lng) is not available then map will be shown but marker will not be available anywhere on the map.
+    // User has to click anywhere on the map, then the marker will be visible.
+    it('TC_Asset_Properties_Widget_Location_Edit_003', () => {
+      cy.selectAssetPropertyAndSave(assetName, locationPropertyKey);
+      cy.clickPropertyEditButton(location);
+      cy.get(lat).clear();
+      cy.get(lng).click();
+      cy.get(marker).should('not.be.visible');
+      cy.get(map).click();
+      cy.get(marker).scrollIntoView().should('be.visible');
+      cy.get(saveElement).click();
       cy.deleteCard();
     });
 
 
   // If the property 'Location' has values:
   // The values should be shown in respective fields.
-  //  Map should be visible with a marker pointing at the provided location at the center.
-  // Full screen button should be visible on click of which map opens full screen. 
+  //  Map should be visible with a marker pointing at the provided lat long location at the center.
+  // Full screen button should be visible on click of which map opens full screen.  
   // If the values are changed manually in the fields the marker should automatically get updated.
-  // On click of save the values should get updated.
-  it('TC_Asset_Properties_Widget_Location_003', () => {
+  // On click of save the values should get updated. 
+  // On click of anywhere on the map the marker should get updated and the values in the form should get updated with the values in respective fields. 
+  it('TC_Asset_Properties_Widget_Location_Edit_004', () => {
     const leafletMarker = "div[class*='leaflet-marker-icon']";
-    cy.selectAssetPropertyAndSave(assetName, 'c8y_Position');
-    cy.clickPropertyEditButton('Location');
+    cy.selectAssetPropertyAndSave(assetName, locationPropertyKey);
+    cy.clickPropertyEditButton(location);
     cy.get(leafletMarker).should('have.css', 'height', '12px')
     cy.get(leafletMarker).should('have.css', 'width', '12px')
     cy.get(lng).should('contain.value', 77.6904);
@@ -634,11 +661,12 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(alt).clear();
     cy.get(lat).should('contain.value', 12.9322);
     cy.get(lat).clear();
+    cy.get(lng).click();
+    cy.get(marker).should('not.be.visible');
     cy.get(map).scrollIntoView().should('be.visible');
     cy.get(mapFullScreen).scrollIntoView().should('be.visible');
     cy.get(mapZoomIn).scrollIntoView().should('be.visible');
     cy.get(mapZoomOut).scrollIntoView().should('be.visible');    
-    //cy.get(marker).scrollIntoView().should('not.exist');
     cy.get(lng).type('60');
     cy.get(alt).type('10');
     cy.get(lat).type('15');
@@ -646,9 +674,13 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(assetNameElement).eq(4).should('contain.text', 60);
     cy.get(assetNameElement).eq(5).should('contain.text', 10);
     cy.get(assetNameElement).eq(6).should('contain.text', 15);
+    cy.clickPropertyEditButton(location);
+    cy.get(map).click();
+    cy.get(lng).should('not.have.value', 60);
+    cy.get(lat).should('not.have.value', 15);    
     cy.deleteCard();
   });
-
+  
   after(function () {
     cy.cleanup();
   });
