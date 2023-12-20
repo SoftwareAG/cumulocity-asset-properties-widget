@@ -570,8 +570,12 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(editPropertyCancelButton).click();
     cy.get(asset_properties_widget_elements.settingsButton).click();
     cy.get(asset_properties_widget_elements.editWidgetButton).click();
-    // added wait to resolve flakyness after selecting editWidget its take few second to get properties.
-    cy.wait(1000)
+    cy.intercept({ method: 'GET', url: '/inventory/managedObjects/**/childAdditions?pageSize=2000&query=%24filter%3D(has(%27c8y_IsAssetProperty%27))' }).as(
+      'assetpropertyresponse'
+    );
+    cy.wait('@assetpropertyresponse')
+      .its('response.statusCode')
+      .should('eq', 200);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     cy.selectAssetProperty(complexPropertyTitle);
     cy.get(asset_properties_widget_elements.selectButton).click();
