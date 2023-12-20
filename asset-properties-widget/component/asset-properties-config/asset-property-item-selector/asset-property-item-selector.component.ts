@@ -24,7 +24,7 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
 
   constructCustomProperties(): IManagedObject[] {
     const simpleProperties: IManagedObject[] = [];
-    const constructCustomProperties: IManagedObject[] = [];
+    const complexProperties: IManagedObject[] = [];
     this.customProperties.forEach((property) => {
       if (this.isComplexProperty(property)) {
         constructCustomProperties.push(property);
