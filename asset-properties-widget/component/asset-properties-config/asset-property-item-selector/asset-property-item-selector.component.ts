@@ -52,7 +52,7 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
     }
   }
 
-  selectOrUnselectChildren(selectedProperty, action){
+  selectOrUnselectChildren(selectedProperty, active){
     if(this.isComplexProperty(selectedProperty)){
       this.customProperties.forEach((property) => {
         if(property.keyPath?.[0] === selectedProperty.name){
