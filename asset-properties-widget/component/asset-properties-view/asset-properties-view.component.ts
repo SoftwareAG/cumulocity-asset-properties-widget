@@ -59,8 +59,8 @@ export class AssetPropertiesViewComponent implements OnInit {
       if(element.keyPath && element.active){
         const property = this.properties.find((prop) => prop.name === element.keyPath?.[0]) || this.customProperties.find((prop) => prop.name === element.keyPath?.[0]);
         if(property){
-          if(!property.isHide){
-            property.isHide = true;
+          if(!property.isParentKeySelected){
+            property.isParentKeySelected = true;
             property.active = true;
             property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key].properties = {};
           }

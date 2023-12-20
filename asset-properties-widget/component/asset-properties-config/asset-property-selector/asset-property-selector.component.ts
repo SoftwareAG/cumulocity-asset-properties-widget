@@ -175,7 +175,6 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
         })
         .indexOf(property.name || property.title);
       if (removeIndex >= 0) {
-        property.isHide = false;
         this.properties[removeIndex] = property;
         properties.splice(index, 1);
         this.removeSelectedProperties(properties);
