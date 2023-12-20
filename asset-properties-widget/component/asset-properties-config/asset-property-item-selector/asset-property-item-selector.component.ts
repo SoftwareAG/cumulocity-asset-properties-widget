@@ -27,19 +27,19 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
     const complexProperties: IManagedObject[] = [];
     this.customProperties.forEach((property) => {
       if (this.isComplexProperty(property)) {
-        constructCustomProperties.push(property);
+        complexProperties.push(property);
         Object.keys(property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key].properties).forEach((key)=>{
           const object = property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key].properties[key];
           object['keyPath'] = [property.name];
           object.keyPath.push(key);
-          constructCustomProperties.push(object);
+          complexProperties.push(object);
         });
 
       } else {
-        constructProperties.push(property);
+        simpleProperties.push(property);
       }
     });
-    return constructProperties.concat(constructCustomProperties);
+    return simpleProperties.concat(complexProperties);
   }
 
   onSelectProperty(property) {
@@ -56,11 +56,11 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
     if(this.isComplexProperty(selectedProperty)){
       this.customProperties.forEach((property) => {
         if(property.keyPath?.[0] === selectedProperty.name){
-          property.active = action;
-          if(action){
+          property.active = active;
+          if(active){
             this.selectedProperty.push(cloneDeep(property));
           }else{
-            property.active = action;
+            property.active = active;
             this.removeUnselectedProperties(property);
           }
         }
