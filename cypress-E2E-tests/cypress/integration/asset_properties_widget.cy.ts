@@ -393,7 +393,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(`p[title='${assetName}']`).click();
     cy.get(textElement).should('contains.text', 'Groups > ' + assetName);
     cy.get(backArrowElement).should('be.visible');
-    cy.get('input[placeholder="Filter this column…"]').click();
+    cy.get('input[placeholder="Filter…"]').click();
     cy.get(filterElement).should('be.visible');
     cy.get(strongTextElement).should('have.text', 'No results to display.');
     cy.get("c8y-ui-empty-state  p[class*='small']").should(
