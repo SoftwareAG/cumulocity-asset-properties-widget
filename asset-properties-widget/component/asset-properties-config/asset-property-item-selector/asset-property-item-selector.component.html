@@ -97,9 +97,15 @@
         <div
           data-cy="asset-property-item-property-name"
           class="col-xs-5 text-truncate"
-          title="{{ property.name | translate }}"
+          title="{{
+            (property.name | translate) ||
+              (property.keyPath.join('.') | translate)
+          }}"
         >
-          {{ property.name | translate }}
+          {{
+            (property.name | translate) ||
+              (property.keyPath.join(".") | translate)
+          }}
         </div>
       </div>
       <div
