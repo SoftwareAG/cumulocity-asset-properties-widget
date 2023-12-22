@@ -44,7 +44,13 @@
             [isEdit]="prop.isEdit"
             [jsonSchema]="prop.jsonSchema"
           ></c8y-asset-properties-item>
-          <div *ngIf="prop.key === 'c8y_Position'">
+          <div
+            *ngIf="
+              prop.key === 'c8y_Position' &&
+              prop.jsonSchema.properties[prop.key].properties.lat &&
+              prop.jsonSchema.properties[prop.key].properties.lng
+            "
+          >
             <c8y-asset-location
               [locationMO]="asset"
               [isEdit]="prop.isEdit"
