@@ -627,6 +627,22 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
       cy.deleteCard();
     });
 
+    // If any one of the values(lat or lng) is not available then map will be shown but marker will not be available anywhere on the map.
+    // User has to click anywhere on the map, then the marker will be visible.
+    it('TC_Asset_Properties_Widget_Location_Edit_003', () => {
+      cy.selectAssetPropertyAndSave(assetName3, locationPropertyKey);
+      cy.clickPropertyEditButton(location);
+      cy.get(lat).clear();
+      cy.get(lng).click();
+      cy.get(marker).should('not.be.visible');
+      cy.get(map).click();
+      cy.get(marker).scrollIntoView().should('be.visible');
+      cy.get(saveElement).click();
+      cy.get(assetNameElement).should('contains.text', assetName3);
+      cy.get(assetNameElement).eq(6).should('contain.text', 'Undefined');
+      cy.deleteCard();
+    });
+
   // If the property 'Location' has values:
   // The values should be shown in respective fields.
   //  Map should be visible with a marker pointing at the provided lat long location at the center.
@@ -722,21 +738,6 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     verifyFileValidationError(errorMessage);
     cy.deleteCard();
   });
-
-      // If any one of the values(lat or lng) is not available then map will be shown but marker will not be available anywhere on the map.
-    // User has to click anywhere on the map, then the marker will be visible.
-    it('TC_Asset_Properties_Widget_Location_Edit_003', () => {
-      cy.selectAssetPropertyAndSave(assetName3, locationPropertyKey);
-      cy.clickPropertyEditButton(location);
-      cy.get(lat).clear();
-      cy.get(lng).click();
-      cy.get(marker).should('not.be.visible');
-      cy.get(map).click();
-      cy.get(marker).scrollIntoView().should('be.visible');
-      cy.get(saveElement).click();
-      cy.get(assetNameElement).should('contains.text', assetName3);
-      cy.deleteCard();
-    });
 
   after(function () {
     cy.cleanup();
