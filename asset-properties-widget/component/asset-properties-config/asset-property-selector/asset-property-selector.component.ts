@@ -171,11 +171,10 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
     properties.forEach((property, index) => {
       const removeIndex = this.properties
         .map(function (item) {
-          return item.name;
+          return item.name || item.title;
         })
-        .indexOf(property.name);
+        .indexOf(property.name || property.title);
       if (removeIndex >= 0) {
-        property.isHide = false;
         this.properties[removeIndex] = property;
         properties.splice(index, 1);
         this.removeSelectedProperties(properties);
@@ -191,9 +190,9 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
   removeProperty(property: IManagedObject) {
     const removeIndex = this.properties
       .map(function (item) {
-        return item.name;
+        return item.name || item.title;
       })
-      .indexOf(property.name);
+      .indexOf(property.name || property.title);
     if (removeIndex >= 0) {
       this.properties.splice(removeIndex, 1);
       property['active'] = false;

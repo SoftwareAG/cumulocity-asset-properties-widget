@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { IManagedObject } from '@c8y/client';
 import * as cloneDeep from 'lodash/cloneDeep';
 
@@ -6,7 +6,7 @@ import * as cloneDeep from 'lodash/cloneDeep';
   selector: 'c8y-asset-property-item-selector-component',
   templateUrl: './asset-property-item-selector.component.html',
 })
-export class assetPropertyItemSelectorCtrlComponent {
+export class assetPropertyItemSelectorCtrlComponent implements OnInit {
   @Input() title?: string;
   @Input() customProperties?: any;
   @Input() propertiesList?: any;
@@ -16,18 +16,64 @@ export class assetPropertyItemSelectorCtrlComponent {
 
   selectedProperty: IManagedObject[] = [];
   search: string = '';
+  properties: object = [];
+
+  ngOnInit(): void {
+   this.customProperties = cloneDeep(this.constructCustomProperties());
+  }
+
+  constructCustomProperties(): IManagedObject[] {
+    const simpleProperties: IManagedObject[] = [];
+    const complexProperties: IManagedObject[] = [];
+    this.customProperties.forEach((property) => {
+      if (this.isComplexProperty(property)) {
+        complexProperties.push(property);
+        Object.keys(property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key].properties).forEach((key)=>{
+          const object = property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key].properties[key];
+          object['keyPath'] = [property.name];
+          object.keyPath.push(key);
+          complexProperties.push(object);
+        });
+
+      } else {
+        simpleProperties.push(property);
+      }
+    });
+    return simpleProperties.concat(complexProperties);
+  }
 
   onSelectProperty(property) {
     if (property.active) {
       this.selectedProperty.push(cloneDeep(property));
+      this.selectOrUnselectChildren(property, true);
     } else {
-      const removeIndex = this.selectedProperty
+      this.removeUnselectedProperties(property);
+      this.selectOrUnselectChildren(property, false);
+    }
+  }
+
+  selectOrUnselectChildren(selectedProperty, active){
+    if(this.isComplexProperty(selectedProperty)){
+      this.customProperties.forEach((property) => {
+        if(property.keyPath?.[0] === selectedProperty.name){
+          property.active = active;
+          if(active){
+            this.selectedProperty.push(cloneDeep(property));
+          }else{
+            property.active = active;
+            this.removeUnselectedProperties(property);
+          }
+        }
+      });
+    }
+  }
+  removeUnselectedProperties(property){
+    const removeIndex = this.selectedProperty
         .map(function (item) {
-          return item.name;
+          return item.keyValue?.[0] || item.name;
         })
         .indexOf(property.name);
-      if (removeIndex > -1) this.selectedProperty.splice(removeIndex, 1);
-    }
+    if (removeIndex > -1) this.selectedProperty.splice(removeIndex, 1);
   }
 
   onSaveButtonClicked(): void {
