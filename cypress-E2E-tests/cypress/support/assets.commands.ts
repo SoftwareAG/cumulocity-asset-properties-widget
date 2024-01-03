@@ -296,6 +296,71 @@ Cypress.Commands.add('createAssetTypesAndPropertyForBuildingHierarchy', () => {
         key: 'length',
         title: 'Length'
       }
+    },
+    {
+      name: 'file',
+      description: '',
+      label: 'File',
+      type: 'c8y_JsonSchema',
+      c8y_IsAssetProperty: {},
+      c8y_Global: {},
+      c8y_JsonSchema: {
+        type: "object",
+        title: "file",
+        properties: {
+            file: {
+              contentMediaType: 'jpeg,csv,jpg',
+              maxSize: 0.1,
+              type: "file"
+            }
+        },
+        required: [],
+        key: "file"
+    },
+    },
+    {
+      name: 'complexproperty',
+      description: '',
+      label: 'ComplexProperty',
+      type: 'c8y_JsonSchema',
+      c8y_IsAssetProperty: {},
+      c8y_Global: {},
+      c8y_JsonSchema: {
+        type: 'object',
+        properties: {
+          complexproperty: {
+            type: 'object',
+            properties: {
+              text: {
+                type: 'string',
+                title: 'Text'
+              },
+              number: {
+                type: 'number',
+                title: 'Number'
+              },
+              fileupload: {
+                type: 'file',
+                maxSize: 0.1,
+                title: 'Fileupload',
+                contentMediaType: 'csv,jpg'
+              },
+              datepicker: {
+                type: 'date',
+                title: 'Datepicker'
+              },
+              enumeration: {
+                type: 'enum',
+                title: 'Enumeration',
+                enum: ['Value-1', 'Value-2', 'Value-3']
+              }
+            }
+          }
+        },
+        required: [],
+        key: 'complexproperty',
+        title: 'ComplexProperty'
+      }
     }
   ];
   const roomObject = {

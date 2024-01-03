@@ -90,7 +90,8 @@ const assetObject3 = [
     c8y_IsDeviceGroup: {}
   }
 ];
-const roomProperties = [{ label: 'Color', isRequired: 'false' }, { label: 'Location', isRequired: false }];
+
+const roomProperties = [{ label: 'Color', isRequired: 'false' }, { label: 'Location', isRequired: false }, { label: 'File', isRequired: 'false' }, { label: 'ComplexProperty', isRequired: 'false' }];
 const marker = "div[class*='dlt-c8y-icon-marker']"; 
 const mapZoomIn = "a[title='Zoom in']";
 const mapZoomOut = "a[title='Zoom out']";
@@ -678,8 +679,65 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(lng).should('not.have.value', 60);
     cy.get(lat).should('not.have.value', 15);    
     cy.deleteCard();
+  });  
+
+  // This function is being used to check File validation error message
+  function verifyFileValidationError(errorText) {
+    cy.get('c8y-drop-area p').should('contain.text', errorText);
+  }
+
+  // This function is being used to select a file for an asset property
+  // Note: type is an optional parameter. If you are selecting a file for complex property then mention the type as 'complex'.
+  function selectFile(propertyName, fileName, type?) {
+    if (type) {
+      cy.get('c8y-asset-properties-item formly-field label')
+        .contains(propertyName)
+        .find("~c8y-drop-area div~input[type='file']")
+        .selectFile(`cypress/fixtures/${fileName}`, { force: true });
+    } else
+      cy.get('c8y-asset-properties-item formly-field p')
+        .contains(propertyName)
+        .find("~formly-field div~input[type='file']")
+        .selectFile(`cypress/fixtures/${fileName}`, { force: true });
+  }
+
+  // Verify file size and file type validations
+  it('TC_Asset_Properties_Widget_view_011', () => {
+    const propKey = 'file';
+    const invalidFileName = 'Image SAG LOGO.png';
+    const invalidFileSize = 'image1.jpg';
+    const errorMessage = 'The selected file is not supported.';
+    const invalidFileSizeErrorMessage= 'The selected file is too large. The size limit is 102.4 kB.'
+    const editPropertyCancelButton = "button[title='Cancel']";
+    const complexPropertyTitle = 'ComplexProperty';
+    cy.selectAssetPropertyAndSave('Test Asset3', propKey);
+    cy.clickPropertyEditButton('File');
+    cy.get('.dlt-c8y-icon-plus-square').click();
+    selectFile('File', invalidFileSize);
+    verifyFileValidationError(invalidFileSizeErrorMessage);
+    selectFile('File', invalidFileName);
+    verifyFileValidationError(errorMessage);
+    cy.get(editPropertyCancelButton).click();
+    cy.get(asset_properties_widget_elements.settingsButton).click();
+    cy.get(asset_properties_widget_elements.editWidgetButton).click();
+    cy.intercept({ method: 'GET', url: '/inventory/managedObjects/**/childAdditions?pageSize=2000&query=%24filter%3D(has(%27c8y_IsAssetProperty%27))' }).as(
+      'assetpropertyresponse'
+    );
+    cy.wait('@assetpropertyresponse')
+      .its('response.statusCode')
+      .should('eq', 200);
+    cy.get(asset_properties_widget_elements.addPropertyButton).click();
+    cy.selectAssetProperty(complexPropertyTitle);
+    cy.get(asset_properties_widget_elements.selectButton).click();
+    cy.get(asset_properties_widget_elements.saveButton).click();
+    cy.clickPropertyEditButton(complexPropertyTitle);
+    selectFile('Fileupload', invalidFileSize, 'complex');
+    verifyFileValidationError(invalidFileSizeErrorMessage);
+    selectFile('Fileupload', invalidFileName, 'complex');
+    verifyFileValidationError(errorMessage);
+    cy.deleteCard();
   });
-  
+
   after(function () {
     cy.cleanup();
   });
