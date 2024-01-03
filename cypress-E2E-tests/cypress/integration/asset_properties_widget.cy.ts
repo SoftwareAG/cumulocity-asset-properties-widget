@@ -93,10 +93,10 @@ const marker = "div[class*='dlt-c8y-icon-marker']";
 const mapZoomIn = "a[title='Zoom in']";
 const mapZoomOut = "a[title='Zoom out']";
 const mapFullScreen = "c8y-asset-location button[title='Full screen']";
-const moveBars = 'c8y-asset-property-selector td > i';
+const propertyDragHandle = 'c8y-asset-property-selector td > i';
 const map = "c8y-asset-location c8y-map";
-const moveBars1 = ":nth-child(1) > .cdk-drag-handle";
-const moveBars3 = ":nth-child(3) > .cdk-drag-handle";
+const propertyDragHandle1 = ":nth-child(1) > .cdk-drag-handle";
+const propertyDragHandle3 = ":nth-child(3) > .cdk-drag-handle";
 const labelElement = "td > input[class*='form-control']";
 const lat="input[min='-90']";
 const lng="input[min='-180']";
@@ -175,7 +175,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const labels = ['Name', 'ID', 'Asset model'];
     const keys = ['name', 'id', 'type'];    
     for (let i = 0; i < labels.length; i++) {
-      cy.get(moveBars).eq(i).should('be.visible');
+      cy.get(propertyDragHandle).eq(i).should('be.visible');
       cy.get(checkboxElement).eq(i).should('be.visible');
       cy.get(labelElement).eq(i).should('have.value', labels[i]);
       cy.get('c8y-asset-property-selector td > span').eq(i).should('have.text', keys[i]);
@@ -220,7 +220,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
 
     // Change the order of properties and click on cancel button,Verify that the changes are not being saved.
   it('TC_Asset_Properties_Widget_config_009', () => {
-    cy.get(moveBars3).dragTo(moveBars1);
+    cy.get(propertyDragHandle3).dragTo(propertyDragHandle1);
     cy.get(asset_properties_widget_elements.cancelButton).click();
     cy.get(asset_properties_widget_elements.addWidgetButton).click();
     cy.get(asset_properties_widget_elements.cardElement).eq(0).click();
@@ -228,11 +228,11 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   });
 
   // Change the order of properties and click on save button,Verify if the order in which user has changed is properly getting displayed on widget cover.
-  it('TC_Asset_Properties_Widget_config_010', () => {
+  it.only('TC_Asset_Properties_Widget_config_010', () => {
     cy.selectAsset(assetName);
+    // addeding wait so that drag will work as expected otherwise drag will not work
     cy.wait(1000);
-    cy.get(moveBars3).dragTo(moveBars1);
-    cy.wait(1000);
+    cy.get(propertyDragHandle3).dragTo(propertyDragHandle1);   
     cy.get(labelElement).eq(0).should('have.value', 'Asset model');
     cy.get(asset_properties_widget_elements.saveButton).click();
     cy.get(cardTitleElement).should('contain.text', assetProperties);
@@ -241,8 +241,8 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
 
   // Check whether user is able to change the order of the properties by dragging it up down
   it('TC_Asset_Properties_Widget_config_011', () => {
-    cy.get(moveBars3).dragTo(moveBars1);
-    cy.get(moveBars1).dragTo(moveBars3);
+    cy.get(propertyDragHandle3).dragTo(propertyDragHandle1);
+    cy.get(propertyDragHandle1).dragTo(propertyDragHandle3);
     cy.get(labelElement).eq(0).should('have.value', 'Name');
   });
 
