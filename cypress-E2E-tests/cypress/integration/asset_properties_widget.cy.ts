@@ -17,6 +17,8 @@ const cardTitleElement = 'c8y-dashboard-child-title';
 const devices = ['Device1', 'Device2'];
 const assetName = 'Test Asset2';
 const assetName1 = 'Test Asset3';
+const assetName2 = 'Test Asset4';
+const assetName3 = 'Test Asset5';
 const url = 'apps/sag-pkg-asset-properties-widget/index.html#/';
 const searchResultsElement = 'c8y-list-group span';
 const strongTextElement = "c8y-ui-empty-state p[class*='text-medium']";
@@ -228,7 +230,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   });
 
   // Change the order of properties and click on save button,Verify if the order in which user has changed is properly getting displayed on widget cover.
-  it.only('TC_Asset_Properties_Widget_config_010', () => {
+  it('TC_Asset_Properties_Widget_config_010', () => {
     cy.selectAsset(assetName);
     // addeding wait so that drag will work as expected otherwise drag will not work
     cy.wait(1000);
@@ -587,7 +589,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   // The marker should be visible at the center of the map.
   // If any one of the values(lat or lng) is not available then map will be hidden. If map is hidden ,full screen button won't be visible.
   it('TC_Asset_Properties_Widget_Location_View_001', () => {
-    cy.selectAssetPropertyAndSave(assetName1, locationPropertyKey);
+    cy.selectAssetPropertyAndSave(assetName2, locationPropertyKey);
     cy.get(assetNameElement).eq(4).should('contain.text', 77.6904);
     cy.get(assetNameElement).eq(5).should('contain.text', 'Undefined');
     cy.get(assetNameElement).eq(6).should('contain.text', 12.9322);
@@ -603,12 +605,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.clickPropertyEditButton(location);
     cy.get(lng).clear();
     cy.get(saveElement).click();
-    cy.get(map).scrollIntoView().should('not.exist'); 
-    // resetting the earlier value   
-    cy.clickPropertyEditButton(location);
-    cy.get(lng).clear();
-    cy.get(lng).type('77.6904');
-    cy.get(saveElement).click();
+    cy.get(map).scrollIntoView().should('not.exist');
     cy.deleteCard();
   });
 
@@ -632,18 +629,13 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     // If any one of the values(lat or lng) is not available then map will be shown but marker will not be available anywhere on the map.
     // User has to click anywhere on the map, then the marker will be visible.
     it('TC_Asset_Properties_Widget_Location_Edit_003', () => {
-      cy.selectAssetPropertyAndSave(assetName1, locationPropertyKey);
+      cy.selectAssetPropertyAndSave(assetName3, locationPropertyKey);
       cy.clickPropertyEditButton(location);
       cy.get(lat).clear();
       cy.get(lng).click();
       cy.get(marker).should('not.be.visible');
       cy.get(map).click();
       cy.get(marker).scrollIntoView().should('be.visible');
-      cy.get(saveElement).click();
-      // resetting the earlier value 
-      cy.clickPropertyEditButton(location);
-      cy.get(lat).clear();
-      cy.get(lat).type('12.9322');
       cy.get(saveElement).click();
       cy.deleteCard();
     });
