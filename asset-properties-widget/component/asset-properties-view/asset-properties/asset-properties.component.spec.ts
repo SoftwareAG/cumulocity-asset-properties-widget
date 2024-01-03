@@ -205,7 +205,7 @@ describe('AssetPropertiesComponent', () => {
         pipe: () => of(null)
       }
     } as any;
-    const clusterMap = {ngOnDestroy: jest.fn(), ngOnInit: jest.fn()} as any;
+    const clusterMap = {mapView:{map:{invalidateSize : jest.fn()}}} as any;
 
     it('should use correct labels on complex object', async () => {
       // given
