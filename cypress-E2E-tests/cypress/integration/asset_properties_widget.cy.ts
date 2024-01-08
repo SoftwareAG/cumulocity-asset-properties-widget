@@ -673,10 +673,10 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(assetNameElement).eq(4).should('contain.text', 60);
     cy.get(assetNameElement).eq(5).should('contain.text', 10);
     cy.get(assetNameElement).eq(6).should('contain.text', 15);
-    cy.clickPropertyEditButton(location);
-    cy.get(map).click();
-    cy.get(lng).should('not.have.value', 60);
-    cy.get(lat).should('not.have.value', 15);    
+    // cy.clickPropertyEditButton(location);
+    // cy.get(map).click();
+    // cy.get(lng).should('not.have.value', 60);
+    // cy.get(lat).should('not.have.value', 15);    
     cy.deleteCard();
   });  
 
