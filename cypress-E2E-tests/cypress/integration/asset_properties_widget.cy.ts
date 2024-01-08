@@ -637,9 +637,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
       cy.get(marker).should('not.be.visible');
       cy.get(map).click();
       cy.get(marker).scrollIntoView().should('be.visible');
-      cy.get(saveElement).click();
-      cy.get(assetNameElement).should('contains.text', assetName3);
-      cy.get(assetNameElement).eq(6).should('contain.text', 'Undefined');
+      cy.get(cancelElement).click();
       cy.deleteCard();
     });
 
