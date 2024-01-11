@@ -59,11 +59,11 @@ export class AssetPropertiesService {
 
       const jsonData = await response.json();
 
-      if ( !jsonData || !jsonData.c8y_asset ) {
-        throw new Error('Failed to fetch asset data. The response does not have the expected structure.');
+      if ( !jsonData.data.c8y_asset ) {
+        throw new Error('Failed to fetch asset data. The response does not have the expected JSON structure data.c8y_asset.');
       }
 
-      return jsonData.c8y_asset;
+      return jsonData.data.c8y_asset;
     } catch (error) {
       throw error;
     }
