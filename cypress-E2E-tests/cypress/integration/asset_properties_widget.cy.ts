@@ -727,11 +727,15 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(lng).type('60');
     cy.get(alt).type('10');
     cy.get(lat).type('15');
+    cy.intercept({
+      method: 'PUT',
+      url: '**/inventory/managedObjects/**'
+    }).as('saved');
     cy.get(saveElement).click();
     cy.get(assetNameElement).eq(4).should('contain.text', 60);
     cy.get(assetNameElement).eq(5).should('contain.text', 10);
     cy.get(assetNameElement).eq(6).should('contain.text', 15);
-    cy.wait(1000); // Added wait to resolve the flakyness
+    cy.wait('@saved');
     cy.clickPropertyEditButton(location);
     cy.get(map).click();    
     cy.get(lng).should('not.have.value', 60);
