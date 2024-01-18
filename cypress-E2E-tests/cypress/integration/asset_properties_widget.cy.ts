@@ -633,7 +633,13 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     cy.selectAssetProperty(complexPropertyTitle);
     cy.get(asset_properties_widget_elements.selectButton).click();
+    cy.intercept({ method: 'GET', url: '/inventory/managedObjects/**/childAdditions?pageSize=2000&query=%24filter%3D(has(%27c8y_IsAssetProperty%27))' }).as(
+      'saveresponse'
+    );
     cy.get(asset_properties_widget_elements.saveButton).click();
+    cy.wait('@saveresponse')
+      .its('response.statusCode')
+      .should('eq', 200);
     cy.clickPropertyEditButton(complexPropertyTitle);
     selectFile('Fileupload', invalidFileSize, 'complex');
     verifyFileValidationError(invalidFileSizeErrorMessage);
@@ -727,15 +733,16 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(lng).type('60');
     cy.get(alt).type('10');
     cy.get(lat).type('15');
-    cy.intercept({
-      method: 'PUT',
-      url: '**/inventory/managedObjects/**'
-    }).as('saved');
+    cy.intercept({ method: 'GET', url: '/inventory/managedObjects/**/childAssets?**))' }).as(
+      'saveresponse'
+    );
     cy.get(saveElement).click();
     cy.get(assetNameElement).eq(4).should('contain.text', 60);
     cy.get(assetNameElement).eq(5).should('contain.text', 10);
     cy.get(assetNameElement).eq(6).should('contain.text', 15);
-    cy.wait('@saved');
+    cy.wait('@saveresponse')
+      .its('response.statusCode')
+      .should('eq', 200);
     cy.clickPropertyEditButton(location);
     cy.get(map).click();    
     cy.get(lng).should('not.have.value', 60);
