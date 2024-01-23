@@ -45,7 +45,7 @@
       cdkDrag
       cdkDragLockAxis="y"
       class="property"
-      *ngFor="let property of properties"
+      *ngFor="let property of properties; index as i"
       class="table-row-not-expanded"
     >
       <td cdkDragHandle style="width: 5%">
@@ -131,7 +131,23 @@
         />
       </td>
       <td style="width: 28%">
-        <span data-cy="asset-property-selector-name">{{
+        <button
+          class="btn btn-xs btn-default"
+          type="button"
+          aria-label="{{ 'Configure computed property' | translate }}"
+          title="{{ 'Configure computed property' | translate }}"
+          tooltip-popup-delay="500"
+          tooltip-append-to-body="true"
+          *ngIf="!!property.computed && property.config"
+          (click)="configComputeProperty(i)"
+        >
+          <i c8yIcon="bolt"></i>
+          {{
+            (property.name | translate) ||
+              (property.keyPath?.join(".") | translate)
+          }}
+        </button>
+        <span *ngIf="!property.config" data-cy="asset-property-selector-name">{{
           (property.name | translate) ||
             (property.keyPath?.join(".") | translate)
         }}</span>

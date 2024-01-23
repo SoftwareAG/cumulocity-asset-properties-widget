@@ -12,6 +12,7 @@ import {
   property,
 } from '../../../common/asset-property-constant';
 import { some } from 'lodash-es';
+import { ComputedPropertyConfigComponent } from '../computed-asset-property/computed-property-config.component';
 
 type ModalInitialState = {
   title: string;
@@ -29,12 +30,14 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
   isLoading: boolean = false;
   assetType: IManagedObject;
   assetPropertySelectorModalRef: BsModalRef;
+  computedPropertyConfigModalRef: BsModalRef;
   properties = cloneDeep(defaultProperty);
   customProperties: IManagedObject[] = cloneDeep(defaultProperty).concat(
     cloneDeep(property)
   );
   ExpandedComplexProperty: any;
   isAtleastOnePropertySelected: boolean = true;
+  selectedComputedPropertyIndex: number;
 
   constructor(
     private assetTypes: AssetTypesService,
@@ -129,6 +132,12 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
         );
         this.isAtleastOnePropertySelected = true;
         this.config.properties = this.properties;
+        this.properties.forEach((property, idx, arr) => {
+          console.log(property);
+          if(property.computed && (!property.config.dp || !property.config.type)){
+          this.configComputeProperty(idx);
+          }
+        });
         this.assetPropertySelectorModalRef.hide();
       }
     );
@@ -207,5 +216,26 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.properties, event.previousIndex, event.currentIndex);
+  }
+
+  configComputeProperty(index){
+    this.selectedComputedPropertyIndex = index;
+    this.computedPropertyConfigModalRef = this.modalService.show(
+      ComputedPropertyConfigComponent,
+      {
+        backdrop: 'static',
+        initialState: {
+          title: gettext('Computed property configuration'),
+          property: this.properties[index],
+          index: index
+        },
+      }
+    );
+    this.computedPropertyConfigModalRef.content.savePropertySelection.subscribe(
+      (object: any) => {
+        this.config.properties[object.index] = object.property;
+        // this.computedPropertyConfigModalRef.hide();
+      }
+    );
   }
 }

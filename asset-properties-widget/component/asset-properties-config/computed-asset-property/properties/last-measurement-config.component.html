@@ -1,0 +1,22 @@
+<div class="form-group">
+  <c8y-datapoint-selection-list
+    [defaultFormOptions]="formConfig"
+    [actions]="actions"
+    [minActiveCount]="minSelectCount"
+    [maxActiveCount]="maxSelectCount"
+    [(ngModel)]="property.config.dp"
+    class="bg-inherit"
+    (change)="modelChanged($event)"
+    (isValid)="validationChanged($event)"
+  >
+  </c8y-datapoint-selection-list>
+</div>
+
+<div class="form-group">
+  <label for="returnTypeField" translate>Return type</label>
+  <div class="c8y-select-wrapper">
+    <select id="returnTypeField" class="form-control" [(ngModel)]="config">
+      <options></options>
+    </select>
+  </div>
+</div>

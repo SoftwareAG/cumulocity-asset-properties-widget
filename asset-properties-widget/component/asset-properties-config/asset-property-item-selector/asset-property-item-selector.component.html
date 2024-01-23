@@ -91,6 +91,14 @@
             >
               <i c8yicon="tags" class="text-info dlt-c8y-icon-tags"></i>
             </button>
+            <button
+              class="btn btn-dot"
+              type="button"
+              title="{{ 'Computed property.' | translate }}"
+              *ngIf="property.computed"
+            >
+              <i c8yIcon="bolt" class="text-primary-light"></i>
+            </button>
           </span>
           {{ property.label ? property.label : (property.title | translate) }}
         </div>

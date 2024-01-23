@@ -15,6 +15,9 @@ import { AssetPropertiesItemComponent } from './component/asset-properties-view/
 import { assetPropertyItemSelectorCtrlComponent } from './component/asset-properties-config/asset-property-item-selector/asset-property-item-selector.component';
 import { AssetPropertiesSelectorComponent } from './component/asset-properties-config/asset-property-selector/asset-property-selector.component';
 import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
+import { ComputedPropertyConfigComponent } from './component/asset-properties-config/computed-asset-property/computed-property-config.component';
+import { DatapointSelectorModule } from '@c8y/ngx-components/datapoint-selector';
+import { ComputedPropertyLastMeasurementConfigComponent } from './component/asset-properties-config/computed-asset-property/properties/last-measurement-config.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +27,8 @@ import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
     AssetPropertiesViewComponent,
     AssetPropertiesComponent,
     AssetPropertiesItemComponent,
+    ComputedPropertyConfigComponent,
+    ComputedPropertyLastMeasurementConfigComponent
   ],
   imports: [
     CoreModule,
@@ -32,6 +37,7 @@ import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
     DragDropModule,
     RealtimeModule,
     SubAssetsModule,
+    DatapointSelectorModule,
   ],
   providers: [
     {

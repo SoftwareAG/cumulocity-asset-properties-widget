@@ -1,0 +1,57 @@
+<div class="c8y-viewport-modal">
+  <div class="modal-header dialog-header">
+    <i c8yIcon="bolt"></i>
+    <div id="modal-title-property" class="h4">{{title | translate}}</div>
+  </div>
+  <div class="modal-inner-scroll">
+    <p
+      class="text-center bg-level-0 text-medium text-16 p-t-16 p-b-16 sticky-top separator-bottom"
+      style="z-index: 110"
+    >
+      {{ tempProperty.label | translate}}
+    </p>
+    <div class="modal-body no-card-context p-t-16" id="modal-body-property">
+      <c8y-last-measurement-config
+        *ngIf="tempProperty.name === 'lastMeasurement'"
+        [property]="tempProperty"
+        (change)="modelChanged(event)"
+        (isValid)="isValid(event)"
+      ></c8y-last-measurement-config>
+      <div *ngIf="tempProperty.name != 'lastMeasurement'">
+        <label class="control-label" ng-class="{ 'sr-only': !showTitle() }">
+          {{ tempProperty.title | translate }}
+        </label>
+        <input
+          data-cy="asset-property-selector-label"
+          class="form-control"
+          [(ngModel)]="tempProperty.config.type"
+        />
+      </div>
+      <!-- <c8y-schema-form
+          *ngIf="configSchema"
+          schema="configSchema"
+          form="['*']"
+          model="config2"
+        ></c8y-schema-form> -->
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-default"
+      type="button"
+      title="{{ 'Cancel' | translate }}"
+      (click)="onCancelButtonClicked()"
+    >
+      {{ 'Cancel' | translate }}
+    </button>
+    <button
+      class="btn btn-primary"
+      type="button"
+      title="{{ 'Save' | translate }}"
+      (click)="onSaveButtonClicked()"
+      [disabled]="isSaveButtonDisabled()"
+    >
+      {{ 'Save' | translate }}
+    </button>
+  </div>
+</div>
