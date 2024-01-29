@@ -1,3 +1,5 @@
+import { gettext } from "@c8y/ngx-components";
+
 export const defaultProperty = [
   {
     c8y_JsonSchema: { properties: { name: { type: 'string', label: 'Name' } } },
@@ -138,11 +140,10 @@ export const property = [
     name: 'lastMeasurement',
     label: 'Last measurement',
     type: 'string',
-    config:{dp:[],isValid:null},
+    config:{dp:[],isValid:null, resultTypes:1},
     computed: true,
     isEditable: false,
     isExistingProperty: true,
-    description: 'sdjfvsdjfvsdfvksdfvsdhfvskdh'
   },
   {
     c8y_JsonSchema: {
@@ -187,3 +188,10 @@ export const property = [
     isExistingProperty: true,
   }
 ];
+
+export const RESULT_TYPES = {
+  VALUE: { name: 'VALUE', value: 1, label: gettext('Only value') },
+  VALUE_UNIT: { name: 'VALUE_UNIT', value: 2, label: gettext('Value and unit') },
+  VALUE_UNIT_TIME: { name: 'VALUE_UNIT_TIME', value: 3, label: gettext('Value, unit and time') },
+ // OBJECT: { name: 'OBJECT', value: 4, label: gettext('Complete object') }
+};

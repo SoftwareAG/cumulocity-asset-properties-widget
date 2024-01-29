@@ -1,5 +1,6 @@
 <c8y-asset-properties
   *ngIf="!isEmptyWidget && selectedAsset && properties"
+  [computedPropertyObject]="computedPropertyObject"
   [properties]="properties"
   [asset]="selectedAsset"
   (assetChange)="assetChange($event)"
@@ -7,4 +8,7 @@
 ></c8y-asset-properties>
 <div *ngIf="isEmptyWidget" style="text-align: center">
   {{ "No Data" | translate }}
+</div>
+<div class="text-center" *ngIf="isLoading">
+  <c8y-loading></c8y-loading>
 </div>

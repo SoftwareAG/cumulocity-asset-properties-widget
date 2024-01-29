@@ -132,10 +132,10 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
         );
         this.isAtleastOnePropertySelected = true;
         this.config.properties = this.properties;
-        this.properties.forEach((property, idx, arr) => {
-          console.log(property);
-          if(property.computed && (!property.config.dp || !property.config.type)){
-          this.configComputeProperty(idx);
+        this.properties.forEach((property, index) => {
+          if(property.computed && property.config && !(property.config.dp?.length>0 || property.config.type)){
+            this.config.properties[index].config = {...this.config.properties[index].config, ...{id:String(Math.random()).substr(2)}};
+            this.configComputeProperty(index);
           }
         });
         this.assetPropertySelectorModalRef.hide();
@@ -183,7 +183,7 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
           return item.name || item.title;
         })
         .indexOf(property.name || property.title);
-      if (removeIndex >= 0) {
+      if (removeIndex >= 0 && !property.config) {
         this.properties[removeIndex] = property;
         properties.splice(index, 1);
         this.removeSelectedProperties(properties);
@@ -231,10 +231,16 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
         },
       }
     );
-    this.computedPropertyConfigModalRef.content.savePropertySelection.subscribe(
+    this.computedPropertyConfigModalRef.content.savePropertyConfiguration.subscribe(
       (object: any) => {
         this.config.properties[object.index] = object.property;
-        // this.computedPropertyConfigModalRef.hide();
+      }
+    );
+    this.computedPropertyConfigModalRef.content.cancelPropertyConfiguration.subscribe(
+      (index: number) => {
+        if(!(this.config.properties[index].config.dp?.length>0 || this.config.properties[index].config.type)){
+         this.config.properties.splice(index, 1);
+        }
       }
     );
   }

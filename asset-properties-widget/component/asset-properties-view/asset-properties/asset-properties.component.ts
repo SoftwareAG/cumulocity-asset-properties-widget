@@ -3,6 +3,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -17,6 +18,7 @@ import {
   AlertService,
   AssetTypesService,
   DashboardChildComponent,
+  DatePipe,
   gettext,
 } from '@c8y/ngx-components';
 import { AssetPropertiesItem } from './asset-properties.model';
@@ -25,12 +27,14 @@ import { Permissions } from '@c8y/ngx-components';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { AssetLocationComponent } from '@c8y/ngx-components/sub-assets';
+import { RESULT_TYPES } from '../../../common/asset-property-constant';
 
 @Component({
   selector: 'c8y-asset-properties',
   templateUrl: './asset-properties.component.html',
 })
-export class AssetPropertiesComponent implements OnChanges {
+export class AssetPropertiesComponent implements OnChanges, OnInit {
+  @Input() computedPropertyObject: IManagedObject;
   @Input() asset: IManagedObject;
   @Output() assetChange = new EventEmitter<IManagedObject>();
   @Input()
@@ -51,7 +55,8 @@ export class AssetPropertiesComponent implements OnChanges {
     private inventoryBinary: InventoryBinaryService,
     private alert: AlertService,
     private permissionsService: Permissions,
-    public dashboardChild: DashboardChildComponent
+    public dashboardChild: DashboardChildComponent,
+    private pipe: DatePipe
   ) {}
 
   async ngOnInit() {
@@ -63,7 +68,7 @@ export class AssetPropertiesComponent implements OnChanges {
   }
 
  async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    if (changes.asset?.currentValue || changes.properties?.currentValue) {
+    if (changes.asset?.currentValue || changes.properties?.currentValue || changes.computedPropertyObject?.currentValue) {
       this.assetType = undefined;
       this.customProperties = [];
       this.loadAsset();
@@ -108,6 +113,9 @@ export class AssetPropertiesComponent implements OnChanges {
     for (const key of keys) {
       if (properties[key]) {
         let value = asset[key];
+        if(mo.computed){
+          value = this.getComputedPropertyValue(mo,asset);
+        }
         const {type} = properties[key];
         const {title} = properties[key];
         let file;
@@ -237,14 +245,76 @@ export class AssetPropertiesComponent implements OnChanges {
       item.jsonSchema.required = [mo.c8y_JsonSchema.key];
     }
   }
- private async listenToWidgetResizeEvent(dashboardChild: DashboardChildComponent) {
-        dashboardChild.changeEnd
-          .pipe(
-            filter(child => child.lastChange === 'resize'),
-            takeUntil(this.destroy$)
-          )
-          .subscribe(async () => {
-            this.clusterMap.mapView.map.invalidateSize();
-          });
+
+  private async listenToWidgetResizeEvent(dashboardChild: DashboardChildComponent) {
+    dashboardChild.changeEnd
+      .pipe(
+        filter(child => child.lastChange === 'resize'),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(async () => {
+        this.clusterMap.mapView.map.invalidateSize();
+      });
+  }
+
+  getComputedPropertyValue(mo,asset){
+    let value = '';
+
+    switch (mo.name) {
+      case 'alarmCountToday':
+        value = asset.childDevices.references.length;
+        break;
+      case 'alarmCount3Months':
+        value = asset.childDevices.references.length;
+        break;
+      case 'eventCountToday':
+        value = asset.childDevices.references.length;
+        break;
+      case 'eventCount3Months':
+        value = asset.childDevices.references.length;
+        break;
+      case 'lastDeviceMessage':
+        value = asset.childDevices.references.length;
+        break;
+      case 'lastMeasurement':
+        value = this.computedPropertyObject ? this.getLastMeasurementWithFormat(this.computedPropertyObject[`${mo.name}_${mo.config.id}`],mo.config.resultTypes) : undefined;
+        break;
+      case 'childDevicesCount':
+        value = asset.childDevices.references.length;
+        break;
+      case 'childAssetsCount':
+        value = asset.childAssets.references.length;
+        break;
+      case 'configurationSnapshot':
+        value = asset.childDevices.references.length;
+        break;
+      default:
+        value = '';
+        break;
+    }
+    return value;
+  }
+
+  getLastMeasurementWithFormat ( measurementObj ,resultType) {
+    let out = '';
+    if(measurementObj){
+      const { date,value, unit } = measurementObj;
+      const type = resultType || RESULT_TYPES.VALUE.value;
+      switch (type) {
+        case RESULT_TYPES.VALUE.value:
+          out = value;
+          break;
+        case RESULT_TYPES.VALUE_UNIT.value:
+          out = `${value } ${ unit || ''}`;
+          break;
+        case RESULT_TYPES.VALUE_UNIT_TIME.value:
+          out = ` ${this.pipe.transform(date, 'short')} | ${`${value } ${ unit || ''}`}`;
+          break;
+        default:
+         out = '';
+          break;
       }
+    }
+    return out;
+  }
 }

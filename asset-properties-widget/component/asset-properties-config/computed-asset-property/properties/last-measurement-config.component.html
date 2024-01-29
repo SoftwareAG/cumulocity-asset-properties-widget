@@ -15,8 +15,17 @@
 <div class="form-group">
   <label for="returnTypeField" translate>Return type</label>
   <div class="c8y-select-wrapper">
-    <select id="returnTypeField" class="form-control" [(ngModel)]="config">
-      <options></options>
+    <select
+      id="returnTypeField"
+      class="form-control"
+      [(ngModel)]="property.config.resultTypes"
+    >
+      <option
+        *ngFor="let item of resultTypes | keyvalue"
+        [ngValue]="item.value.value"
+      >
+        {{ item.value.label }}
+      </option>
     </select>
   </div>
 </div>

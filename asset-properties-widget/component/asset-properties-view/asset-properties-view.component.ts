@@ -1,13 +1,23 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { IManagedObject, InventoryService } from '@c8y/client';
-import { ManagedObjectRealtimeService } from '@c8y/ngx-components';
+import { ManagedObjectRealtimeService, MeasurementRealtimeService } from '@c8y/ngx-components';
 import { AssetPropertiesService } from '../asset-properties-config/asset-properties.service';
 import { some, cloneDeep } from 'lodash-es';
+import { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+
+interface MeasurementValue {
+  unit?: string;
+  value: number;
+  date: string;
+  id: string;
+}
 
 @Component({
   selector: 'c8y-asset-properties-view',
   templateUrl: './asset-properties-view.component.html',
-  providers: [ManagedObjectRealtimeService],
+  providers: [ManagedObjectRealtimeService, MeasurementRealtimeService],
 })
 export class AssetPropertiesViewComponent implements OnInit {
   selected = { id: 'asset-properties-widget' };
@@ -16,11 +26,18 @@ export class AssetPropertiesViewComponent implements OnInit {
   customProperties: IManagedObject[];
   properties: IManagedObject[];
   @Input() config: any;
+  computedPropertyObject:object;
+  isLoading = true;
+
+  state$: Observable<{
+    latestMeasurement: MeasurementValue;
+  }>;
 
   constructor(
     protected inventoryService: InventoryService,
     protected moRealtimeService: ManagedObjectRealtimeService,
-    private assetPropertiesService: AssetPropertiesService
+    private assetPropertiesService: AssetPropertiesService,
+    private measurementRealtime: MeasurementRealtimeService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -45,7 +62,20 @@ export class AssetPropertiesViewComponent implements OnInit {
           });
           this.config.properties = cloneDeep(this.properties);
           this.constructComplexPropertyKeys();
+          this.config.properties.forEach(property =>{
+            if(property.computed && property.name ==='lastMeasurement' && property.config.dp.length>0){
+              // eslint-disable-next-line no-underscore-dangle
+              let datapoint = property.config.dp.find((dp) =>dp.__active);
+              datapoint = {...datapoint, ...{uniqId:property.config.id}};
+              this.getLatestMeasurement$(datapoint).subscribe(
+               (lastMeasurement) => {
+                this.computedPropertyObject = {...this.computedPropertyObject, ...{[`lastMeasurement_${lastMeasurement.id}`]: lastMeasurement}};
+                }
+             );
+            }
+          });
           this.handleRealtime();
+          this.isLoading = false;
         }, 1000);
       } catch (error) {
         this.isEmptyWidget = true;
@@ -69,7 +99,7 @@ export class AssetPropertiesViewComponent implements OnInit {
         if(!customizedProperty.find((prop) => prop.id === property.id)){
           customizedProperty.push(property);
         }
-      }else if (element.active && !customizedProperty.find((prop) => prop.name === element.name)){
+      }else if (element.active && (!customizedProperty.find((prop) => prop.name === element.name) || element.computed)){
         customizedProperty.push(element);
       }
     });
@@ -101,5 +131,27 @@ export class AssetPropertiesViewComponent implements OnInit {
       .subscribe((asset: IManagedObject) => {
         this.selectedAsset = asset;
       });
+  }
+
+  getLatestMeasurement$(datapoint: KPIDetails): Observable<MeasurementValue> {
+    return this.measurementRealtime
+      .latestValueOfSpecificMeasurement$(
+        datapoint.fragment,
+        datapoint.series,
+        datapoint.__target.id,
+        // we only need the last two values in case we want to show a trend
+         1
+      )
+      .pipe(
+        filter(measurement => !!measurement),
+        map(measurement => {
+          return {
+            unit: measurement[datapoint.fragment][datapoint.series].unit,
+            value: measurement[datapoint.fragment][datapoint.series].value,
+            date: measurement.time as string,
+            id: datapoint.uniqId
+          };
+        })
+      );
   }
 }
