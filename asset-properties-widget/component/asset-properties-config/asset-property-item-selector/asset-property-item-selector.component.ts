@@ -28,8 +28,8 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
     this.customProperties.forEach((property) => {
       if (this.isComplexProperty(property)) {
         complexProperties.push(property);
-        Object.keys(property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key].properties).forEach((key)=>{
-          const object = property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key].properties[key];
+        Object.keys(property.c8y_JsonSchema.properties[property.name].properties).forEach((key)=>{
+          const object = property.c8y_JsonSchema.properties[property.name].properties[key];
           object['keyPath'] = [property.name];
           object.keyPath.push(key);
           complexProperties.push(object);
@@ -93,7 +93,7 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
       return false;
     }
     return (
-      prop.c8y_JsonSchema.properties[prop.c8y_JsonSchema.key]?.type === 'object'
+      prop.c8y_JsonSchema.properties[prop.name]?.type === 'object'
     );
   }
 }

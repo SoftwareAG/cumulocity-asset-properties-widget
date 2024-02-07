@@ -56,7 +56,7 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
     private alert: AlertService,
     private permissionsService: Permissions,
     public dashboardChild: DashboardChildComponent,
-    private pipe: DatePipe
+    private datePipe: DatePipe
   ) {}
 
   async ngOnInit() {
@@ -239,10 +239,10 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
     }
     const isComplexProperty = !!item?.complex?.length;
     if (isComplexProperty) {
-      const complexProperty = item.jsonSchema?.properties?.[mo.c8y_JsonSchema.key] as JSONSchema7;
+      const complexProperty = item.jsonSchema?.properties?.[mo.name] as JSONSchema7;
       complexProperty.required = item.complex.map(({ key }) => key);
     } else {
-      item.jsonSchema.required = [mo.c8y_JsonSchema.key];
+      item.jsonSchema.required = [mo.name];
     }
   }
 
@@ -262,16 +262,10 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
 
     switch (mo.name) {
       case 'alarmCountToday':
-        value = asset.childDevices.references.length;
-        break;
       case 'alarmCount3Months':
-        value = asset.childDevices.references.length;
-        break;
       case 'eventCountToday':
-        value = asset.childDevices.references.length;
-        break;
       case 'eventCount3Months':
-        value = asset.childDevices.references.length;
+        value = this.computedPropertyObject? this.computedPropertyObject[`${mo.name}_${mo.config.id}`] : 0;
         break;
       case 'lastDeviceMessage':
         value = asset.childDevices.references.length;
@@ -308,7 +302,7 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
           out = `${value } ${ unit || ''}`;
           break;
         case RESULT_TYPES.VALUE_UNIT_TIME.value:
-          out = ` ${this.pipe.transform(date, 'short')} | ${`${value } ${ unit || ''}`}`;
+          out = ` ${this.datePipe.transform(date, 'short')} | ${`${value } ${ unit || ''}`}`;
           break;
         default:
          out = '';

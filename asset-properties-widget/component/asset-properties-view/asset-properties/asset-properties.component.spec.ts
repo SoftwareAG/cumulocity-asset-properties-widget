@@ -11,6 +11,7 @@ describe('AssetPropertiesComponent', () => {
   let assetTypesMock: any;
   let permissionsServiceMock: any;
   let dashboardChildMock:any;
+  let datePipe:any;
 
   beforeEach(() => {
     permissionsServiceMock = { canEdit: jest.fn() };
@@ -31,7 +32,8 @@ describe('AssetPropertiesComponent', () => {
       inventoryBinaryMock,
       alertMock,
       permissionsServiceMock,
-      dashboardChildMock
+      dashboardChildMock,
+      datePipe
     );
   });
 

@@ -79,7 +79,7 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
     const constructCustomProperties: IManagedObject[] = [];
     customProperties.forEach((property) => {
       const object =
-        property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key];
+        property.c8y_JsonSchema.properties[property.name];
       if (object.type === 'object') {
         constructCustomProperties.push(property);
       } else {
@@ -146,7 +146,7 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
     this.properties.forEach((property) => {
       if (this.isComplexProperty(property)) {
         const customProperties =
-          property.c8y_JsonSchema.properties[property.c8y_JsonSchema.key]
+          property.c8y_JsonSchema.properties[property.name]
             ?.properties;
         const tempCustomProperties = {};
         for (const key in customProperties) {
@@ -160,7 +160,7 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
         }
         if (!isEmpty(tempCustomProperties)) {
           property.c8y_JsonSchema.properties[
-            property.c8y_JsonSchema.key
+            property.name
           ].properties = tempCustomProperties;
         }
       }
@@ -172,7 +172,7 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
       return false;
     }
     return (
-      prop.c8y_JsonSchema.properties[prop.c8y_JsonSchema.key]?.type === 'object'
+      prop.c8y_JsonSchema.properties[prop.name]?.type === 'object'
     );
   }
 

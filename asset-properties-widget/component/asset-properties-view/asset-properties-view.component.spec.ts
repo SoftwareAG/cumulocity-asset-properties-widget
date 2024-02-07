@@ -11,6 +11,11 @@ describe('AssetPropertiesViewComponent', () => {
   let asset: any;
   let customPropertyObjects: any;
   let configCustomPropertyObjects: any;
+  let measurementRealtime:any;
+  let assetPropertiesViewService: any;
+  let datePipe: any;
+  let alarmRealtimeService: any;
+  let eventRealtimeService: any;
 
   beforeEach(() => {
     inventoryMock = { detail: jest.fn() };
@@ -21,7 +26,12 @@ describe('AssetPropertiesViewComponent', () => {
     component = new AssetPropertiesViewComponent(
       inventoryMock,
       moRealtimeServiceMock,
-      assetPropertiesServiceMock
+      assetPropertiesServiceMock,
+      measurementRealtime,
+      assetPropertiesViewService,
+      datePipe,
+      alarmRealtimeService,
+      eventRealtimeService
     );
 
     asset = {

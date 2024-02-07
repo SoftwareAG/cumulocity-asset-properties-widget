@@ -54,6 +54,36 @@ export const property = [
     isExistingProperty: true,
   },
   {
+    label: 'Active alarms status',
+    type: 'object',
+    isEditable: false,
+    name: 'c8y_ActiveAlarmsStatus',
+    c8y_JsonSchema: {
+      properties: { c8y_ActiveAlarmsStatus: {key:'c8y_ActiveAlarmsStatus', type: 'object', label: 'Active alarms status',properties: {
+        critical: {
+          title: 'Critical',
+          type: 'number',
+          isEditable: false
+        },
+        major: {
+          title: 'Major',
+          type: 'number',
+          isEditable: false
+        },
+        minor: {
+          title: 'Minor',
+          type: 'number',
+          isEditable: false
+        },
+        warning: {
+          title: 'Warning',
+          type: 'number',
+          isEditable: false
+        }
+      } } },
+    },
+  },
+  {
     c8y_JsonSchema: {
       properties: { alarmCountToday: {
         title: 'Alarm count today',
@@ -64,7 +94,7 @@ export const property = [
     label: 'Alarm count today',
     title: 'Alarm type',
     type: 'string',
-    config:{type:''},
+    config:{ type:'' },
     computed: true,
     isEditable: false,
     isExistingProperty: true,
@@ -80,7 +110,7 @@ export const property = [
     label: 'Alarm count 3 months',
     title: 'Alarm type',
     type: 'string',
-    config:{type:''},
+    config:{ type:'' },
     computed: true,
     isEditable: false,
     isExistingProperty: true,
@@ -112,7 +142,7 @@ export const property = [
     label: 'Event count 3 months',
     title: 'Event type',
     type: 'string',
-    config:{type:''},
+    config:{ type:'' },
     computed: true,
     isEditable: false,
     isExistingProperty: true,
