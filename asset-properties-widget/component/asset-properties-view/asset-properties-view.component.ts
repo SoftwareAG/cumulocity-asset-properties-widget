@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { AssetPropertiesViewService } from './asset-properties-view.service';
 import { DatePipe } from '@angular/common';
+import { deviceProperty } from '../../common/asset-property-constant';
 
 interface MeasurementValue {
   unit?: string;
@@ -25,7 +26,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   selected = { id: 'asset-properties-widget' };
   selectedAsset: IManagedObject;
   isEmptyWidget: boolean = false;
-  customProperties: IManagedObject[];
+  customProperties: Array<IManagedObject>;
   properties: IManagedObject[];
   @Input() config: any;
   computedPropertyObject:object;
@@ -71,6 +72,7 @@ export class AssetPropertiesViewComponent implements OnInit {
            this.config.properties = cloneDeep(this.properties);
           }else{
             this.properties = cloneDeep(this.config.properties);
+            this.customProperties = cloneDeep(deviceProperty);
           }
           this.constructComplexPropertyKeys();
           this.config.properties.forEach(property =>{
@@ -108,7 +110,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   async getAlarmCount(device:IManagedObject, property:IManagedObject, dateFrom:string){
     const filters = {
       dateFrom: dateFrom,
-      dateTo: this.datePipe.transform(new Date().setDate( new Date().getDate() + 1), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
+      dateTo: this.datePipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
       source: device.id,
       pageSize: 2000,
       type: property.config.type,
@@ -126,7 +128,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   async getEventCount(device:IManagedObject, property:IManagedObject, dateFrom:string){
     const filters = {
       dateFrom: dateFrom,
-      dateTo: this.datePipe.transform(new Date().setDate( new Date().getDate() + 1), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
+      dateTo: this.datePipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
       source: device.id,
       pageSize: 2000,
       type: property.config.type,
@@ -165,7 +167,7 @@ export class AssetPropertiesViewComponent implements OnInit {
           }
           property.c8y_JsonSchema.properties[property.name].properties[element.keyPath?.[1]] = {...element};
         }
-        if(!customizedProperty.find((prop) => prop.id === property.id)){
+        if(!customizedProperty.find((prop) => prop.name === property.name)){
           customizedProperty.push(property);
         }
       }else if (element.active && (!customizedProperty.find((prop) => prop.name === element.name) || element.computed)){

@@ -17,7 +17,7 @@ export class AssetPropertiesConfigComponent
   constructor(private inventoryService: InventoryService) {}
 
   async ngOnChanges(){
-    if (this.config.device) {
+    if (this.config.device && !this.config.device.hasOwnProperty('c8y_IsDevice')) {
       try {
         this.selectedAsset = (
           await this.inventoryService.detail(this.config.device.id)
@@ -25,6 +25,8 @@ export class AssetPropertiesConfigComponent
       } catch (er) {
         // intended empty
       }
+    }else if(this.config.device){
+      this.selectedAsset = this.config.device;
     }
   }
 

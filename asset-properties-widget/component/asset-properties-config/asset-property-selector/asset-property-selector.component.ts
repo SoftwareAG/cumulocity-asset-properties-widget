@@ -9,7 +9,8 @@ import { assetPropertyItemSelectorCtrlComponent } from '../asset-property-item-s
 import { AssetPropertiesService } from '../asset-properties.service';
 import {
   defaultProperty,
-  property,
+  deviceProperty,
+  commonProperty,
 } from '../../../common/asset-property-constant';
 import { some } from 'lodash-es';
 import { ComputedPropertyConfigComponent } from '../computed-asset-property/computed-property-config.component';
@@ -32,9 +33,7 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
   assetPropertySelectorModalRef: BsModalRef;
   computedPropertyConfigModalRef: BsModalRef;
   properties = cloneDeep(defaultProperty);
-  customProperties: IManagedObject[] = cloneDeep(defaultProperty).concat(
-    cloneDeep(property)
-  );
+  customProperties: Array<IManagedObject> = [...cloneDeep(defaultProperty), ...cloneDeep(commonProperty)];
   ExpandedComplexProperty: any;
   isAtleastOnePropertySelected: boolean = true;
   selectedComputedPropertyIndex: number;
@@ -47,7 +46,15 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
   ) {}
 
   async ngOnChanges(changes: IManagedObject): Promise<void> {
-    if ((changes.asset.firstChange || !changes.asset.previousValue) && this.config?.properties) {
+    if(changes.asset.currentValue?.hasOwnProperty('c8y_IsDevice') && this.config?.properties){
+      this.properties = this.config.properties;
+      if(changes.asset.previousValue?.hasOwnProperty('c8y_IsAsset')){
+        this.properties = cloneDeep(defaultProperty);
+        this.config.properties = this.properties;
+      }
+      this.customProperties = [...cloneDeep(defaultProperty), ...cloneDeep(commonProperty), ...cloneDeep(deviceProperty)];
+    }
+    else if (!changes.asset.previousValue && this.config?.properties) {
       this.properties = this.config.properties;
       this.customProperties = this.customProperties.concat(
         this.getConstructCustomProperties(
@@ -60,20 +67,7 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
     }
     this.isAtleastOnePropertySelected = true;
   }
-  addDefaultAndSelectedProperties() {
-    this.properties.forEach((property) => {
-      const existingPropertyIndex = this.customProperties
-        .map(function (item) {
-          return item.name;
-        })
-        .indexOf(property.name);
-      if (existingPropertyIndex > 0) {
-        this.customProperties[existingPropertyIndex] = cloneDeep(property);
-      } else {
-        this.customProperties.push(cloneDeep(property));
-      }
-    });
-  }
+
   getConstructCustomProperties(customProperties): IManagedObject[] {
     const simpleProperties: IManagedObject[] = [];
     const constructCustomProperties: IManagedObject[] = [];
@@ -94,7 +88,7 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
     this.assetType = this.assetTypes.getAssetTypeByName(this.asset.type);
     this.config.properties = this.properties;
     this.customProperties = cloneDeep(this.properties)
-      .concat(property)
+      .concat(commonProperty)
       .concat(
         this.getConstructCustomProperties(
           await this.assetPropertyService.getCustomProperties(this.asset)
