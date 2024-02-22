@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { IAlarm, IEvent, IManagedObject, InventoryService } from '@c8y/client';
 import { AlarmRealtimeService, EventRealtimeService, ManagedObjectRealtimeService, MeasurementRealtimeService } from '@c8y/ngx-components';
 import { AssetPropertiesService } from '../asset-properties-config/asset-properties.service';
-import { some, cloneDeep } from 'lodash-es';
+import { some, cloneDeep, isEmpty } from 'lodash-es';
 import { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -153,19 +153,32 @@ export class AssetPropertiesViewComponent implements OnInit {
       }
    );
   }
-
+  parseNestedComplexPropertyItem(property, item){
+    Object.keys(property.properties).forEach((key)=>{
+      const object = property.properties[key];
+      if(!isEmpty(object.properties) && Object.prototype.hasOwnProperty.call(object, 'properties')){
+        this.parseNestedComplexPropertyItem(object, item);
+      }else if(property.properties[key].title === item.title && (property.name === item.keyPath?.[item.keyPath.length-2] || property.properties[key].name === item.keyPath?.[item.keyPath.length-2])){
+              property.properties[key] = item;
+      }
+    });
+  }
   constructComplexPropertyKeys(){
     const customizedProperty =[];
     this.properties.forEach(element => {
       if(element.keyPath && element.active){
         const property = this.properties.find((prop) => prop.name === element.keyPath?.[0]) || this.customProperties.find((prop) => prop.name === element.keyPath?.[0]);
-        if(property){
+        if(property && !property.c8y_JsonSchema.properties[property.name].properties[element.keyPath?.[1]]?.hasOwnProperty('properties')){
           if(!property.isParentKeySelected){
             property.isParentKeySelected = true;
             property.active = true;
             property.c8y_JsonSchema.properties[property.name].properties = {};
           }
           property.c8y_JsonSchema.properties[property.name].properties[element.keyPath?.[1]] = {...element};
+        }else{
+          property.active = true;
+          property.isNestedComplexProperty = true;
+          this.parseNestedComplexPropertyItem(property.c8y_JsonSchema.properties[property.name], element);
         }
         if(!customizedProperty.find((prop) => prop.name === property.name)){
           customizedProperty.push(property);
@@ -174,7 +187,29 @@ export class AssetPropertiesViewComponent implements OnInit {
         customizedProperty.push(element);
       }
     });
+    this.constructNestedComplexProperty(customizedProperty);
     this.properties = customizedProperty;
+  }
+
+  constructNestedComplexProperty(customizedProperty){
+    customizedProperty.forEach(element => {
+      if(element.active && element.isNestedComplexProperty){
+        this.parseItem(element.c8y_JsonSchema.properties[element.name]);
+      }
+    });
+  }
+  parseItem(property, parentReferance?){
+    Object.keys(property.properties).forEach((key)=>{
+      const object = property.properties[key];
+      if(!isEmpty(object.properties)&& (some(object.properties, 'active') || some(object.properties, 'properties')) && !object.active){
+        this.parseItem(object,property);
+      }else if(!object.active){
+        delete property.properties[key];
+        if(isEmpty(property.properties)){
+          delete parentReferance.properties[property.name];
+        }
+      }
+    });
   }
 
   validateComplexProperty(item): boolean{
@@ -188,12 +223,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   }
 
   isComplexProperty(prop) {
-    if (!prop.c8y_JsonSchema) {
-      return false;
-    }
-    return (
-      prop.c8y_JsonSchema.properties[prop.name]?.type === 'object'
-    );
+    return prop.c8y_JsonSchema?.properties[prop.name]?.type === 'object';
   }
 
   private handleRealtime() {

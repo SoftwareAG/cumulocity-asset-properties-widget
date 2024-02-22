@@ -1,19 +1,19 @@
 <div class="form-group m-b-8">
   <label>{{ "Properties" | translate }} </label>
-  <div class="d-flex">
-    <div class="m-l-auto m-r-16">
-      <button
-        title="{{ 'Add property' | translate }}"
-        data-cy="asset-property-selector-add-property-button"
-        class="btn btn-default btn-xs"
-        (click)="addProperty()"
-        type="button"
-        [disabled]="!asset"
-      >
-        <i c8yicon="plus" class="dlt-c8y-icon-plus"></i>
-        {{ "Add property" | translate }}
-      </button>
-    </div>
+</div>
+<div class="d-flex sticky-top">
+  <div class="m-l-auto m-r-16">
+    <button
+      title="{{ 'Add property' | translate }}"
+      data-cy="asset-property-selector-add-property-button"
+      class="btn btn-default btn-xs"
+      (click)="addProperty()"
+      type="button"
+      [disabled]="!asset"
+    >
+      <i c8yicon="plus" class="dlt-c8y-icon-plus"></i>
+      {{ "Add property" | translate }}
+    </button>
   </div>
 </div>
 <div class="alert alert-warning" *ngIf="!isAtleastOnePropertySelected">
@@ -121,13 +121,21 @@
           </table>
         </div>
       </div>
-
       <td style="width: 28%">
-        <input
-          data-cy="asset-property-selector-label"
-          class="form-control property-label"
-          [(ngModel)]="property.label || property.title"
-        />
+        <div *ngIf="property.label">
+          <input
+            data-cy="asset-property-selector-label"
+            class="form-control property-label"
+            [(ngModel)]="property.label"
+          />
+        </div>
+        <div *ngIf="!property.label && property.title">
+          <input
+            data-cy="asset-property-selector-label"
+            class="form-control property-label"
+            [(ngModel)]="property.title"
+          />
+        </div>
       </td>
       <td style="width: 28%">
         <button

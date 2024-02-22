@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { IManagedObject } from '@c8y/client';
-import * as cloneDeep from 'lodash/cloneDeep';
+import { some, cloneDeep, isEqual} from 'lodash-es';
 
 @Component({
   selector: 'c8y-asset-property-item-selector-component',
@@ -28,18 +28,24 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
     this.customProperties.forEach((property) => {
       if (this.isComplexProperty(property)) {
         complexProperties.push(property);
-        Object.keys(property.c8y_JsonSchema.properties[property.name].properties).forEach((key)=>{
-          const object = property.c8y_JsonSchema.properties[property.name].properties[key];
-          object['keyPath'] = [property.name];
-          object.keyPath.push(key);
-          complexProperties.push(object);
-        });
-
+        this.parseItem(property.c8y_JsonSchema.properties[property.name], complexProperties, property.name);
       } else {
         simpleProperties.push(property);
       }
     });
     return simpleProperties.concat(complexProperties);
+  }
+
+  parseItem(property, complexProperties, parentName?){
+    Object.keys(property.properties).forEach((key)=>{
+      const object = property.properties[key];
+      object['keyPath'] = property.keyPath? cloneDeep(property.keyPath) : [property.name || parentName];
+      object.keyPath.push(key);
+      complexProperties.push(object);
+      if(Object.prototype.hasOwnProperty.call(object, 'properties')){
+        this.parseItem(object,complexProperties);
+      }
+    });
   }
 
   onSelectProperty(property) {
@@ -53,19 +59,20 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
   }
 
   selectOrUnselectChildren(selectedProperty, active){
-    if(this.isComplexProperty(selectedProperty)){
-      this.customProperties.forEach((property) => {
-        if(property.keyPath?.[0] === selectedProperty.name){
-          property.active = active;
-          if(active){
+    if (!this.isComplexProperty(selectedProperty)) return;
+    this.customProperties.forEach((property) => {
+      if(property.keyPath?.some(name => name === selectedProperty.name)){
+        property.active = active;
+        if(active){
+          if(!some(this.selectedProperty, obj => isEqual(obj, property))){
             this.selectedProperty.push(cloneDeep(property));
-          }else{
-            property.active = active;
-            this.removeUnselectedProperties(property);
           }
+        }else{
+          property.active = active;
+          this.removeUnselectedProperties(property);
         }
-      });
-    }
+      }
+    });
   }
   removeUnselectedProperties(property){
     const removeIndex = this.selectedProperty
@@ -89,11 +96,6 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
   }
 
   isComplexProperty(prop) {
-    if (!prop.c8y_JsonSchema) {
-      return false;
-    }
-    return (
-      prop.c8y_JsonSchema.properties[prop.name]?.type === 'object'
-    );
+    return prop.c8y_JsonSchema?.properties[prop.name]?.type === 'object' || prop.properties !== undefined;
   }
 }

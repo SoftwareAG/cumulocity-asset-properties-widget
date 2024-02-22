@@ -56,7 +56,7 @@ export const commonProperty = [
   {
     c8y_JsonSchema: {
       properties: { alarmCountToday: {
-        title: 'Alarm count today',
+        label: 'Alarm count today',
         type: 'number',
       },},
     },
@@ -72,7 +72,7 @@ export const commonProperty = [
   {
     c8y_JsonSchema: {
       properties: { alarmCount3Months: {
-        title: 'Alarm count 3 months',
+        label: 'Alarm count 3 months',
         type: 'number',
       },},
     },
@@ -88,7 +88,7 @@ export const commonProperty = [
   {
     c8y_JsonSchema: {
       properties: { eventCountToday: {
-        title: 'Event count today',
+        label: 'Event count today',
         type: 'number',
       },},
     },
@@ -104,7 +104,7 @@ export const commonProperty = [
   {
     c8y_JsonSchema: {
       properties: { eventCount3Months: {
-        title: 'Event count 3 months',
+        label: 'Event count 3 months',
         type: 'number',
       },},
     },
@@ -119,7 +119,7 @@ export const commonProperty = [
   },
   {
     c8y_JsonSchema: {properties: { lastMeasurement: {
-        title: 'Last measurement',
+      label: 'Last measurement',
         type: 'string',
       },},},
     name: 'lastMeasurement',
@@ -133,7 +133,7 @@ export const commonProperty = [
   {
     c8y_JsonSchema: {
       properties: { childDevicesCount: {
-        title: 'Number of child devices',
+        label: 'Number of child devices',
         type: 'number',
       },},
     },
@@ -147,7 +147,7 @@ export const commonProperty = [
   {
     c8y_JsonSchema: {
       properties: { childAssetsCount: {
-        title: 'Number of child assets',
+        label: 'Number of child assets',
         type: 'number',
       },},
     },
@@ -161,7 +161,7 @@ export const commonProperty = [
   {
     c8y_JsonSchema: {
       properties: { lastDeviceMessage: {
-        title: 'Last device message',
+        label: 'Last device message',
         type: 'string',
       },},
     },
@@ -176,7 +176,7 @@ export const commonProperty = [
   {
     c8y_JsonSchema: {
       properties: { configurationSnapshot: {
-        title: 'Configuration snapshot',
+        label: 'Configuration snapshot',
         type: 'number',
       },},
     },
@@ -187,7 +187,6 @@ export const commonProperty = [
     isEditable: false,
     isExistingProperty: true,
   }
-
 ];
 export const deviceProperty = [
   {
@@ -395,29 +394,26 @@ export const deviceProperty = [
         cellId: {
           title: 'Cell ID',
           type: ['string', 'null'],
-          readonly: true,
-          templateOptions: {
-            label: 'Test 2',
-            description: 'Field always read-only',
-            readonly: true
-          }
         },
         connType: {
           title: 'Connection type',
           type: 'string',
-          isEditable: false,
+          readOnly: true
         },
         currentOperator: {
           title: 'Current operator',
           type: 'string',
+          readOnly: true
         },
         currentBand: {
           title: 'Current band',
           type: 'string',
+          readOnly: true
         },
         ecn0: {
           title: 'ECN0',
           type: 'string',
+          readOnly: true
         },
         iccid: {
           title: 'ICCID',
@@ -450,27 +446,27 @@ export const deviceProperty = [
         rcsp: {
           title: 'RCSP',
           type: 'string',
-          isEditable: false
+          readOnly: true
         },
         rscp: {
           title: 'RSCP',
           type: 'string',
-          isEditable: false
+          readOnly: true
         },
         rsrp: {
           title: 'RSRP',
           type: 'string',
-          isEditable: false
+          readOnly: true
         },
         rsrq: {
           title: 'RSRQ',
           type: 'string',
-          isEditable: false
+          readOnly: true
         },
         rssi: {
           title: 'RSSI',
           type: 'string',
-          isEditable: false
+          readOnly: true
         }
       }}}
     },
@@ -544,6 +540,112 @@ export const deviceProperty = [
         }
       }}}
     }
+  },
+  {
+    label: 'Network',
+    type: 'object',
+    isEditable: true,
+    name: 'c8y_Network',
+    c8y_JsonSchema: {
+      properties: { c8y_Network: {key:'c8y_Network', type: 'object', label: 'Network',properties : {
+        c8y_DHCP: {
+          title: 'DHCP',
+          type: 'object',
+          printFormat: 'hidden',
+          name: 'c8y_DHCP',
+          properties: {
+            addressRange: {
+              title: 'Address range',
+              type: 'object',
+              name: 'addressRange',
+              printFormat: 'hidden',
+              properties: {
+                start: {
+                  title: 'Start',
+                  type: 'string'
+                },
+                end: {
+                  title: 'End',
+                  type: 'string'
+                }
+              }
+            },
+            dns1: {
+              title: 'DNS 1',
+              type: 'string'
+            },
+            dns2: {
+              title: 'DNS 2',
+              type: 'string'
+            },
+            enabled: {
+              title: 'Enabled',
+              type: 'integer'
+            }
+          }
+        },
+        c8y_LAN: {
+          title: 'LAN',
+          type: 'object',
+          name: 'c8y_LAN',
+          printFormat: 'hidden',
+          properties: {
+            enabled: {
+              title: 'Enabled',
+              type: 'integer'
+            },
+            ip: {
+              title: 'IP',
+              type: 'string'
+            },
+            mac: {
+              title: 'MAC',
+              type: 'string'
+            },
+            name: {
+              title: 'Name',
+              type: 'string'
+            },
+            netmask: {
+              title: 'Netmask',
+              type: 'string'
+            }
+          }
+        },
+        c8y_WAN: {
+          title: 'WAN',
+          type: 'object',
+          name: 'c8y_WAN',
+          printFormat: 'hidden',
+          properties: {
+            apn: {
+              title: 'APN',
+              type: 'string'
+            },
+            authType: {
+              title: 'Auth type',
+              type: 'string'
+            },
+            ip: {
+              title: 'IP',
+              type: 'string'
+            },
+            password: {
+              title: 'Password',
+              type: 'string'
+            },
+            simStatus: {
+              title: 'SIM status',
+              type: 'string'
+            },
+            username: {
+              title: 'Username',
+              type: 'string'
+            }
+          }
+        }
+      }}}
+    },
   }
 ];
 

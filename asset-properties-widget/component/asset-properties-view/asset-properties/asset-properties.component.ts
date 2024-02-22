@@ -268,7 +268,7 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
         value = this.computedPropertyObject? this.computedPropertyObject[`${mo.name}_${mo.config.id}`] : 0;
         break;
       case 'lastDeviceMessage':
-        value = asset.childDevices.references.length;
+        value = 'Undefined';
         break;
       case 'lastMeasurement':
         value = this.computedPropertyObject ? this.getLastMeasurementWithFormat(this.computedPropertyObject[`${mo.name}_${mo.config.id}`],mo.config.resultTypes) : undefined;
@@ -280,7 +280,7 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
         value = asset.childAssets.references.length;
         break;
       case 'configurationSnapshot':
-        value = asset.childDevices.references.length;
+        value = 'Undefined';
         break;
       default:
         value = '';

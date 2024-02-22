@@ -9,6 +9,6 @@
 <div *ngIf="isEmptyWidget" style="text-align: center">
   {{ "No Data" | translate }}
 </div>
-<div class="text-center" *ngIf="isLoading">
+<div class="text-center" *ngIf="!isEmptyWidget && isLoading">
   <c8y-loading></c8y-loading>
 </div>

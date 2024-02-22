@@ -60,20 +60,15 @@
         *ngFor="let property of customProperties | filter : search"
       >
         <div class="col-xs-2">
-          <span ng-switch="selectSingle">
-            <label ng-switch-when="true" class="c8y-radio">
-              <span></span>
-            </label>
-            <label ng-switch-default class="c8y-checkbox">
-              <input
-                type="checkbox"
-                data-cy="asset-property-item-property-checkbox"
-                [(ngModel)]="property.active"
-                (change)="onSelectProperty(property)"
-              />
-              <span></span>
-            </label>
-          </span>
+          <label class="c8y-checkbox">
+            <input
+              type="checkbox"
+              data-cy="asset-property-item-property-checkbox"
+              [(ngModel)]="property.active"
+              (change)="onSelectProperty(property)"
+            />
+            <span></span>
+          </label>
         </div>
         <div
           class="col-xs-5 text-truncate"
@@ -81,25 +76,26 @@
           title="{{ property.label | translate }}"
           [ngClass]="{ strong: isComplexProperty(property) }"
         >
-          <span>
-            <button
-              class="btn btn-dot"
-              type="button"
-              title="{{ 'Complex property.' | translate }}"
-              data-cy="asset-property-item-complex-property-tags"
-              *ngIf="isComplexProperty(property)"
-            >
-              <i c8yicon="tags" class="text-info dlt-c8y-icon-tags"></i>
-            </button>
-            <button
-              class="btn btn-dot"
-              type="button"
-              title="{{ 'Computed property.' | translate }}"
-              *ngIf="property.computed"
-            >
-              <i c8yIcon="bolt" class="text-primary-light"></i>
-            </button>
-          </span>
+          <span *ngFor="let i of property.keyPath"
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span
+          >
+          <button
+            class="btn btn-dot"
+            type="button"
+            title="{{ 'Complex property.' | translate }}"
+            data-cy="asset-property-item-complex-property-tags"
+            *ngIf="isComplexProperty(property)"
+          >
+            <i c8yicon="tags" class="text-info dlt-c8y-icon-tags"></i>
+          </button>
+          <button
+            class="btn btn-dot"
+            type="button"
+            title="{{ 'Computed property.' | translate }}"
+            *ngIf="property.computed"
+          >
+            <i c8yIcon="bolt" class="text-primary-light"></i>
+          </button>
           {{ property.label ? property.label : (property.title | translate) }}
         </div>
         <div

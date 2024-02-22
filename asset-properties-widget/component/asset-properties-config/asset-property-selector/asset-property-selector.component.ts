@@ -3,7 +3,6 @@ import { IManagedObject } from '@c8y/client';
 import { AssetTypesService, gettext } from '@c8y/ngx-components';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { isEmpty, cloneDeep } from 'lodash-es';
-import { ContextDashboardService } from '@c8y/ngx-components/context-dashboard';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { assetPropertyItemSelectorCtrlComponent } from '../asset-property-item-selector/asset-property-item-selector.component';
 import { AssetPropertiesService } from '../asset-properties.service';
@@ -41,18 +40,17 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
   constructor(
     private assetTypes: AssetTypesService,
     private assetPropertyService: AssetPropertiesService,
-    private modalService: BsModalService,
-    private contextDashboardService: ContextDashboardService
+    private modalService: BsModalService
   ) {}
 
   async ngOnChanges(changes: IManagedObject): Promise<void> {
-    if(changes.asset.currentValue?.hasOwnProperty('c8y_IsDevice') && this.config?.properties){
-      this.properties = this.config.properties;
+    if(changes.asset.currentValue?.hasOwnProperty('c8y_IsDevice')){
+      this.properties = this.config.properties || cloneDeep(defaultProperty);
       if(changes.asset.previousValue?.hasOwnProperty('c8y_IsAsset')){
         this.properties = cloneDeep(defaultProperty);
         this.config.properties = this.properties;
       }
-      this.customProperties = [...cloneDeep(defaultProperty), ...cloneDeep(commonProperty), ...cloneDeep(deviceProperty)];
+      this.customProperties = [...cloneDeep(defaultProperty), ...cloneDeep(deviceProperty), ...cloneDeep(commonProperty)];
     }
     else if (!changes.asset.previousValue && this.config?.properties) {
       this.properties = this.config.properties;

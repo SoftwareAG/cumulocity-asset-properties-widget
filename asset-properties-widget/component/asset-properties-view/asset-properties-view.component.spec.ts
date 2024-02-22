@@ -37,6 +37,7 @@ describe('AssetPropertiesViewComponent', () => {
     asset = {
       id: 12,
       name: 'Test',
+      c8y_IsAsset:[],
       address: {
         country: 'Germany',
         city: 'Düsseldorf',
