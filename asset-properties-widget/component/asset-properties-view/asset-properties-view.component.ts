@@ -222,10 +222,6 @@ export class AssetPropertiesViewComponent implements OnInit {
     return false;
   }
 
-  isComplexProperty(prop) {
-    return prop.c8y_JsonSchema?.properties[prop.name]?.type === 'object';
-  }
-
   private handleRealtime() {
     this.moRealtimeService
       .onUpdate$(this.selectedAsset.id)
