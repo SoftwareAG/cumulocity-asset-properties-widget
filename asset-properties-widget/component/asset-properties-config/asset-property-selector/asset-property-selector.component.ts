@@ -48,8 +48,8 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
       this.properties = this.config.properties || cloneDeep(defaultProperty);
       if(changes.asset.previousValue?.hasOwnProperty('c8y_IsAsset')){
         this.properties = cloneDeep(defaultProperty);
-        this.config.properties = this.properties;
       }
+      this.config.properties = this.properties;
       this.customProperties = [...cloneDeep(defaultProperty), ...cloneDeep(deviceProperty), ...cloneDeep(commonProperty)];
     }
     else if (!changes.asset.previousValue && this.config?.properties) {
