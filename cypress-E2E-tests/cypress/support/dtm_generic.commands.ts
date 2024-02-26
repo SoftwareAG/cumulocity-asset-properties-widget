@@ -74,9 +74,10 @@ declare global {
       /**
        * This command is being used to create the device.
        * @param deviceName Name of the device
+       * @param pastDate Specify the "pastDate" only if you want to create a device for a previous date.
        * Usage: createDevice('Device1');
        */
-      createDevice(deviceName: string): void;
+      createDevice(deviceName: string, pastDate?: any): void;
 
       /**
        * This command is being used to delete all the devices.
@@ -130,11 +131,16 @@ declare global {
       /**
        * This command is being used to create a new alarm
        * @param alarmObject Pass an alarm object.
+       * Note: Specify the "pastDate" in the object only if you want to create an alarm for a previous date.
        * ex: {
               deviceName: 'Device1',
               text: 'Device Running for more than standard time',
               severity: 'MAJOR',
-              status: 'ACTIVE'
+              status: 'ACTIVE',
+              pastDate: {
+                month: 2,
+                day: 15
+              }
             }
        * Usage: createNewAlarm(alarmObject);
        */
@@ -338,8 +344,8 @@ Cypress.Commands.add('cleanupByQuery', (query, urlParams) => {
   });
 });
 
-Cypress.Commands.add('createDevice', deviceName => {
-  cy.apiRequest({
+Cypress.Commands.add('createDevice', (deviceName, pastDate) => {
+  const request = {
     url: '/inventory/managedObjects',
     method: 'Post',
     body: {
@@ -348,7 +354,14 @@ Cypress.Commands.add('createDevice', deviceName => {
       c8y_DeviceTypes: ['deviceSubsetType'],
       c8y_SupportedOperations: ['c8y_Restart']
     }
-  });
+  }
+  if(pastDate){
+    const currentDate = new Date();
+    currentDate.setMonth(currentDate.getMonth() - pastDate.month);
+    currentDate.setDate(currentDate.getDate() - pastDate.day);
+    request.body['creationTime'] = currentDate.toISOString();
+  }
+  cy.apiRequest(request);
 });
 
 Cypress.Commands.add('deleteAllDevices', () => {
@@ -457,7 +470,7 @@ Cypress.Commands.add('getUniqueId', () => {
   return Cypress._.uniqueId(uniqueSeed);
 });
 
-Cypress.Commands.add('createNewAlarm', alarmObject => {
+Cypress.Commands.add('createNewAlarm', (alarmObject) => {
   cy.apiRequest({
     method: 'GET',
     url: `/inventory/managedObjects?pageSize=1&query=$filter=(has(c8y_IsDevice) and ('name' eq '${
@@ -467,6 +480,10 @@ Cypress.Commands.add('createNewAlarm', alarmObject => {
   }).then((response: any) => {
     const deviceId = response.body.managedObjects[0].id;
     const currentDate = new Date();
+    if('pastDate' in alarmObject){
+      currentDate.setMonth(currentDate.getMonth() - alarmObject.pastDate.month);
+      currentDate.setDate(currentDate.getDate() - alarmObject.pastDate.day);
+    }
     const formattedTimestamp = currentDate.toISOString();
     const modifiedObj = {
       source: {

@@ -22,6 +22,7 @@ export default {
   // ###############[Dropdowns]############
 
   // ###############[Textbox]##############
+  filterPropertiesTextBox: "input[data-cy='asset-property-item-input-search']",
 
   // ###############[Other]################
   cardElement: "div[title='Editable form for asset properties widget']",

@@ -5,25 +5,25 @@ declare global {
   namespace Cypress {
     interface Chainable {
       /**
-       * This command is being used to select the asset in configuration section of asset properties widget.
-       * @param assetName Name of the asset to select
-       * Usage: cy.selectAsset("Building");
+       * This command is being used to select the asset/device in configuration section of asset properties widget.
+       * @param label Name of the asset/device to select
+       * Usage: cy.chooseAssetOrDevice("Building");
        */
-      selectAsset(assetName: string): void;
+      chooseAssetOrDevice(label: string): void;
 
       /**
        * This command is being used to select the checkbox corresponding to the property under property selection section of asset properties widget.
        * @param title key of the property
-       * Usage: cy.selectAssetProperty("name");
+       * Usage: cy.selectProperty("name");
        */
-      selectAssetProperty(title: string): void;
+      selectProperty(title: string): void;
 
       /**
        * This command is being used to deselect the checkbox corresponding to the property under property selection section of asset properties widget.
        * @param title key of the property
-       * Usage: cy.unselectAssetProperty("name");
+       * Usage: cy.unselectProperty("name");
        */
-      unselectAssetProperty(title: string): void;
+      unselectProperty(title: string): void;
 
       /**
        * This command is being used to delete the asset properties widget.
@@ -78,29 +78,37 @@ declare global {
   }
 }
 
-Cypress.Commands.add('selectAsset', assetName => {
-  cy.get(`div[title='Groups > ${assetName}']`)
+Cypress.Commands.add('chooseAssetOrDevice', label => {
+  cy.get(`div[title*='${label}']`)
     .children('div[class*="checkbox"]')
     .children('label')
     .children('input[type="radio"]')
     .check({ force: true });
 });
 
-Cypress.Commands.add('selectAssetProperty', title => {
+Cypress.Commands.add('selectProperty', title => {
+  cy.get(asset_properties_widget_elements.filterPropertiesTextBox)
+    .should('be.visible')
+    .clear();
+  cy.get(asset_properties_widget_elements.filterPropertiesTextBox)
+  .type(title);
   cy.get(`div[title='${title}']`)
-    .parent('div[class*="d-flex a-i-center property"]')
-    .children('div[class*="col-xs-2"]')
-    .children('span')
+    .parent('div')
+    .children('div')
     .children('label')
     .children('input[type="checkbox"]')
     .check({ force: true });
 });
 
-Cypress.Commands.add('unselectAssetProperty', title => {
+Cypress.Commands.add('unselectProperty', title => {
+  cy.get(asset_properties_widget_elements.filterPropertiesTextBox)
+    .should('be.visible')
+    .clear();
+  cy.get(asset_properties_widget_elements.filterPropertiesTextBox)
+    .type(title);
   cy.get(`div[title='${title}']`)
-    .parent('div[class*="d-flex a-i-center property"]')
-    .children('div[class*="col-xs-2"]')
-    .children('span')
+    .parent('div')
+    .children('div')
     .children('label')
     .children('input[type="checkbox"]')
     .uncheck({ force: true });
@@ -118,10 +126,10 @@ Cypress.Commands.add('deleteCard', () => {
 });
 
 Cypress.Commands.add('verifyTheAbsenceOfAssetProperty', (assetName, property) => {
-  cy.selectAsset(assetName);
+  cy.chooseAssetOrDevice(assetName);
   cy.get(asset_properties_widget_elements.addPropertyButton).click();
   // workaround for assettypes cache issue
-  cy.selectAssetProperty('owner');
+  cy.selectProperty('owner');
   cy.get(asset_properties_widget_elements.selectButton).click();
   cy.get(asset_properties_widget_elements.addPropertyButton).click();
   // workaround for assettypes cache issue
@@ -129,14 +137,14 @@ Cypress.Commands.add('verifyTheAbsenceOfAssetProperty', (assetName, property) =>
 });
 
 Cypress.Commands.add('selectAssetPropertyAndSave', (assetName, property) => {
-  cy.selectAsset(assetName);
+  cy.chooseAssetOrDevice(assetName);
   cy.get(asset_properties_widget_elements.addPropertyButton).click();
   // workaround for assettypes cache issue
-  cy.selectAssetProperty('owner');
+  cy.selectProperty('owner');
   cy.get(asset_properties_widget_elements.selectButton).click();
   cy.get(asset_properties_widget_elements.addPropertyButton).click();
   // workaround for assettypes cache issue
-  cy.selectAssetProperty(property);
+  cy.selectProperty(property);
   cy.get(asset_properties_widget_elements.selectButton).click();
   cy.get(asset_properties_widget_elements.saveButton).click();
 });
@@ -168,7 +176,7 @@ Cypress.Commands.add('deleteWidgetInstances', title => {
 });
 
 Cypress.Commands.add('selectAssetAndSave', assetName => {
-  cy.selectAsset(assetName);
+  cy.chooseAssetOrDevice(assetName);
   // added wait to resolve flakyness after selecting asset its takes few ms to enabled save button
   cy.wait(1000);
   cy.get(asset_properties_widget_elements.saveButton).click();
