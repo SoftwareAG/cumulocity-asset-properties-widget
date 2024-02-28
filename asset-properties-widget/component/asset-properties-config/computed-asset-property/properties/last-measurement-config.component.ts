@@ -1,6 +1,5 @@
-import { Component, Input, Output, OnInit } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { IManagedObject } from '@c8y/client';
-import * as cloneDeep from 'lodash/cloneDeep';
 import { Observable } from 'rxjs';
 import { RESULT_TYPES } from '../../../../common/asset-property-constant';
 

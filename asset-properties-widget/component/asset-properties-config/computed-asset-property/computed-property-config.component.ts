@@ -32,12 +32,7 @@ export class ComputedPropertyConfigComponent implements OnInit {
     this.cancelPropertyConfiguration.emit(this.index);
     this.bsModal.hide();
   }
-  isSaveButtonDisabled(): boolean{
-    if(this.tempProperty.name == 'lastMeasurement'){
-    return !this.tempProperty.config?.isValid;
-    }else{
-      return !this.tempProperty.config?.type;
-    }
+  isSaveButtonDisabled(): boolean {
+    return this.tempProperty.name === 'lastMeasurement' ? !this.tempProperty.config?.isValid : !this.tempProperty.config?.type;
   }
-
 }
