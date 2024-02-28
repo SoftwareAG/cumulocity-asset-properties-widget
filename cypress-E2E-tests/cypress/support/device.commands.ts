@@ -57,6 +57,23 @@ declare global {
        * addChildDevice("Device1", "DEvice2");
        */
       addChildDevice(parentDevice: string, childDevice: string): void;
+
+      /**
+       * This command is being used to create a new event
+       * @param request Provide the request body.
+       * Note: Specify the "pastDate" in the object only if you want to create an alarm for a previous date.
+       * ex: {
+       *      deviceName: 'Device1'
+              type: "TestEvent",
+              text: "sensor was triggered",
+              pastDate: {
+                month: 2,
+                day: 15
+              }
+            }
+       * Usage: createEvent(requestBody);
+       */
+      createEvent(request: any): void;
     }
   }
 }
@@ -190,5 +207,31 @@ Cypress.Commands.add("addChildDevice", (parentDevice, childDevice) => {
         },
       });
     });
+  });
+});
+
+Cypress.Commands.add("createEvent", (request) => {
+  getDeviceId(request.deviceName).then((response: any) => {
+    const deviceId = response.body.managedObjects[0].id;
+    const formattedTimestamp = setPastDate(request);
+    const body = {
+      source: {
+        id: deviceId,
+      },
+      type: request.type,
+      text: request.text,
+      time: formattedTimestamp,
+    };
+    cy.apiRequest({
+      method: "POST",
+      url: "/event/events",
+      headers: {
+        Accept: "application/vnd.com.nsn.cumulocity.event+json",
+      },
+      body: body,
+      failOnStatusCode: false,
+    })
+      .its("status")
+      .should("eq", 201);
   });
 });

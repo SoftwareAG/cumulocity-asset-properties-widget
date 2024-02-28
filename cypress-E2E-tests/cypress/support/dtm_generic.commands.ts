@@ -101,6 +101,14 @@ declare global {
       apiAssignChildAsset(childAssets: string[], asset: string);
 
       /**
+       This command is used to assign the device to the asset.
+       * @param devices The list of devices that needs to be assigned to parent.
+       * @param asset The parent asset.
+       * Usage: apiAssignDevice(['Device1'],'Building')
+       */
+      apiAssignDevice(devices: string[], asset: string): void;
+
+      /**
        * This command is being used to generate the unique id based on timestamp.
        * Usage: cy.getUniqueId()
        */
@@ -336,33 +344,45 @@ Cypress.Commands.add("apiCreateSimpleAsset", (assetObject) => {
   }
 });
 
-Cypress.Commands.add("apiAssignChildAsset", (childAssets, asset) => {
+function assignDeviceOrChildAsset(
+  option: string,
+  listOfAssetsOrDevices: string[],
+  label
+) {
   cy.apiRequest({
     method: "GET",
-    url: `/inventory/managedObjects?query=$filter=((has(c8y_IsAsset)) and ('name' eq '${asset}'))`,
+    url: `/inventory/managedObjects?query=$filter=((has(c8y_IsAsset)) and ('name' eq '${label}'))`,
     failOnStatusCode: false,
   }).then((response: any) => {
     const assetId = response.body.managedObjects[0].id;
-    for (let childAsset = 0; childAsset < childAssets.length; childAsset++) {
+    for (let i = 0; i < listOfAssetsOrDevices.length; i++) {
       cy.apiRequest({
         method: "GET",
-        url: `/inventory/managedObjects?query=$filter=((has(c8y_IsAsset)) and ('name' eq '${childAssets[childAsset]}'))`,
+        url: `/inventory/managedObjects?query=$filter=((has(${option})) and ('name' eq '${listOfAssetsOrDevices[i]}'))`,
         failOnStatusCode: false,
       }).then((response: any) => {
         cy.log(response);
-        const childAssetId = response.body.managedObjects[0].id;
+        const childAssetOrDeviceId = response.body.managedObjects[0].id;
         cy.apiRequest({
           method: "POST",
           url: `/inventory/managedObjects/${assetId}/childAssets`,
           body: {
             managedObject: {
-              id: childAssetId,
+              id: childAssetOrDeviceId,
             },
           },
         });
       });
     }
   });
+}
+
+Cypress.Commands.add("apiAssignChildAsset", (childAssets, asset) => {
+  assignDeviceOrChildAsset("c8y_IsAsset", childAssets, asset);
+});
+
+Cypress.Commands.add("apiAssignDevice", (devices, asset) => {
+  assignDeviceOrChildAsset("c8y_IsDevice", devices, asset);
 });
 
 Cypress.Commands.add("getUniqueId", () => {
