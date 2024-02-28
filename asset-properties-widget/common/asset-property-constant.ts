@@ -177,12 +177,12 @@ export const commonProperty = [
     c8y_JsonSchema: {
       properties: { configurationSnapshot: {
         label: 'Configuration snapshot',
-        type: 'number',
+        type: 'string',
       },},
     },
     name: 'configurationSnapshot',
     label: 'Configuration snapshot',
-    type: 'number',
+    type: 'string',
     computed: true,
     isEditable: false,
     isExistingProperty: true,

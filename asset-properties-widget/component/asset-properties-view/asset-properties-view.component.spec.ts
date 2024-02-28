@@ -20,16 +20,18 @@ describe('AssetPropertiesViewComponent', () => {
   let constructedComplexProperty: any;
   let nestedComplexProperty: any;
   let deviceMO: any;
+  let operationRealtimeServiceMock: any;
 
   beforeEach(() => {
     inventoryMock = { detail: jest.fn() };
     moRealtimeServiceMock = { onUpdate$: jest.fn() };
     assetPropertiesServiceMock = { getCustomProperties:jest.fn() };
     datePipeMock = { transform:jest.fn() };
-    assetPropertiesViewServiceMock = { getAlarms:jest.fn(), getEvents:jest.fn() };
+    assetPropertiesViewServiceMock = { getAlarms:jest.fn(), getEvents:jest.fn(), getMeasurements:jest.fn(), getOperation:jest.fn() };
     alarmRealtimeServiceMock = { onCreate$:jest.fn() };
     eventRealtimeServiceMock = { onCreate$:jest.fn() };
-    measurementRealtimeMock = { latestValueOfSpecificMeasurement$:jest.fn() };
+    operationRealtimeServiceMock = { onCreate$:jest.fn() };
+    measurementRealtimeMock = { latestValueOfSpecificMeasurement$:jest.fn(),onCreate$:jest.fn() };
     jest.useFakeTimers();
 
     component = new AssetPropertiesViewComponent(
@@ -40,7 +42,8 @@ describe('AssetPropertiesViewComponent', () => {
       assetPropertiesViewServiceMock,
       datePipeMock,
       alarmRealtimeServiceMock,
-      eventRealtimeServiceMock
+      eventRealtimeServiceMock,
+      operationRealtimeServiceMock
     );
 
     asset = {
@@ -82,6 +85,7 @@ describe('AssetPropertiesViewComponent', () => {
       c8y_IsDevice: {},
       c8y_SupportedOperations: [],
       c8y_Position: { lng: 5, alt: 5, lat: null },
+      c8y_ConfigurationDump:{id:9123856}
     };
     configCustomPropertyObjects = [
       {
@@ -515,14 +519,30 @@ describe('AssetPropertiesViewComponent', () => {
       },
       {
         c8y_JsonSchema: {
+          properties: { lastDeviceMessage: {
+            label: 'Last device message',
+            type: 'string',
+          },},
+        },
+        name: 'lastDeviceMessage',
+        label: 'Last device message',
+        printFormat: 'datetime',
+        type: 'string',
+        computed: true,
+        isEditable: false,
+        isExistingProperty: true,
+        active: true
+      },
+      {
+        c8y_JsonSchema: {
           properties: { configurationSnapshot: {
             label: 'Configuration snapshot',
-            type: 'number',
+            type: 'string',
           },},
         },
         name: 'configurationSnapshot',
         label: 'Configuration snapshot',
-        type: 'number',
+        type: 'string',
         computed: true,
         isEditable: false,
         isExistingProperty: true,
@@ -607,7 +627,7 @@ describe('AssetPropertiesViewComponent', () => {
         unit: 'mole',
         value: 30
       };
-      const eventComputedProperties = [...computedProperties.slice(4, 6)];
+      const eventComputedProperties = [...computedProperties.slice(4, 5)];
       component.config = { device: asset, properties: eventComputedProperties};
       jest.spyOn(component, 'getLatestMeasurement$').mockReturnValue(of(measurementValue));
 
@@ -620,6 +640,61 @@ describe('AssetPropertiesViewComponent', () => {
       expect(component.selectedAsset).toEqual(asset);
       await Promise.resolve();
       expect(component.computedPropertyObject).toEqual({lastMeasurement_16137034983190457:measurementValue});
+      expect(component.isEmptyWidget).toBe(false);
+    });
+
+    it('should retrieve the values for the computed properties Last device message and update it to the computedPropertyObject.',async ()=>{
+      // given
+      const eventComputedProperties = [...computedProperties.slice(5, 6)];
+      component.config = { device: asset, properties: eventComputedProperties};
+     const spyOnAlarms = jest.spyOn(assetPropertiesViewServiceMock, 'getAlarms').mockReturnValue(alarmObject);
+      jest.spyOn(alarmRealtimeServiceMock, 'onCreate$').mockReturnValue(of(alarmObject[0]));
+      const spyOnEvents = jest.spyOn(assetPropertiesViewServiceMock, 'getEvents').mockReturnValue(alarmObject);
+      jest.spyOn(eventRealtimeServiceMock, 'onCreate$').mockReturnValue(of(alarmObject[0]));
+      const spyOnMeasurements = jest.spyOn(assetPropertiesViewServiceMock, 'getMeasurements').mockReturnValue(alarmObject);
+      jest.spyOn(measurementRealtimeMock, 'onCreate$').mockReturnValue(of(alarmObject[0]));
+      const spyOnOperation = jest.spyOn(assetPropertiesViewServiceMock, 'getOperation').mockReturnValue(alarmObject);
+      jest.spyOn(operationRealtimeServiceMock, 'onCreate$').mockReturnValue(of(alarmObject[0]));
+
+
+      // when
+      await component.ngOnInit();
+
+      // then
+      jest.runAllTimers();
+      await Promise.resolve();
+      expect(component.selectedAsset).toEqual(asset);
+      await Promise.all([spyOnAlarms, spyOnEvents, spyOnMeasurements, spyOnOperation]);
+      expect(spyOnAlarms).toBeCalledTimes(1);
+      expect(spyOnEvents).toBeCalledTimes(1);
+      expect(spyOnMeasurements).toBeCalledTimes(1);
+      expect(spyOnOperation).toBeCalledTimes(1);
+      expect(component.isEmptyWidget).toBe(false);
+    });
+
+    it('should retrieve the values for the computed properties Configuration snapshot and update it to the computedPropertyObject.',async ()=>{
+      // given
+      const measurementValue = {
+        date: '2024-02-17T17:03:14.000+02:00',
+        id: '16137034983190457',
+        unit: 'mole',
+        value: 30
+      };
+      const eventComputedProperties = [...computedProperties.slice(6, 7)];
+      component.config = { device: deviceMO, properties: eventComputedProperties};
+      jest.spyOn(inventoryMock, 'detail').mockReturnValue(Promise.resolve({ data: deviceMO }));
+      jest.spyOn(moRealtimeServiceMock, 'onUpdate$').mockReturnValue(of(deviceMO));
+      jest.spyOn(component, 'getLatestMeasurement$').mockReturnValue(of(measurementValue));
+
+      // when
+      await component.ngOnInit();
+
+      // then
+      jest.runAllTimers();
+      await Promise.resolve();
+      expect(component.selectedAsset).toEqual(deviceMO);
+      await Promise.resolve();
+      expect(component.computedPropertyObject).toEqual({configurationSnapshot: 'Ar-alarm-test #1'});
       expect(component.isEmptyWidget).toBe(false);
     });
   });

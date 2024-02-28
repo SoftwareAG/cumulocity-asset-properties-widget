@@ -4,6 +4,7 @@ import {
   CoreModule,
   EventRealtimeService,
   HOOK_COMPONENTS,
+  OperationRealtimeService,
   RealtimeModule,
 } from '@c8y/ngx-components';
 import * as preview from './common/preview';
@@ -46,6 +47,7 @@ import { DatePipe } from '@angular/common';
     AlarmRealtimeService,
     DatePipe,
     EventRealtimeService,
+    OperationRealtimeService,
     {
       provide: HOOK_COMPONENTS,
       multi: true,

@@ -265,13 +265,13 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
       case 'alarmCount3Months':
       case 'eventCountToday':
       case 'eventCount3Months':
-        value = this.computedPropertyObject? this.computedPropertyObject[`${mo.name}_${mo.config.id}`] : 0;
+        value = this.computedPropertyObject?.[`${mo.name}_${mo.config.id}`] ?? 0;
         break;
       case 'lastDeviceMessage':
-        value = 'Undefined';
+        value = asset.c8y_Availability?.lastMessage ?? this.computedPropertyObject?.[mo.name] ?? 'Undefined';
         break;
       case 'lastMeasurement':
-        value = this.computedPropertyObject ? this.getLastMeasurementWithFormat(this.computedPropertyObject[`${mo.name}_${mo.config.id}`],mo.config.resultTypes) : undefined;
+        value = this.computedPropertyObject ? this.getLastMeasurementWithFormat(this.computedPropertyObject[`${mo.name}_${mo.config.id}`],mo.config.resultTypes) : 'Undefined';
         break;
       case 'childDevicesCount':
         value = asset.childDevices.references.length;
@@ -280,10 +280,10 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
         value = asset.childAssets.references.length;
         break;
       case 'configurationSnapshot':
-        value = 'Undefined';
+        value = this.computedPropertyObject?.[mo.name] ?? 'Undefined';
         break;
       default:
-        value = '';
+        value = 'Undefined';
         break;
     }
     return value;

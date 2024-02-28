@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IAlarm, IEvent, IManagedObject, InventoryService } from '@c8y/client';
-import { AlarmRealtimeService, EventRealtimeService, ManagedObjectRealtimeService, MeasurementRealtimeService } from '@c8y/ngx-components';
+import { IAlarm, IEvent, IManagedObject, IMeasurement, IOperation, InventoryService } from '@c8y/client';
+import { AlarmRealtimeService, EventRealtimeService, ManagedObjectRealtimeService, MeasurementRealtimeService, OperationRealtimeService } from '@c8y/ngx-components';
 import { AssetPropertiesService } from '../asset-properties-config/asset-properties.service';
 import { some, cloneDeep, isEmpty } from 'lodash-es';
 import { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
@@ -31,10 +31,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   @Input() config: any;
   computedPropertyObject:object;
   isLoading = true;
-
-  state$: Observable<{
-    latestMeasurement: MeasurementValue;
-  }>;
+  DEFAULT_FROM_DATE:string = '1970-01-01';
 
   constructor(
     protected inventoryService: InventoryService,
@@ -44,7 +41,8 @@ export class AssetPropertiesViewComponent implements OnInit {
     private assetPropertiesViewService: AssetPropertiesViewService,
     private datePipe: DatePipe,
     private alarmRealtimeService: AlarmRealtimeService,
-    private eventRealtimeService: EventRealtimeService
+    private eventRealtimeService: EventRealtimeService,
+    private operationRealtimeService: OperationRealtimeService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -92,6 +90,14 @@ export class AssetPropertiesViewComponent implements OnInit {
                 break;
               case 'lastMeasurement':
                 this.getLastMeasurement(property);
+                break;
+              case 'lastDeviceMessage':
+                if(!this.selectedAsset.c8y_Availability || !this.selectedAsset.c8y_Availability.lastMessage){
+                 this.getLastDeviceMessage(this.config.device);
+                }
+                break;
+              case 'configurationSnapshot':
+                this.getConfigurationSnapshot(this.selectedAsset);
                 break;
                 default:
                   break;
@@ -153,6 +159,75 @@ export class AssetPropertiesViewComponent implements OnInit {
       }
    );
   }
+
+  async getLastDeviceMessage(device: IManagedObject) {
+    const filters = {
+      dateFrom: this.DEFAULT_FROM_DATE,
+      dateTo: this.datePipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
+      source: device.id,
+      pageSize: 2000,
+    };
+    const [alarms, events, measurements, operations] = await Promise.all([
+      this.assetPropertiesViewService.getAlarms(filters),
+      this.assetPropertiesViewService.getEvents(filters),
+      this.assetPropertiesViewService.getMeasurements(filters),
+      this.assetPropertiesViewService.getOperation(filters)
+    ]);
+
+    const dateSet = new Set<string>();
+
+    const updateDateSet = (items: any[], timestampProp: string) => {
+      items.forEach(item => {
+        dateSet.add(item[timestampProp]);
+      });
+    };
+
+    updateDateSet(alarms, 'creationTime');
+    updateDateSet(events, 'creationTime');
+    updateDateSet(measurements, 'time');
+    updateDateSet(operations, 'creationTime');
+
+    this.updateTimeStamp(dateSet);
+
+    const handleRealtimeUpdate = (item: any, timestampProp: string) => {
+      dateSet.add(item[timestampProp]);
+      this.updateTimeStamp(dateSet);
+    };
+
+    this.alarmRealtimeService.onCreate$(device.id).subscribe((alarm: IAlarm) => {
+      handleRealtimeUpdate(alarm, 'creationTime');
+    });
+
+    this.eventRealtimeService.onCreate$(device.id).subscribe((event: IEvent) => {
+      handleRealtimeUpdate(event, 'creationTime');
+    });
+
+    this.measurementRealtime.onCreate$(device.id).subscribe((measurement: IMeasurement) => {
+      handleRealtimeUpdate(measurement, 'time');
+    });
+
+    this.operationRealtimeService.onCreate$(device.id).subscribe((operation: IOperation) => {
+      handleRealtimeUpdate(operation, 'creationTime');
+    });
+  }
+
+  updateTimeStamp(dateSet: Set<string>) {
+    // Get the maximum date
+    const maxDate = this.datePipe.transform(new Date(Math.max(...Array.from(dateSet).map(dateString => new Date(dateString).getTime()))), 'yyyy-MM-ddThh:mm:ssZZZZZ');
+    this.computedPropertyObject = { ...this.computedPropertyObject, ...{ ['lastDeviceMessage']: maxDate } };
+  }
+
+ async getConfigurationSnapshot(device){
+    const configId = (device.c8y_ConfigurationDump || {}).id;
+    if (!configId) return;
+    try {
+      const { data: configuration } = await this.inventoryService.detail(configId);
+      this.computedPropertyObject = { ...this.computedPropertyObject, ...{ ['configurationSnapshot']: configuration?.name } };
+    } catch (ex) {
+      // do nothing
+    }
+  }
+
   parseNestedComplexPropertyItem(property, item){
     Object.keys(property.properties).forEach((key)=>{
       const object = property.properties[key];
