@@ -177,7 +177,13 @@ describe('Asset Properties Widget: Integration tests', function () {
   it('TC_Asset_Properties_Widget_Integration_004', () => {
     const assetName = 'Test Asset2';
     const confirmButton = "button[title='Confirm']";
+    cy.intercept({ method: 'GET', url: '/inventory/managedObjects/**/childAdditions?pageSize=2000&query=%24filter%3D(has(%27c8y_IsAssetProperty%27))' }).as(
+      'saveresponse'
+    );
     cy.selectAssetPropertyAndSave(assetName, propKey);
+    cy.wait('@saveresponse')
+      .its('response.statusCode')
+      .should('eq', 200);
     cy.get(propValueElement).should('contain.text', ' Undefined ');
     cy.deleteCard();
 
