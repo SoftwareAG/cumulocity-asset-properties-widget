@@ -575,13 +575,13 @@ Cypress.Commands.add('updateAssetModel',(assetModel: any,references: object[],al
 
       cy.apiRequest({
         method: 'PUT',
-        url: '/inventory/managedObjects/' + assetModel.body.managedObjects[0].id,
+        url: `/inventory/managedObjects/${ assetModel.body.managedObjects[0].id}`,
         body: assetModelMO
       }).then(() => {
         for(let i=0;i<childAdditionsMO.references.length;i++) {
           cy.apiRequest({
             method: 'POST',
-            url: '/inventory/managedObjects/' + assetModel.body.managedObjects[0].id + '/childAdditions',
+            url: `/inventory/managedObjects/${ assetModel.body.managedObjects[0].id }/childAdditions`,
             body: childAdditionsMO.references[i]
           });
         }

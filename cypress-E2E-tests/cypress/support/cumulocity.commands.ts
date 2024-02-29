@@ -435,7 +435,7 @@ Cypress.Commands.add('login', username => {
   const userName = username ? username : Cypress.env('username');
   cy.getTenantId(userName, Cypress.env('password')).then(tenantId => {
     cy.session(
-      'dtmsession_' + userName,
+      `dtmsession_${ userName}`,
       () => {
         cy.request({
           method: 'POST',
@@ -510,7 +510,7 @@ Cypress.Commands.add('createUser', username => {
       body: {
         userName: username,
         password: Cypress.env('password'),
-        email: username + '@softwareag.com'
+        email: `${username }@softwareag.com`
       }
     }).then(() => {
       cy.getApplicationId().then((appId: string) => {

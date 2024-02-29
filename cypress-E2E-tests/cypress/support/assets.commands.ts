@@ -305,17 +305,17 @@ Cypress.Commands.add('createAssetTypesAndPropertyForBuildingHierarchy', () => {
       c8y_IsAssetProperty: {},
       c8y_Global: {},
       c8y_JsonSchema: {
-        type: "object",
-        title: "file",
+        type: 'object',
+        title: 'file',
         properties: {
             file: {
               contentMediaType: 'jpeg,csv,jpg',
               maxSize: 0.1,
-              type: "file"
+              type: 'file'
             }
         },
         required: [],
-        key: "file"
+        key: 'file'
     },
     },
     {
