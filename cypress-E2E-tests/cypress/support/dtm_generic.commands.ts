@@ -361,7 +361,6 @@ function assignDeviceOrChildAsset(
         url: `/inventory/managedObjects?query=$filter=((has(${option})) and ('name' eq '${listOfAssetsOrDevices[i]}'))`,
         failOnStatusCode: false,
       }).then((response: any) => {
-        cy.log(response);
         const childAssetOrDeviceId = response.body.managedObjects[0].id;
         cy.apiRequest({
           method: "POST",
