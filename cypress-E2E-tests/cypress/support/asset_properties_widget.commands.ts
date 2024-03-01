@@ -7,9 +7,11 @@ declare global {
       /**
        * This command is being used to select the asset/device in configuration section of asset properties widget.
        * @param label Name of the asset/device to select
+       * @param targetIndex If multiple elements are found, specify the target element index; otherwise, it is optional. 
+       * Additionally, it is optional if the target element is at index '0'
        * Usage: cy.chooseAssetOrDevice("Building");
        */
-      chooseAssetOrDevice(label: string): void;
+      chooseAssetOrDevice(label: string, targetIndex?: number): void;
 
       /**
        * This command is being used to select the checkbox corresponding to the property under property selection section of asset properties widget.
@@ -81,6 +83,8 @@ declare global {
       /**
        * This command is being used to click on the asset
        * @param assetName Name of the asset
+       * @param targetIndex If multiple elements are found, specify the target element index; otherwise, it is optional. 
+       * Additionally, it is optional if the target element is at index '0'
        * Usage: clickOnAsset('Amazon');
        */
       clickOnAsset(assetName: string): void;
@@ -88,8 +92,13 @@ declare global {
   }
 }
 
-Cypress.Commands.add("chooseAssetOrDevice", (label) => {
+Cypress.Commands.add("chooseAssetOrDevice", (label, targetIndex?: number) => {
+  let index = 0;
+  if (targetIndex) {
+    index = targetIndex;
+  }
   cy.get(`div[title*='${label}']`)
+    .eq(index)
     .children('div[class*="checkbox"]')
     .children("label")
     .children('input[type="radio"]')
@@ -211,8 +220,15 @@ Cypress.Commands.add("selectSubasset", (assetName) => {
     .check({ force: true });
 });
 
-Cypress.Commands.add("clickOnAsset", (assetName) => {
+Cypress.Commands.add("clickOnAsset", (assetName, targetIndex?: number) => {
+  let index = 0;
+  if (targetIndex) {
+    index = targetIndex;
+  }
   cy.intercept("/inventory/managedObjects/**").as("manageObjectCall");
-  cy.get(`button p[title='${assetName}']`).should("be.visible").click({force:true});
-  cy.wait("@manageObjectCall").its('response.statusCode').should('eq', 200);
+  cy.get(`button p[title='${assetName}']`)
+    .eq(index)
+    .should("be.visible")
+    .click({ force: true });
+  cy.wait("@manageObjectCall").its("response.statusCode").should("eq", 200);
 });
