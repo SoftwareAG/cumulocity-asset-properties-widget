@@ -110,7 +110,7 @@ export class AssetPropertiesViewComponent implements OnInit {
       } catch (error) {
         this.isEmptyWidget = true;
       }
-    }
+    } else this.isEmptyWidget = true;
   }
 
   async getAlarmCount(device:IManagedObject, property:IManagedObject, dateFrom:string){
