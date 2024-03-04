@@ -7,7 +7,7 @@ declare global {
       /**
        * This command is being used to select the asset/device in configuration section of asset properties widget.
        * @param label Name of the asset/device to select
-       * @param targetIndex If multiple elements are found, specify the target element index; otherwise, it is optional. 
+       * @param targetIndex If multiple elements are found, specify the target element index; otherwise, it is optional.
        * Additionally, it is optional if the target element is at index '0'
        * Usage: cy.chooseAssetOrDevice("Building");
        */
@@ -83,11 +83,19 @@ declare global {
       /**
        * This command is being used to click on the asset
        * @param assetName Name of the asset
-       * @param targetIndex If multiple elements are found, specify the target element index; otherwise, it is optional. 
+       * @param targetIndex If multiple elements are found, specify the target element index; otherwise, it is optional.
        * Additionally, it is optional if the target element is at index '0'
        * Usage: clickOnAsset('Amazon');
        */
       clickOnAsset(assetName: string): void;
+
+      /**
+       * This command is being used to validate the property value in the view.
+       * @param propertyLabel Property label
+       * @param value Property value
+       * Usage: cy.validatePropertyValue('Alarm count today','2');
+       */
+      validatePropertyValue(propertyLabel: string, value: string): void;
     }
   }
 }
@@ -231,4 +239,13 @@ Cypress.Commands.add("clickOnAsset", (assetName, targetIndex?: number) => {
     .should("be.visible")
     .click({ force: true });
   cy.wait("@manageObjectCall").its("response.statusCode").should("eq", 200);
+});
+
+Cypress.Commands.add("validatePropertyValue", (propertyLabel, value) => {
+  cy.get(`p[title='${propertyLabel}']`)
+    .parent("div")
+    .siblings("c8y-asset-properties-item")
+    .children(`p[title='${value}']`).as('propertyValue');
+  cy.get('@propertyValue').scrollIntoView();
+  cy.get('@propertyValue').should('be.visible');
 });
