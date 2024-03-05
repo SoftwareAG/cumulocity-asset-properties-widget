@@ -84,6 +84,14 @@ declare global {
        * Usage: clickOnAsset('Amazon');
        */
       clickOnAsset(assetName: string): void;
+      
+        /**
+       * This command is being used to validate the property value in the view.
+       * @param propertyLabel Property label
+       * @param value Property value
+       * Usage: cy.validatePropertyValue('Alarm count today','2');
+       */
+        validatePropertyValue(propertyLabel: string, value: string): void;
     }
   }
 }
@@ -215,4 +223,13 @@ Cypress.Commands.add("clickOnAsset", (assetName) => {
   cy.intercept("/inventory/managedObjects/**").as("manageObjectCall");
   cy.get(`button p[title='${assetName}']`).should("be.visible").click({force:true});
   cy.wait("@manageObjectCall").its('response.statusCode').should('eq', 200);
+});
+
+Cypress.Commands.add("validatePropertyValue", (propertyLabel, value) => {
+  cy.get(`p[title='${propertyLabel}']`)
+    .parent("div")
+    .siblings("c8y-asset-properties-item")
+    .children(`p[title='${value}']`).as('propertyValue');
+  cy.get('@propertyValue').scrollIntoView();
+  cy.get('@propertyValue').should('be.visible');
 });

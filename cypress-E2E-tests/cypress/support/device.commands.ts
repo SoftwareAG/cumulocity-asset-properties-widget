@@ -57,6 +57,14 @@ declare global {
        * addChildDevice("Device1", "DEvice2");
        */
       addChildDevice(parentDevice: string, childDevice: string): void;
+      
+       /**
+       * This command is being used to add the child device.
+       * @param parentDevice Name of the parent device.
+       * @param asset Name of the asset as a child of device.
+       * addChildDevice("Device1", "Building");
+       */
+       addAssetToDevice(parentDevice: string, asset: string): void;
 
       /**
        * This command is being used to create a new event
@@ -235,3 +243,29 @@ Cypress.Commands.add("createEvent", (request) => {
       .should("eq", 201);
   });
 });
+
+Cypress.Commands.add("addAssetToDevice", (parentDevice, asset) => {
+  cy.apiRequest({
+    url: `/inventory/managedObjects?q=$filter=(name eq '${parentDevice}' and has('c8y_IsDevice'))`,
+    method: "GET",
+  }).then((response: any) => {
+    const parentDeviceId = response.body.managedObjects[0].id;
+    cy.apiRequest({
+      method: "GET",
+    url: `/inventory/managedObjects?query=$filter=((has(c8y_IsAsset)) and ('name' eq '${asset}'))`,
+    failOnStatusCode: false,
+  }).then((response: any) => {
+    const assetId = response.body.managedObjects[0].id;
+      cy.log(assetId);
+      console.log(parentDeviceId,assetId)
+      cy.apiRequest({
+        url: `/inventory/managedObjects/${parentDeviceId}/childAssets`,
+        method: "POST",
+        body: {
+          managedObject: { id: `${assetId}` },
+        },
+      });
+    });
+  });
+});
+
