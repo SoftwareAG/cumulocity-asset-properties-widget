@@ -87,7 +87,7 @@ declare global {
        * Additionally, it is optional if the target element is at index '0'
        * Usage: clickOnAsset('Amazon');
        */
-      clickOnAsset(assetName: string): void;
+      clickOnAsset(assetName: string, targetIndex?: number): void;
 
       /**
        * This command is being used to validate the property value in the view.
@@ -239,6 +239,15 @@ Cypress.Commands.add("clickOnAsset", (assetName, targetIndex?: number) => {
     .should("be.visible")
     .click({ force: true });
   cy.wait("@manageObjectCall").its("response.statusCode").should("eq", 200);
+});
+
+Cypress.Commands.add("validatePropertyValue", (propertyLabel, value) => {
+  cy.get(`p[title='${propertyLabel}']`)
+    .parent("div")
+    .siblings("c8y-asset-properties-item")
+    .children(`p[title='${value}']`).as('propertyValue');
+  cy.get('@propertyValue').scrollIntoView();
+  cy.get('@propertyValue').should('be.visible');
 });
 
 Cypress.Commands.add("validatePropertyValue", (propertyLabel, value) => {

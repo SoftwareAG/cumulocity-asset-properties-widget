@@ -18,6 +18,7 @@ export default {
   changeButton: "button[title='Change']",
   widgetDashboardAddWidgetButton: "[data-cy='widget-dashboard--Add-widget']",
   saveAssetTypeButton: '.card-footer.separator.sticky-bottom>.btn.btn-primary',
+  backButton: "button i[c8yicon='angle-left']",
 
   // ###############[Dropdowns]############
 
