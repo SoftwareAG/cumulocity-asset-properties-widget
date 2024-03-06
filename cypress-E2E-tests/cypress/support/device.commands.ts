@@ -96,14 +96,6 @@ declare global {
        * Usage: cy.switchDataPointToggleButton('s7aFlow → F');
        */
       switchDataPointToggleButton(label:string): void;
-
-      /**
-       * This command is being used to add or remove the data point in configuration section of asset properties widget.
-       * @param label label of the asset property.
-       * @param value value of the asset property.
-       * Usage: cy.checkPropertyItemValueVisibility('Last measurement', '45 k');
-       */
-      checkPropertyItemValueVisibility(label:string, value:any): void;
     }
   }
 }
@@ -276,8 +268,4 @@ Cypress.Commands.add('expandOrCollapseDataPoint', (label) => {
 
 Cypress.Commands.add('switchDataPointToggleButton', (label) => {
   cy.get(`[title*='${label}']`).parent('button').parent('div').parent('div').siblings('c8y-li-checkbox').click();
-});
-
-Cypress.Commands.add('checkPropertyItemValueVisibility', (label, value) => {
-  cy.get(`[title*='${label}']`).parent('div').siblings('c8y-asset-properties-item').children('p').should('contain.text', value);
 });

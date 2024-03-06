@@ -215,9 +215,9 @@ describe('Asset Properties Widget: Integration tests', function () {
       cy.get('[data-cy="widget-config--save-widget"]').click();
       cy.get('c8y-asset-properties-view').should('contain.text', last_recent_measurement_str)
       .and('contain.text', last_measurement_str);
-      cy.checkPropertyItemValueVisibility(last_recent_measurement_str, 45);
-      cy.checkPropertyItemValueVisibility(last_measurement_str, 45);
-      cy.checkPropertyItemValueVisibility(last_measurement_str, '450 K');
+      cy.validatePropertyValue(last_recent_measurement_str, '45');
+      cy.validatePropertyValue(last_measurement_str, '45');
+      cy.validatePropertyValue(last_measurement_str, '450 K');
       cy.deleteCard();
     });
 
