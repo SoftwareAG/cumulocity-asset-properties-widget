@@ -4,6 +4,32 @@ import asset_properties_widget_elements from "../support/page_objects/asset_prop
 
 describe("Device properties widget", function () {
   const url = "apps/sag-pkg-asset-properties-widget/index.html#/";
+  const asset = "Amazon";
+  const device = "Device1";
+  const groupObject = {
+    label: "Group",
+    name: "group",
+    description: "",
+    c8y_IsAssetType: {
+      icon: {
+        category: "",
+        name: "",
+      },
+      properties: [],
+      allowedAssetTypes: [],
+      isNoneChildAssetsAllowed: "false",
+    },
+  };
+  const assetObject = {
+    type: "group",
+    icon: {
+      name: "",
+      category: "",
+    },
+    name: "Amazon",
+    c8y_IsAsset: {},
+    c8y_IsDeviceGroup: {},
+  };
 
   // This function is used to navigate to the select properties window for the selected asset or device.
   function navigateToSelectPropertiesWindow(
@@ -22,41 +48,15 @@ describe("Device properties widget", function () {
 
   context("Generic", function () {
     const asset = "Amazon";
-    const device = "Device1";
     before(function () {
-      const groupObject = {
-        label: "Group",
-        name: "group",
-        description: "",
-        c8y_IsAssetType: {
-          icon: {
-            category: "",
-            name: "",
-          },
-          properties: [],
-          allowedAssetTypes: [],
-          isNoneChildAssetsAllowed: "false",
-        },
-      };
       cy.login();
       cy.createAssetTypesAndPropertyForBuildingHierarchy();
       cy.apiCreateAssetModel(groupObject, [
         { label: "Color", isRequired: "false" },
       ]);
-      cy.createDevice("Device1");
-      cy.apiCreateSimpleAsset([
-        {
-          type: "group",
-          icon: {
-            name: "",
-            category: "",
-          },
-          name: asset,
-          c8y_IsAsset: {},
-          c8y_IsDeviceGroup: {},
-        },
-      ]);
-      cy.apiAssignDevice(["Device1"], asset);
+      cy.createDevice(device);
+      cy.apiCreateSimpleAsset([assetObject]);
+      cy.apiAssignDevice([device], asset);
     });
 
     beforeEach(function () {
@@ -151,22 +151,173 @@ describe("Device properties widget", function () {
         "inventory/managedObjects/**/childAdditions?pageSize=2000&query=%24filter%3D(has(%27c8y_IsAssetProperty%27))"
       ).as("childAdditionCall");
       cy.chooseAssetOrDevice(asset);
-      cy.wait('@childAdditionCall').its("response.statusCode").should("eq", 200);
+      cy.wait("@childAdditionCall")
+        .its("response.statusCode")
+        .should("eq", 200);
       cy.get(asset_properties_widget_elements.addPropertyButton)
         .should("be.enabled")
         .click();
       verifyThePropertyList(properties);
     });
 
-    // Verify if the user selects a device which is assigned to an asset,for that device if the user clicks on add property,only device related properties should be displayed. 
+    // Verify if the user selects a device which is assigned to an asset,for that device if the user clicks on add property,only device related properties should be displayed.
     // Custom properties for that asset should not be shown.
     it("TC_Device_Properties_Widget_004", () => {
-      const assetProperty = 'Color';
+      const assetProperty = "Color";
       navigateToSelectPropertiesWindow(device);
-      cy.get(`#modal-body div[title='${assetProperty}`).should('not.exist');
+      cy.get(`#modal-body div[title='${assetProperty}`).should("not.exist");
     });
 
     after(function () {
+      cy.visitAndWaitUntilPageLoad('apps/digital-twin-manager/index.html#/home')
+      cy.cleanup();
+      cy.deleteAllDevices();
+    });
+  });
+
+  context("Alarms and Events", {testIsolation:false}, function () {
+    const properties = [
+      "Alarm count today",
+      "Alarm count 3 months",
+      "Event count today",
+      "Event count 3 months",
+    ];
+    const alarm = [
+      {
+        deviceName: "Device1",
+        text: "Device is out for maintanance",
+        severity: "CRITICAL",
+        status: "ACTIVE",
+        pastDate: {
+          month: 2,
+          day: 15,
+        },
+      },
+      {
+        deviceName: "Device1",
+        text: "Device Running for more than standard time",
+        severity: "MINOR",
+        status: "ACTIVE",
+      },
+      {
+        deviceName: "Device1",
+        text: "Device Running for more than standard time",
+        severity: "MAJOR",
+        status: "ACTIVE",
+        pastDate: {
+          month: 3,
+          day: 15,
+        },
+      },
+    ];
+
+    const events = [
+      {
+        deviceName: "Device1",
+        type: "DeviceAlarm",
+        text: "sensor was triggered",
+      },
+      {
+        deviceName: "Device1",
+        type: "DeviceAlarm",
+        text: "Alarm was triggered",
+        pastDate: {
+          month: 3,
+          day: 15,
+        },
+      },
+      {
+        deviceName: "Device1",
+        type: "DeviceAlarm",
+        text: "Critical Alarm was triggered",
+        pastDate: {
+          month: 2,
+          day: 15,
+        },
+      },
+    ];
+
+    before(function () {
+      cy.login();
+      cy.apiCreateAssetModel(groupObject);
+      cy.createDevice(device, { month: 4, day: 15 });
+      cy.apiCreateSimpleAsset([assetObject]);
+      cy.apiAssignDevice([device], asset);
+      for (let i = 0; i < alarm.length; i++) {
+        cy.createNewAlarm(alarm[i]);
+        cy.createEvent(events[i]);
+      }
+      cy.visitAndWaitUntilPageLoad(url);
+      cy.get(asset_properties_widget_elements.addWidgetButton).click();
+      cy.get(asset_properties_widget_elements.cardElement).eq(0).click();
+      cy.clickOnAsset(asset);
+      cy.chooseAssetOrDevice(device);
+      for (let i = 0; i < properties.length; i++) {
+        cy.get(asset_properties_widget_elements.addPropertyButton)
+          .should("be.enabled")
+          .click();
+        cy.selectProperty(properties[i]);
+        cy.get(asset_properties_widget_elements.selectButton).click();
+        cy.get(
+          asset_properties_widget_elements.assetPropertySlectorLabelTextBox
+        )
+          .should("be.visible")
+          .type("DeviceAlarm");
+        cy.get(asset_properties_widget_elements.saveButton).eq(1).click();
+      }
+      cy.get(asset_properties_widget_elements.saveButton)
+        .eq(0)
+        .should("be.visible")
+        .click();
+      cy.validatePropertyValue("Name", device);
+    });
+
+    // Ensure users can set the 'Alarm count today' and also validate the data.
+    // Send two alarms,one for the previous day and other for current day,Verify that only the current day count is shown on view.
+    it("TC_Device_Properties_Widget_005", () => {
+      cy.validatePropertyValue("Alarm count today", '1');
+    });
+
+    // Verify that 'Alarm count today' field will be disabled on view.
+    it("TC_Device_Properties_Widget_006", () => {
+      cy.get("p[title='Alarm count today']~button").should('not.exist');
+    });
+
+    // Ensure users can set the 'AlarmCount3Months ' and also validate the data.
+    // Attempt to configure 'alarmCount3Months' with months older than 4 months. Only 3  months data should  be displayed on UI.
+    it("TC_Device_Properties_Widget_007", () => {
+      cy.validatePropertyValue("Alarm count 3 months", '1');
+    });
+
+    // Verify that 'AlarmCount3Months' field will be disabled on view.
+    it("TC_Device_Properties_Widget_008", () => {
+      cy.get("p[title='Alarm count 3 months']~button").should('not.exist');
+    });
+
+    // Ensure users can set the 'Event count today' and also validate the data.
+    // Send two Events,one for the previous day and other for current day,Verify that only the current day count is shown on view.
+    it("TC_Device_Properties_Widget_009", () => {
+      cy.validatePropertyValue("Event count today", '1');
+    });
+
+    // Verify that 'Event count today' field will be disabled on view.
+    it("TC_Device_Properties_Widget_010", () => {
+      cy.get("p[title='Event count today']~button").should('not.exist');
+    });
+
+    // Ensure users can set the 'Event Count 3Months ' and also validate the data.
+    // Attempt to configure 'Event Count 3Months' with months older than 4 months. Only 3  months data should  be displayed on UI.
+    it("TC_Device_Properties_Widget_011", () => {
+      cy.validatePropertyValue("Event count 3 months", '2');
+    });
+
+    // Verify that 'Event Count 3Months' field will be disabled on view.
+    it("TC_Device_Properties_Widget_012", () => {
+      cy.get("p[title='Event count 3 months']~button").should('not.exist');
+    });
+
+    after(function () {
+      cy.deleteWidgetInstances([device]);
       cy.cleanup();
       cy.deleteAllDevices();
     });

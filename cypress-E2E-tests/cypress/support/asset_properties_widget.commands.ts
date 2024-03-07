@@ -87,7 +87,7 @@ declare global {
        * Additionally, it is optional if the target element is at index '0'
        * Usage: clickOnAsset('Amazon');
        */
-      clickOnAsset(assetName: string): void;
+      clickOnAsset(assetName: string, targetIndex?: number): void;
 
       /**
        * This command is being used to validate the property value in the view.
