@@ -249,12 +249,3 @@ Cypress.Commands.add('validatePropertyValue', (propertyLabel, value) => {
   cy.get('@propertyValue').scrollIntoView();
   cy.get('@propertyValue').should('be.visible');
 });
-
-Cypress.Commands.add('validatePropertyValue', (propertyLabel, value) => {
-  cy.get(`p[title='${propertyLabel}']`)
-    .parent('div')
-    .siblings('c8y-asset-properties-item')
-    .children(`p[title='${value}']`).as('propertyValue');
-  cy.get('@propertyValue').scrollIntoView();
-  cy.get('@propertyValue').should('be.visible');
-});
