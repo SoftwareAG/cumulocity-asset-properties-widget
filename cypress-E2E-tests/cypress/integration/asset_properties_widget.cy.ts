@@ -92,15 +92,15 @@ const assetObject3 = [
 ];
 
 const roomProperties = [{ label: 'Color', isRequired: 'false' }, { label: 'Location', isRequired: false }, { label: 'File', isRequired: 'false' }, { label: 'ComplexProperty', isRequired: 'false' }];
-const marker = "div[class*='dlt-c8y-icon-marker']"; 
+const marker = "div[class*='dlt-c8y-icon-marker']";
 const mapZoomIn = "a[title='Zoom in']";
 const mapZoomOut = "a[title='Zoom out']";
 const mapFullScreen = "c8y-asset-location button[title='Full screen']";
 const propertyDragHandle = 'c8y-asset-property-selector td > i';
-const map = "c8y-asset-location c8y-map";
-const propertyDragHandle1 = ":nth-child(1) > .cdk-drag-handle";
-const propertyDragHandle3 = ":nth-child(3) > .cdk-drag-handle";
-const labelElement = "td > input[class*='form-control']";
+const map = 'c8y-asset-location c8y-map';
+const propertyDragHandle1 = ':nth-child(1) > .cdk-drag-handle';
+const propertyDragHandle3 = ':nth-child(3) > .cdk-drag-handle';
+const labelElement = '[data-cy=asset-property-selector-label]';
 const lat="input[min='-90']";
 const lng="input[min='-180']";
 const alt="input[id='formly_5_number_alt_1']";
@@ -197,7 +197,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   // Verify the presence of Properties section row elements
   it('TC_Asset_Properties_Widget_config_004', () => {
     const labels = ['Name', 'ID', 'Asset model'];
-    const keys = ['name', 'id', 'type'];    
+    const keys = ['name', 'id', 'type'];
     for (let i = 0; i < labels.length; i++) {
       cy.get(propertyDragHandle).eq(i).should('be.visible');
       cy.get(checkboxElement).eq(i).should('be.visible');
@@ -256,7 +256,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.selectAsset(assetName);
     // addeding wait so that drag will work as expected otherwise drag will not work
     cy.wait(1000);
-    cy.get(propertyDragHandle3).dragTo(propertyDragHandle1);   
+    cy.get(propertyDragHandle3).dragTo(propertyDragHandle1);
     cy.get(labelElement).eq(0).should('have.value', 'Asset model');
     cy.get(asset_properties_widget_elements.saveButton).click();
     cy.get(cardTitleElement).should('contain.text', assetProperties);
@@ -373,7 +373,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const subassetName = 'check 2';
     cy.get(asset_properties_widget_elements.loadMoreButton).click();
     cy.get(`p[title='${assetName1}']`).click();
-    cy.get(textElement).should('contains.text', ' Groups > ' + assetName1);
+    cy.get(textElement).should('contains.text', ` Groups > ${ assetName1}`);
     cy.get(`p[title='${subassetName}']`).should('be.visible');
   });
 
@@ -383,7 +383,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const subassetName = 'check 2';
     cy.get(asset_properties_widget_elements.loadMoreButton).click();
     cy.get(`p[title='${assetName1}']`).click();
-    cy.get(textElement).should('contains.text', 'Groups > ' + assetName1);
+    cy.get(textElement).should('contains.text', `Groups > ${ assetName1}`);
     cy.get(`p[title='${subassetName}']`).should('be.visible');
     cy.get(backArrowElement).click();
     cy.get(assetsTextElement).should('contain.text', 'Groups');
@@ -430,7 +430,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(asset_properties_widget_elements.selectButton).click();
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     // workaround for assettypes cache issue
-    cy.get(`div[title='${prop}']`).should('be.visible');
+    cy.get(`div[title='${prop}']`).scrollIntoView().should('be.visible');
   });
 
   // Verfify the presence of load more button if there are more number of assets present in the application
@@ -465,7 +465,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(assetsTextElement).should('contain.text', 'Groups');
     cy.get(asset_properties_widget_elements.loadMoreButton).click();
     cy.get(`p[title='${assetName}']`).click();
-    cy.get(textElement).should('contains.text', 'Groups > ' + assetName);
+    cy.get(textElement).should('contains.text', `Groups > ${ assetName}`);
     cy.get(backArrowElement).should('be.visible');
     cy.get('input[placeholder="Filter…"]').click();
     cy.get(filterElement).should('be.visible');
@@ -611,7 +611,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const invalidFileName = 'Image SAG LOGO.png';
     const invalidFileSize = 'image1.jpg';
     const errorMessage = 'The selected file is not supported.';
-    const invalidFileSizeErrorMessage= 'The selected file is too large. The size limit is 102.4 kB.'
+    const invalidFileSizeErrorMessage= 'The selected file is too large. The size limit is 102.4 kB.';
     const editPropertyCancelButton = "button[title='Cancel']";
     const complexPropertyTitle = 'ComplexProperty';
     cy.selectAssetPropertyAndSave('Test Asset3', propKey);
@@ -666,7 +666,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(marker).scrollIntoView().should('be.visible');
     cy.get(map).should('not.be.enabled');
     cy.get(marker).should('not.be.enabled');
-    //cy.get(mapFullScreen).scrollIntoView().trigger("click"); // works intermittently
+    // cy.get(mapFullScreen).scrollIntoView().trigger("click"); // works intermittently
     cy.clickPropertyEditButton(location);
     cy.get(lng).clear();
     cy.get(saveElement).click();
@@ -675,9 +675,9 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   });
 
     // On click of Cancel the values should not get saved in location property.
-    it('TC_Asset_Properties_Widget_Location_Edit_002', () => {    
+    it('TC_Asset_Properties_Widget_Location_Edit_002', () => {
       cy.selectAssetPropertyAndSave(assetName1, locationPropertyKey);
-      cy.clickPropertyEditButton(location);    
+      cy.clickPropertyEditButton(location);
       cy.get(lng).should('contain.value', 77.6904);
       cy.get(lng).clear();
       cy.get(alt).should('contain.value', '');
@@ -708,16 +708,16 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   // If the property 'Location' has values:
   // The values should be shown in respective fields.
   //  Map should be visible with a marker pointing at the provided lat long location at the center.
-  // Full screen button should be visible on click of which map opens full screen.  
+  // Full screen button should be visible on click of which map opens full screen.
   // If the values are changed manually in the fields the marker should automatically get updated.
-  // On click of save the values should get updated. 
-  // On click of anywhere on the map the marker should get updated and the values in the form should get updated with the values in respective fields. 
+  // On click of save the values should get updated.
+  // On click of anywhere on the map the marker should get updated and the values in the form should get updated with the values in respective fields.
   it('TC_Asset_Properties_Widget_Location_Edit_004', () => {
     const leafletMarker = "div[class*='leaflet-marker-icon']";
     cy.selectAssetPropertyAndSave(assetName1, locationPropertyKey);
     cy.clickPropertyEditButton(location);
-    cy.get(leafletMarker).should('have.css', 'height', '12px')
-    cy.get(leafletMarker).should('have.css', 'width', '12px')
+    cy.get(leafletMarker).should('have.css', 'height', '12px');
+    cy.get(leafletMarker).should('have.css', 'width', '12px');
     cy.get(lng).should('contain.value', 77.6904);
     cy.get(lng).clear();
     cy.get(alt).should('contain.value', '');
@@ -729,7 +729,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(map).scrollIntoView().should('be.visible');
     cy.get(mapFullScreen).scrollIntoView().should('be.visible');
     cy.get(mapZoomIn).scrollIntoView().should('be.visible');
-    cy.get(mapZoomOut).scrollIntoView().should('be.visible');    
+    cy.get(mapZoomOut).scrollIntoView().should('be.visible');
     cy.get(lng).type('60');
     cy.get(alt).type('10');
     cy.get(lat).type('15');
@@ -744,9 +744,9 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
       .its('response.statusCode')
       .should('eq', 200);
     cy.clickPropertyEditButton(location);
-    cy.get(map).click();    
+    cy.get(map).click();
     cy.get(lng).should('not.have.value', 60);
-    cy.get(lat).should('not.have.value', 15);    
+    cy.get(lat).should('not.have.value', 15);
     cy.deleteCard();
   });
 
