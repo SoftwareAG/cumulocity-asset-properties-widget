@@ -2,14 +2,14 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { IManagedObject } from '@c8y/client';
 import { AssetTypesService, gettext } from '@c8y/ngx-components';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
-import { isEmpty, cloneDeep } from 'lodash-es';
+import { isEmpty, cloneDeep, filter} from 'lodash-es';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { assetPropertyItemSelectorCtrlComponent } from '../asset-property-item-selector/asset-property-item-selector.component';
 import { AssetPropertiesService } from '../asset-properties.service';
 import {
   defaultProperty,
-  deviceProperty,
-  commonProperty,
+  devicePropertiesBaseObject,
+  computedPropertiesBaseObject,
 } from '../../../common/asset-property-constant';
 import { some } from 'lodash-es';
 import { ComputedPropertyConfigComponent } from '../computed-asset-property/computed-property-config.component';
@@ -31,8 +31,8 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
   assetType: IManagedObject;
   assetPropertySelectorModalRef: BsModalRef;
   computedPropertyConfigModalRef: BsModalRef;
-  properties = cloneDeep(defaultProperty);
-  customProperties: Array<IManagedObject> = [...cloneDeep(defaultProperty), ...cloneDeep(commonProperty)];
+  properties = cloneDeep(filter(defaultProperty, { active: true }));
+  customProperties: Array<IManagedObject> = [...cloneDeep(defaultProperty), ...cloneDeep(computedPropertiesBaseObject)];
   ExpandedComplexProperty: any;
   isAtleastOnePropertySelected: boolean = true;
   selectedComputedPropertyIndex: number;
@@ -45,12 +45,12 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
 
   async ngOnChanges(changes: IManagedObject): Promise<void> {
     if(changes.asset.currentValue?.hasOwnProperty('c8y_IsDevice')){
-      this.properties = this.config.properties || cloneDeep(defaultProperty);
+      this.properties = this.config.properties || cloneDeep(filter(defaultProperty, { active: true }));
       if(changes.asset.previousValue?.hasOwnProperty('c8y_IsAsset')){
-        this.properties = cloneDeep(defaultProperty);
+        this.properties = cloneDeep(filter(defaultProperty, { active: true }));
       }
       this.config.properties = this.properties;
-      this.customProperties = [...cloneDeep(defaultProperty), ...cloneDeep(deviceProperty), ...cloneDeep(commonProperty)];
+      this.customProperties = [...cloneDeep(defaultProperty), ...cloneDeep(devicePropertiesBaseObject), ...cloneDeep(computedPropertiesBaseObject)];
     }
     else if (!changes.asset.previousValue && this.config?.properties) {
       this.properties = this.config.properties;
@@ -82,16 +82,16 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
   }
   async loadAssetProperty() {
     this.isLoading = true;
-    this.properties = cloneDeep(defaultProperty);
+    this.properties = cloneDeep(filter(defaultProperty, { active: true }));
     this.assetType = this.assetTypes.getAssetTypeByName(this.asset.type);
     this.config.properties = this.properties;
-    this.customProperties = cloneDeep(this.properties)
-      .concat(commonProperty)
+    this.customProperties = cloneDeep(defaultProperty)
       .concat(
         this.getConstructCustomProperties(
           await this.assetPropertyService.getCustomProperties(this.asset)
         )
-      );
+      )
+      .concat(computedPropertiesBaseObject);
     this.isLoading = false;
   }
 
@@ -127,7 +127,7 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
         this.properties.forEach((property, index) => {
           if(property.computed && property.config && !(property.config.dp?.length>0 || property.config.type)){
             this.config.properties[index].config = {...this.config.properties[index].config, ...{id:String(Math.random()).substr(2)}};
-            this.configComputeProperty(index);
+            this.configureComputedProperty(index);
           }
         });
         this.assetPropertySelectorModalRef.hide();
@@ -210,7 +210,7 @@ export class AssetPropertiesSelectorComponent implements OnChanges {
     moveItemInArray(this.properties, event.previousIndex, event.currentIndex);
   }
 
-  configComputeProperty(index){
+  configureComputedProperty(index){
     this.selectedComputedPropertyIndex = index;
     this.computedPropertyConfigModalRef = this.modalService.show(
       ComputedPropertyConfigComponent,

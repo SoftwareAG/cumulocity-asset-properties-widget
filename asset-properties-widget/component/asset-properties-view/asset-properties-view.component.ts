@@ -8,13 +8,16 @@ import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { AssetPropertiesViewService } from './asset-properties-view.service';
 import { DatePipe } from '@angular/common';
-import { deviceProperty } from '../../common/asset-property-constant';
+import { devicePropertiesBaseObject } from '../../common/asset-property-constant';
 
 interface MeasurementValue {
   unit?: string;
   value: number;
   date: string;
   id: string;
+}
+interface ComputedPropertyObject {
+  [key: string]: any;
 }
 
 @Component({
@@ -29,7 +32,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   customProperties: Array<IManagedObject>;
   properties: IManagedObject[];
   @Input() config: any;
-  computedPropertyObject:object;
+  computedPropertyObject: ComputedPropertyObject;
   isLoading = true;
   DEFAULT_FROM_DATE:string = '1970-01-01';
 
@@ -70,7 +73,7 @@ export class AssetPropertiesViewComponent implements OnInit {
            this.config.properties = cloneDeep(this.properties);
           }else{
             this.properties = cloneDeep(this.config.properties);
-            this.customProperties = cloneDeep(deviceProperty);
+            this.customProperties = cloneDeep(devicePropertiesBaseObject);
           }
           this.constructComplexPropertyKeys();
           this.config.properties.forEach(property =>{
@@ -269,15 +272,15 @@ export class AssetPropertiesViewComponent implements OnInit {
   constructNestedComplexProperty(customizedProperty){
     customizedProperty.forEach(element => {
       if(element.active && element.isNestedComplexProperty){
-        this.parseItem(element.c8y_JsonSchema.properties[element.name]);
+        this.refineNestedComplexProperty(element.c8y_JsonSchema.properties[element.name]);
       }
     });
   }
-  parseItem(property, parentReferance?){
+  refineNestedComplexProperty(property, parentReferance?){
     Object.keys(property.properties).forEach((key)=>{
       const object = property.properties[key];
       if(!isEmpty(object.properties)&& (some(object.properties, 'active') || some(object.properties, 'properties')) && !object.active){
-        this.parseItem(object,property);
+        this.refineNestedComplexProperty(object,property);
       }else if(!object.active){
         delete property.properties[key];
         if(isEmpty(property.properties)){

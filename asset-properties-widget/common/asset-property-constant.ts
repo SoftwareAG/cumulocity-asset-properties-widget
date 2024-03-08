@@ -30,9 +30,6 @@ export const defaultProperty = [
     isEditable: false,
     isExistingProperty: true,
   },
-];
-
-export const commonProperty = [
   {
     c8y_JsonSchema: {
       properties: { owner: { type: 'string', label: 'Owner' } },
@@ -52,7 +49,10 @@ export const commonProperty = [
     type: 'string',
     isEditable: false,
     isExistingProperty: true,
-  },
+  }
+];
+
+export const computedPropertiesBaseObject = [
   {
     c8y_JsonSchema: {
       properties: { alarmCountToday: {
@@ -188,7 +188,8 @@ export const commonProperty = [
     isExistingProperty: true,
   }
 ];
-export const deviceProperty = [
+
+export const devicePropertiesBaseObject = [
   {
     label: 'Active alarms status',
     type: 'object',
@@ -652,6 +653,5 @@ export const deviceProperty = [
 export const RESULT_TYPES = {
   VALUE: { name: 'VALUE', value: 1, label: gettext('Only value') },
   VALUE_UNIT: { name: 'VALUE_UNIT', value: 2, label: gettext('Value and unit') },
-  VALUE_UNIT_TIME: { name: 'VALUE_UNIT_TIME', value: 3, label: gettext('Value, unit and time') },
- // OBJECT: { name: 'OBJECT', value: 4, label: gettext('Complete object') }
+  VALUE_UNIT_TIME: { name: 'VALUE_UNIT_TIME', value: 3, label: gettext('Value, unit and time') }
 };

@@ -25,30 +25,36 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
   constructCustomProperties(): IManagedObject[] {
     const simpleProperties: IManagedObject[] = [];
     const complexProperties: IManagedObject[] = [];
+    const computedProperties: IManagedObject[] = [];
     this.customProperties.forEach((property) => {
       if (this.isComplexProperty(property)) {
         complexProperties.push(property);
-        this.parseItem(property.c8y_JsonSchema.properties[property.name], complexProperties, property.name);
+        this.flattenNestedComplexProperties(property.c8y_JsonSchema?.properties[property.name], complexProperties, property.name);
+      } else if (property.computed) {
+        computedProperties.push(property);
       } else {
         simpleProperties.push(property);
       }
     });
-    return simpleProperties.concat(complexProperties);
+    return [...simpleProperties, ...complexProperties, ...computedProperties];
   }
 
-  parseItem(property, complexProperties, parentName?){
+  flattenNestedComplexProperties(property: IManagedObject, complexProperties: IManagedObject[], parentName?: string): void {
+    if (!property || !property.properties) return;
+
     Object.keys(property.properties).forEach((key)=>{
       const object = property.properties[key];
-      object['keyPath'] = property.keyPath? cloneDeep(property.keyPath) : [property.name || parentName];
-      object.keyPath.push(key);
+      const keyPath = property.keyPath ? [...property.keyPath] : [property.name || parentName];
+      keyPath.push(key);
+      object['keyPath'] = keyPath;
       complexProperties.push(object);
-      if(Object.prototype.hasOwnProperty.call(object, 'properties')){
-        this.parseItem(object,complexProperties);
+      if (object.properties) {
+        this.flattenNestedComplexProperties(object, complexProperties);
       }
     });
   }
 
-  onSelectProperty(property) {
+  onSelectProperty(property: IManagedObject) {
     if (property.active) {
       this.selectedProperty.push(cloneDeep(property));
       this.selectOrUnselectChildren(property, true);
@@ -58,7 +64,7 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
     }
   }
 
-  selectOrUnselectChildren(selectedProperty, active){
+  selectOrUnselectChildren(selectedProperty: IManagedObject, active: boolean){
     if (!this.isComplexProperty(selectedProperty)) return;
     this.customProperties.forEach((property) => {
       if(property.keyPath?.some(name => name === selectedProperty.name)){
@@ -74,7 +80,7 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
       }
     });
   }
-  removeUnselectedProperties(property){
+  removeUnselectedProperties(property: IManagedObject){
     const removeIndex = this.selectedProperty
         .map(function (item) {
           return item.keyValue?.[0] || item.name;
@@ -95,7 +101,7 @@ export class assetPropertyItemSelectorCtrlComponent implements OnInit {
     return this.customProperties.every(({ active }) => !active);
   }
 
-  isComplexProperty(prop) {
+  isComplexProperty(prop: IManagedObject) {
     return prop.c8y_JsonSchema?.properties[prop.name]?.type === 'object' || prop.properties !== undefined;
   }
 }
