@@ -147,6 +147,7 @@
           tooltip-append-to-body="true"
           *ngIf="!!property.computed && property.config"
           (click)="configComputeProperty(i)"
+          data-cy="asset-property-selector-config-computed-property-button"
         >
           <i c8yIcon="bolt"></i>
           {{

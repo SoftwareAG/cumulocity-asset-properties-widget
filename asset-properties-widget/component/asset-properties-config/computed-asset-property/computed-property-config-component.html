@@ -35,6 +35,7 @@
       type="button"
       title="{{ 'Cancel' | translate }}"
       (click)="onCancelButtonClicked()"
+      data-cy="computed-property-config-cancel-button"
     >
       {{ 'Cancel' | translate }}
     </button>
@@ -44,6 +45,7 @@
       title="{{ 'Save' | translate }}"
       (click)="onSaveButtonClicked()"
       [disabled]="isSaveButtonDisabled()"
+      data-cy="computed-property-config-save-button"
     >
       {{ 'Save' | translate }}
     </button>
