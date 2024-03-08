@@ -94,7 +94,7 @@
         {
           "name": "Cumulocity Asset properties widget plugin",
           "module": "AssetPropertiesWidgetModule",
-          "path": "./asset-properties-widget/asset-properties.module.ts",
+          "path": "./asset-properties-widget/asset-properties-widget.module.ts",
           "description": "Asset properties configuration widget"
         }
       ],

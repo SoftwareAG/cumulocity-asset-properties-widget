@@ -1,2 +1,2 @@
-export * from './asset-properties.module';
+export * from './asset-properties-widget.module';
 import './locales/en.po';
