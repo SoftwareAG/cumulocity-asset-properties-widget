@@ -93,9 +93,15 @@ declare global {
        * This command is being used to validate the property value in the view.
        * @param propertyLabel Property label
        * @param value Property value
+       * @param isComplex If you want to validate complex property, specify the isComplex as "true"; otherwise, it is optional.
+       * Note: If the properties are complex, pass them as comma-separated values, for example, "Minor:2,Major:3,Critical:1".
        * Usage: cy.validatePropertyValue('Alarm count today','2');
        */
-      validatePropertyValue(propertyLabel: string, value: string): void;
+      validatePropertyValue(
+        propertyLabel: string,
+        value: string,
+        isComplex?: boolean
+      ): void;
     }
   }
 }
@@ -241,11 +247,38 @@ Cypress.Commands.add("clickOnAsset", (assetName, targetIndex?: number) => {
   cy.wait("@manageObjectCall").its("response.statusCode").should("eq", 200);
 });
 
-Cypress.Commands.add("validatePropertyValue", (propertyLabel, value) => {
-  cy.get(`p[title='${propertyLabel}']`)
-    .parent("div")
-    .siblings("c8y-asset-properties-item")
-    .children(`p[title='${value}']`).as('propertyValue');
-  cy.get('@propertyValue').scrollIntoView();
-  cy.get('@propertyValue').should('be.visible');
-});
+Cypress.Commands.add(
+  "validatePropertyValue",
+  (propertyLabel, value, isComplex?) => {
+    if (isComplex) {
+      const commaSeparatedValues = value.split(",");
+      const complexPropertyKeysAndValues = commaSeparatedValues.map((pair) => {
+        const [key, value] = pair.split(":");
+        return { key, value };
+      });
+      for (let i = 0; i < complexPropertyKeysAndValues.length; i++) {
+        cy.get(`p[title='${propertyLabel}']`)
+          .parent("div")
+          .siblings("c8y-asset-properties-item")
+          .children("ul")
+          .children("span")
+          .children('li')
+          .children(`label[title='${complexPropertyKeysAndValues[i].key}']`)
+          .siblings("span")
+          .children("c8y-asset-properties-item")
+          .children(`p[title*='${complexPropertyKeysAndValues[i].value}']`)
+          .as("propertyValue");
+        cy.get("@propertyValue").scrollIntoView();
+        cy.get("@propertyValue").should("be.visible");
+      }
+    } else {
+      cy.get(`p[title='${propertyLabel}']`)
+        .parent("div")
+        .siblings("c8y-asset-properties-item")
+        .children(`p[title*='${value}']`)
+        .as("propertyValue");
+      cy.get("@propertyValue").scrollIntoView();
+      cy.get("@propertyValue").should("be.visible");
+    }
+  }
+);

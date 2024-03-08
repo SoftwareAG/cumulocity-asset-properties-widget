@@ -169,25 +169,29 @@ describe("Device properties widget", function () {
     });
 
     after(function () {
-      cy.visitAndWaitUntilPageLoad('apps/digital-twin-manager/index.html#/home')
+      cy.visitAndWaitUntilPageLoad(
+        "apps/digital-twin-manager/index.html#/home"
+      );
       cy.cleanup();
       cy.deleteAllDevices();
     });
   });
 
-  context("Alarms and Events", {testIsolation:false}, function () {
+  context("Alarms and Events", { testIsolation: false }, function () {
     const properties = [
       "Alarm count today",
       "Alarm count 3 months",
       "Event count today",
       "Event count 3 months",
+      "Active alarms status"
     ];
-    const alarm = [
+    const alarmRequest1 = [
       {
         deviceName: "Device1",
         text: "Device is out for maintanance",
         severity: "CRITICAL",
         status: "ACTIVE",
+        type: "DeviceAlarm",
         pastDate: {
           month: 2,
           day: 15,
@@ -198,18 +202,46 @@ describe("Device properties widget", function () {
         text: "Device Running for more than standard time",
         severity: "MINOR",
         status: "ACTIVE",
+        type: "DeviceAlarm"
       },
       {
         deviceName: "Device1",
         text: "Device Running for more than standard time",
         severity: "MAJOR",
         status: "ACTIVE",
+        type: "DeviceAlarm",
         pastDate: {
           month: 3,
           day: 15,
         },
       },
     ];
+
+    const alarmRequest2 = [ {
+      deviceName: "Device1",
+      text: "Device Running for more than standard time",
+      severity: "MINOR",
+      status: "ACTIVE",
+      type: "type1"
+    },
+    {
+      deviceName: "Device1",
+      text: "Device Running for more than standard time",
+      severity: "MAJOR",
+      status: "ACTIVE",
+      type: "type2",
+      pastDate: {
+        month: 3,
+        day: 15,
+      },
+    },
+    {
+      deviceName: "Device1",
+      text: "Device Running for more than standard time",
+      severity: "WARNING",
+      status: "ACKNOWLEDGE",
+      type: "type3"
+    }]
 
     const events = [
       {
@@ -243,8 +275,9 @@ describe("Device properties widget", function () {
       cy.createDevice(device, { month: 4, day: 15 });
       cy.apiCreateSimpleAsset([assetObject]);
       cy.apiAssignDevice([device], asset);
-      for (let i = 0; i < alarm.length; i++) {
-        cy.createNewAlarm(alarm[i]);
+      for (let i = 0; i < alarmRequest1.length; i++) {
+        cy.createNewAlarm(alarmRequest1[i]);
+        cy.createNewAlarm(alarmRequest2[i]);
         cy.createEvent(events[i]);
       }
       cy.visitAndWaitUntilPageLoad(url);
@@ -252,7 +285,7 @@ describe("Device properties widget", function () {
       cy.get(asset_properties_widget_elements.cardElement).eq(0).click();
       cy.clickOnAsset(asset);
       cy.chooseAssetOrDevice(device);
-      for (let i = 0; i < properties.length; i++) {
+      for (let i = 0; i < properties.length - 1; i++) {
         cy.get(asset_properties_widget_elements.addPropertyButton)
           .should("be.enabled")
           .click();
@@ -265,6 +298,11 @@ describe("Device properties widget", function () {
           .type("DeviceAlarm");
         cy.get(asset_properties_widget_elements.saveButton).eq(1).click();
       }
+      cy.get(asset_properties_widget_elements.addPropertyButton)
+        .should("be.enabled")
+        .click();
+      cy.selectProperty(properties[4]);
+      cy.get(asset_properties_widget_elements.selectButton).click();
       cy.get(asset_properties_widget_elements.saveButton)
         .eq(0)
         .should("be.visible")
@@ -275,45 +313,55 @@ describe("Device properties widget", function () {
     // Ensure users can set the 'Alarm count today' and also validate the data.
     // Send two alarms,one for the previous day and other for current day,Verify that only the current day count is shown on view.
     it("TC_Device_Properties_Widget_005", () => {
-      cy.validatePropertyValue("Alarm count today", '1');
+      cy.validatePropertyValue("Alarm count today", "1");
     });
 
     // Verify that 'Alarm count today' field will be disabled on view.
     it("TC_Device_Properties_Widget_006", () => {
-      cy.get("p[title='Alarm count today']~button").should('not.exist');
+      cy.get("p[title='Alarm count today']~button").should("not.exist");
     });
 
     // Ensure users can set the 'AlarmCount3Months ' and also validate the data.
     // Attempt to configure 'alarmCount3Months' with months older than 4 months. Only 3  months data should  be displayed on UI.
     it("TC_Device_Properties_Widget_007", () => {
-      cy.validatePropertyValue("Alarm count 3 months", '1');
+      cy.validatePropertyValue("Alarm count 3 months", "1");
     });
 
     // Verify that 'AlarmCount3Months' field will be disabled on view.
     it("TC_Device_Properties_Widget_008", () => {
-      cy.get("p[title='Alarm count 3 months']~button").should('not.exist');
+      cy.get("p[title='Alarm count 3 months']~button").should("not.exist");
     });
 
     // Ensure users can set the 'Event count today' and also validate the data.
     // Send two Events,one for the previous day and other for current day,Verify that only the current day count is shown on view.
     it("TC_Device_Properties_Widget_009", () => {
-      cy.validatePropertyValue("Event count today", '1');
+      cy.validatePropertyValue("Event count today", "1");
     });
 
     // Verify that 'Event count today' field will be disabled on view.
     it("TC_Device_Properties_Widget_010", () => {
-      cy.get("p[title='Event count today']~button").should('not.exist');
+      cy.get("p[title='Event count today']~button").should("not.exist");
     });
 
     // Ensure users can set the 'Event Count 3Months ' and also validate the data.
     // Attempt to configure 'Event Count 3Months' with months older than 4 months. Only 3  months data should  be displayed on UI.
     it("TC_Device_Properties_Widget_011", () => {
-      cy.validatePropertyValue("Event count 3 months", '2');
+      cy.validatePropertyValue("Event count 3 months", "2");
     });
 
     // Verify that 'Event Count 3Months' field will be disabled on view.
     it("TC_Device_Properties_Widget_012", () => {
-      cy.get("p[title='Event count 3 months']~button").should('not.exist');
+      cy.get("p[title='Event count 3 months']~button").should("not.exist");
+    });
+
+    // Ensure users can set the 'Active alarms status' and also validate the data.
+    it("TC_Device_Properties_Widget_013", () => {
+      cy.validatePropertyValue("Active alarms status", 'Critical:1,Minor:1,Major:1,Warning:0', true);
+    });
+
+    // Verify that 'Active alarms status' field will be disabled on view.
+    it("TC_Device_Properties_Widget_014", () => {
+      cy.get("p[title='ctive alarms status']~button").should("not.exist");
     });
 
     after(function () {
