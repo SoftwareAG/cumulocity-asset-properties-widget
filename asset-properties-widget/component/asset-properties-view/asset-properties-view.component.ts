@@ -116,7 +116,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   async getAlarmCount(device:IManagedObject, property:IManagedObject, dateFrom:string){
     const filters = {
       dateFrom: dateFrom,
-      dateTo: this.datePipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
+      dateTo: this.datePipe.transform(new Date().setDate(new Date().getDate() + 1), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
       source: device.id,
       pageSize: 2000,
       type: property.config.type,
@@ -134,7 +134,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   async getEventCount(device:IManagedObject, property:IManagedObject, dateFrom:string){
     const filters = {
       dateFrom: dateFrom,
-      dateTo: this.datePipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
+      dateTo: this.datePipe.transform(new Date().setDate(new Date().getDate() + 1), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
       source: device.id,
       pageSize: 2000,
       type: property.config.type,
@@ -163,7 +163,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   async getLastDeviceMessage(device: IManagedObject) {
     const filters = {
       dateFrom: this.DEFAULT_FROM_DATE,
-      dateTo: this.datePipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
+      dateTo: this.datePipe.transform(new Date().setDate(new Date().getDate() + 1), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
       source: device.id,
       pageSize: 2000,
     };
