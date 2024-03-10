@@ -164,7 +164,7 @@ Cypress.Commands.add('createNewAlarm', (alarmObject) => {
       source: {
         id: deviceId,
       },
-      type: 'DeviceAlarm',
+      type: alarmObject.type,
       text: alarmObject.text,
       severity: alarmObject.severity,
       status: alarmObject.status,
