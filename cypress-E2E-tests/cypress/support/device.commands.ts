@@ -82,28 +82,6 @@ declare global {
        * Usage: createEvent(requestBody);
        */
       createEvent(request: any): void;
-
-      /**
-       * This command is being used to add or remove the data point in configuration section of asset properties widget.
-       * @param label label of the data point.
-       * @param action The action pertains to adding or removing a data point.
-       * Usage: cy.addOrRmoveDataPoint('s7aFlow → F', 'add'/'remove');
-       */
-      addOrRmoveDataPoint(label:string, action:string): void;
-
-      /**
-       * This command is being used to expand or collapse the data point in configuration section of asset properties widget.
-       * @param label label of the data point.
-       * Usage: cy.addOrRmoveDataPoint('s7aFlow → F');
-       */
-      expandOrCollapseDataPoint(label:string): void;
-
-      /**
-       * This command is being used to switch datadpoint toggle button the in configuration section of asset properties widget.
-       * @param label label of the data point.
-       * Usage: cy.switchDataPointToggleButton('s7aFlow → F');
-       */
-      switchDataPointToggleButton(label:string): void;
     }
   }
 }
@@ -264,18 +242,6 @@ Cypress.Commands.add('createEvent', (request) => {
       .its('status')
       .should('eq', 201);
   });
-});
-
-Cypress.Commands.add('addOrRmoveDataPoint', (label, action) => {
-  cy.get(`[title*='${label}']`).parent('button').siblings('div').children(`button[data-cy="datapoint-selector-list-item--${action}-datapoint-button"]`).click();
-});
-
-Cypress.Commands.add('expandOrCollapseDataPoint', (label) => {
-  cy.get(`[title*='${label}']`).parent('button').parent('div').parent('div').siblings('div').children('button[data-cy="c8y-li--collapse-btn"]').click();
-});
-
-Cypress.Commands.add('switchDataPointToggleButton', (label) => {
-  cy.get(`[title*='${label}']`).parent('button').parent('div').parent('div').siblings('c8y-li-checkbox').click();
 });
 
 Cypress.Commands.add("addAssetToDevice", (parentDevice, asset) => {

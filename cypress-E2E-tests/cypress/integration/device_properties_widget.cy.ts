@@ -373,22 +373,15 @@ describe("Device properties widget", function () {
   });
 
   context('Last Measurements', function() {
-    const returnTypeFieldSelector = '#returnTypeField';
-    const expandedDataPointLabel = '.expanded .data-point-label';
-    const expandedInputNameLabel = '.expanded input[name="label"]';
-    const datapoint_selection_list = 'c8y-datapoint-selection-list';
+    
     const last_measurement_str = 'Last measurement';
     const last_recent_measurement_str = 'Last measurement most recent'
     const flowDataPointLabel = 's7aFlow → F';
     const temperatureDataPointLabel = 's7aTemp → T';
     const flowLatestDataPointLabel = 's7aFlowLatest → Cubic';
-    const assetPropertySelectorLabel = '[data-cy=asset-property-selector-label]';
-    const addDataPointsButton = '[title="Add data points"] ';
-    const computedPropertyConfigSaveButton = '[data-cy="computed-property-config-save-button"]';
-    const selector_button_computed_property_config = '[data-cy="asset-property-selector-config-computed-property-button"]';
-    const addDataPointConfigButton = '.card-footer > .btn';
     const max_active_data_points_message = 'At maximum 1 active data points are allowed to be selected.';
     const min_active_data_points_message= 'At least 1 active data points must be selected.';
+
     before(function () {
       cy.login();
       function createMeasurement(deviceName, fragment, series, unit, value) {
@@ -427,21 +420,25 @@ describe("Device properties widget", function () {
       cy.selectProperty(last_measurement_str);
       cy.get(asset_properties_widget_elements.selectButton).click();
       cy.get('.card-title').should('have.text', 'Data points');
-      cy.intercept({ method: 'GET', url: '/inventory/managedObjects?**)' }).as(
-        'assetselectionresponse'
-      );
-      cy.get(addDataPointConfigButton).click();
-      cy.wait('@assetselectionresponse')
-        .its('response.statusCode')
-        .should('eq', 200);
-      cy.clickOnAsset(asset,1);
+      chooseDeviceForDataPointConfiguration();
       cy.get('c8y-datapoint-selector-modal #modal-title').should('contain.text','Data point selector');
       cy.chooseAssetOrDevice(device,3);
       cy.addOrRmoveDataPoint(flowDataPointLabel, 'add');
-      cy.get(addDataPointsButton).click();
+      cy.get(asset_properties_widget_elements.addDataPointsButton).click();
       cy.get(`[title="${flowDataPointLabel}"]`).should('contains.text', flowDataPointLabel);
-      cy.get(computedPropertyConfigSaveButton).click();
+      cy.get(asset_properties_widget_elements.computedPropertyConfigSaveButton).click();
     };
+
+    const chooseDeviceForDataPointConfiguration = () =>{
+      cy.intercept({ method: 'GET', url: '/inventory/managedObjects?**)' }).as(
+        'assetselectionresponse'
+      );
+      cy.get(asset_properties_widget_elements.addDataPointConfigButton).click();
+      cy.wait('@assetselectionresponse')
+        .its('response.statusCode')
+        .should('eq', 200);
+      cy.clickOnAsset(asset,1);  
+    }
 
     // On configuring last measurement property,user should be able to see computed property configuration window
     // User should be able to see "add data point "button and on click which would display will open up data point selector window.
@@ -451,30 +448,23 @@ describe("Device properties widget", function () {
     // User should get an error message "At maximum 1 active data points are allowed to be selected" when user selects multiple data point. Only one data point can be selected for a particular device.
     // Verify the presence of toggle buttons for each of the device. User must be able to toggle off and on to remove/add the data point.
     // Verify that the save button gets enabled after selecting only one data point.
-    it('DevicePropertyMeasurement_TC_015-1', () => {
+    it('TC_Device_Property_Measurement_015-1', () => {
       addDataPointConfiguration();
-      cy.get(selector_button_computed_property_config).click();
-      cy.intercept({ method: 'GET', url: '/inventory/managedObjects?**)' }).as(
-        'assetselectionresponse'
-      );
-      cy.get(addDataPointConfigButton).click();
-      cy.wait('@assetselectionresponse')
-        .its('response.statusCode')
-        .should('eq', 200);
-      cy.clickOnAsset(asset,1);
+      cy.get(asset_properties_widget_elements.computedPropertySelectorConfigButton).click();
+      chooseDeviceForDataPointConfiguration();
       cy.chooseAssetOrDevice(device,3);
       cy.addOrRmoveDataPoint(temperatureDataPointLabel, 'add');
-      cy.get(addDataPointsButton).click();
-      cy.get(datapoint_selection_list).should('contains.text', max_active_data_points_message);
-      cy.get(computedPropertyConfigSaveButton).should('be.disabled');
+      cy.get(asset_properties_widget_elements.addDataPointsButton).click();
+      cy.get(asset_properties_widget_elements.datapointSelectionList).should('contains.text', max_active_data_points_message);
+      cy.get(asset_properties_widget_elements.computedPropertyConfigSaveButton).should('be.disabled');
       cy.switchDataPointToggleButton(flowDataPointLabel);
       cy.switchDataPointToggleButton(temperatureDataPointLabel);
-      cy.get(datapoint_selection_list).should('contains.text', min_active_data_points_message);
+      cy.get(asset_properties_widget_elements.datapointSelectionList).should('contains.text', min_active_data_points_message);
       cy.switchDataPointToggleButton(flowDataPointLabel);
-      cy.get(datapoint_selection_list).should('not.contains.text', min_active_data_points_message);
-      cy.get(computedPropertyConfigSaveButton).should('be.enabled');
-      cy.get(datapoint_selection_list).should('not.contains.text', max_active_data_points_message);
-      cy.get(computedPropertyConfigSaveButton).click();
+      cy.get(asset_properties_widget_elements.datapointSelectionList).should('not.contains.text', min_active_data_points_message);
+      cy.get(asset_properties_widget_elements.computedPropertyConfigSaveButton).should('be.enabled');
+      cy.get(asset_properties_widget_elements.datapointSelectionList).should('not.contains.text', max_active_data_points_message);
+      cy.get(asset_properties_widget_elements.computedPropertyConfigSaveButton).click();
     });
 
     // Verify the presence of '+' and '^' button icons.
@@ -484,28 +474,21 @@ describe("Device properties widget", function () {
     // Verify the presence of added fragment and series name,data point template dropdown and other details having label and unit information.
     // User should be able to select multiple data points at once.Once selected add data point button should be enabled.
     // User must be able to see multiple data fragments after selecting a device on data selector window.
-    it('DevicePropertyMeasurement_TC_015-2', () => {
+    it('TC_Device_Property_Measurement_015-2', () => {
       cy.get(asset_properties_widget_elements.addPropertyButton).click();
       cy.selectProperty(last_measurement_str);
       cy.get(asset_properties_widget_elements.selectButton).click();
-      cy.intercept({ method: 'GET', url: '/inventory/managedObjects?**)' }).as(
-        'assetselectionresponse'
-      );
-      cy.get(addDataPointConfigButton).click();
-      cy.wait('@assetselectionresponse')
-        .its('response.statusCode')
-        .should('eq', 200);
-      cy.clickOnAsset(asset,1);
+      chooseDeviceForDataPointConfiguration();
       cy.get('c8y-ui-empty-state')
         .should('contain.text', 'No data points to display.')
         .and('contain.text', 'No data points selected.');
       cy.chooseAssetOrDevice(device,3);
       cy.get('button i[c8yicon="plus-circle"]').should('be.visible');
       cy.get(`[title="${flowDataPointLabel}"]`).should('contain.text', flowDataPointLabel);
-      cy.get(addDataPointsButton).should('be.disabled');
+      cy.get(asset_properties_widget_elements.addDataPointsButton).should('be.disabled');
       cy.addOrRmoveDataPoint(flowDataPointLabel, 'add');
       cy.addOrRmoveDataPoint(temperatureDataPointLabel, 'add');
-      cy.get(addDataPointsButton).should('be.enabled');
+      cy.get(asset_properties_widget_elements.addDataPointsButton).should('be.enabled');
       cy.get('[title="Selected data points"]').parent('div').should('contain.text',flowDataPointLabel).and('contain.text',temperatureDataPointLabel);
       cy.get('button i[c8yicon="minus-circle"]').should('be.visible');
       cy.addOrRmoveDataPoint(flowDataPointLabel, 'remove');
@@ -513,27 +496,27 @@ describe("Device properties widget", function () {
       cy.get('.expanded .data-point-details')
         .should('contain.text', 's7aFlow')
         .and('contain.text', 'F');
-      cy.get(expandedInputNameLabel)
+      cy.get(asset_properties_widget_elements.expandedInputNameLabel)
         .clear();
-      cy.get(expandedInputNameLabel).type(flowLatestDataPointLabel);
-      cy.get(expandedDataPointLabel).should('not.contain.text', flowDataPointLabel);
-      cy.get(expandedDataPointLabel).should('contain.text', flowLatestDataPointLabel);
+      cy.get(asset_properties_widget_elements.expandedInputNameLabel).type(flowLatestDataPointLabel);
+      cy.get(asset_properties_widget_elements.expandedDataPointLabel).should('not.contain.text', flowDataPointLabel);
+      cy.get(asset_properties_widget_elements.expandedDataPointLabel).should('contain.text', flowLatestDataPointLabel);
       cy.expandOrCollapseDataPoint(flowLatestDataPointLabel);
     });
 
     // last measurement property can be added multiple times with same and different data point. User must be able to verify on UI.User should be able to edit the property label as well.
     // user should be able to see return type dropdown ,select one of the options and save it.
-    it('DevicePropertyMeasurement_TC_015-3', () => {
+    it('TC_Device_Property_Measurement_015-3', () => {
 
       // Add first last measurement property configuration
       addDataPointConfiguration();
 
       // Verify that the label is editable and can be saved successfully.
-      cy.get(assetPropertySelectorLabel).eq(3).type(' most recent');
-      cy.get(assetPropertySelectorLabel).eq(3).invoke('val').should('eq', last_recent_measurement_str);
+      cy.get(asset_properties_widget_elements.assetPropertySelectorLabel).eq(3).type(' most recent');
+      cy.get(asset_properties_widget_elements.assetPropertySelectorLabel).eq(3).invoke('val').should('eq', last_recent_measurement_str);
 
       // Check if one last measurement property config button is present
-      cy.get(selector_button_computed_property_config).should(($elements) => {
+      cy.get(asset_properties_widget_elements.computedPropertySelectorConfigButton).should(($elements) => {
         expect($elements.length).to.equal(1);
       });
 
@@ -541,7 +524,7 @@ describe("Device properties widget", function () {
       addDataPointConfiguration();
 
       // Check if two last measurement property config buttons are present
-      cy.get(selector_button_computed_property_config).should(($elements) => {
+      cy.get(asset_properties_widget_elements.computedPropertySelectorConfigButton).should(($elements) => {
         expect($elements.length).to.equal(2);
       });
 
@@ -549,18 +532,15 @@ describe("Device properties widget", function () {
       cy.get(asset_properties_widget_elements.addPropertyButton).click();
       cy.selectProperty(last_measurement_str);
       cy.get(asset_properties_widget_elements.selectButton).click();
-      cy.intercept({ method: 'GET', url: '/inventory/managedObjects?**)' }).as('assetselectionresponse');
-      cy.get(addDataPointConfigButton).click();
-      cy.wait('@assetselectionresponse').its('response.statusCode').should('eq', 200);
-      cy.clickOnAsset(asset, 1);
+      chooseDeviceForDataPointConfiguration();
       cy.chooseAssetOrDevice(device, 3);
       cy.addOrRmoveDataPoint(temperatureDataPointLabel, 'add');
-      cy.get(addDataPointsButton).click();
-      cy.get(returnTypeFieldSelector).select('Value and unit');
-      cy.get(computedPropertyConfigSaveButton).click();
+      cy.get(asset_properties_widget_elements.addDataPointsButton).click();
+      cy.get('#returnTypeField').select('Value and unit');
+      cy.get(asset_properties_widget_elements.computedPropertyConfigSaveButton).click();
 
       // Check if three last measurement property config buttons are present
-      cy.get(selector_button_computed_property_config).should(($elements) => {
+      cy.get(asset_properties_widget_elements.computedPropertySelectorConfigButton).should(($elements) => {
         expect($elements.length).to.equal(3);
       });
       cy.get('[data-cy="widget-config--save-widget"]').click();
@@ -569,10 +549,10 @@ describe("Device properties widget", function () {
       cy.validatePropertyValue(last_recent_measurement_str, '45');
       cy.validatePropertyValue(last_measurement_str, '45');
       cy.validatePropertyValue(last_measurement_str, '450 K');
-      cy.deleteCard();
     });
 
     after(function () {
+      cy.deleteCard();
       cy.deleteAllDevices();
       cy.apiDeleteAssets();
       cy.cleanup();
