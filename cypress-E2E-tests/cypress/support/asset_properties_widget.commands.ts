@@ -147,40 +147,40 @@ Cypress.Commands.add("unselectProperty", (title) => {
 
 Cypress.Commands.add("deleteCard", () => {
   cy.intercept({
-    method: "PUT",
-    url: "**/inventory/managedObjects/**",
-  }).as("removed");
+    method: 'PUT',
+    url: '**/inventory/managedObjects/**',
+  }).as('removed');
   cy.get(asset_properties_widget_elements.settingsButton)
-    .should("be.visible")
+    .should('be.visible')
     .click();
   cy.get(asset_properties_widget_elements.removeWidgetButton)
-    .should("be.visible")
+    .should('be.visible')
     .click();
   cy.get(asset_properties_widget_elements.removeButton)
-    .should("be.visible")
+    .should('be.visible')
     .click();
-  cy.wait("@removed");
+  cy.wait('@removed');
 });
 
 Cypress.Commands.add(
-  "verifyTheAbsenceOfAssetProperty",
+  'verifyTheAbsenceOfAssetProperty',
   (assetName, property) => {
     cy.chooseAssetOrDevice(assetName);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     // workaround for assettypes cache issue
-    cy.selectProperty("owner");
+    cy.selectProperty('owner');
     cy.get(asset_properties_widget_elements.selectButton).click();
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     // workaround for assettypes cache issue
-    cy.get(`div[title='${property}']`).should("not.exist");
+    cy.get(`div[title='${property}']`).should('not.exist');
   }
 );
 
-Cypress.Commands.add("selectAssetPropertyAndSave", (assetName, property) => {
+Cypress.Commands.add('selectAssetPropertyAndSave', (assetName, property) => {
   cy.chooseAssetOrDevice(assetName);
   cy.get(asset_properties_widget_elements.addPropertyButton).click();
   // workaround for assettypes cache issue
-  cy.selectProperty("owner");
+  cy.selectProperty('owner');
   cy.get(asset_properties_widget_elements.selectButton).click();
   cy.get(asset_properties_widget_elements.addPropertyButton).click();
   // workaround for assettypes cache issue
@@ -189,18 +189,18 @@ Cypress.Commands.add("selectAssetPropertyAndSave", (assetName, property) => {
   cy.get(asset_properties_widget_elements.saveButton).click();
 });
 
-Cypress.Commands.add("clickPropertyEditButton", (property) => {
+Cypress.Commands.add('clickPropertyEditButton', (property) => {
   cy.get(`p[title='${property}']`)
     .siblings("button[data-cy='asset-properties-edit-icon']")
     .children("i[c8yicon='pencil']")
     .click();
 });
 
-Cypress.Commands.add("deleteWidgetInstances", (title) => {
+Cypress.Commands.add('deleteWidgetInstances', (title) => {
   cy.intercept({
-    method: "PUT",
-    url: "**/inventory/managedObjects/**",
-  }).as("removed");
+    method: 'PUT',
+    url: '**/inventory/managedObjects/**',
+  }).as('removed');
   for (let i = 0; i < title.length; i++) {
     cy.get("c8y-dashboard-child-title span")
       .eq(0)
@@ -210,23 +210,23 @@ Cypress.Commands.add("deleteWidgetInstances", (title) => {
       .children("button[title='Settings']")
       .click();
     cy.get(asset_properties_widget_elements.removeWidgetButton)
-      .should("be.visible")
+      .should('be.visible')
       .click();
     cy.get(asset_properties_widget_elements.removeButton)
-      .should("be.visible")
+      .should('be.visible')
       .click();
-    cy.wait("@removed");
+    cy.wait('@removed');
   }
 });
 
-Cypress.Commands.add("selectAssetAndSave", (assetName) => {
+Cypress.Commands.add('selectAssetAndSave', (assetName) => {
   cy.chooseAssetOrDevice(assetName);
   // added wait to resolve flakyness after selecting asset its takes few ms to enabled save button
   cy.wait(1000);
   cy.get(asset_properties_widget_elements.saveButton).click();
 });
 
-Cypress.Commands.add("selectSubasset", (assetName) => {
+Cypress.Commands.add('selectSubasset', (assetName) => {
   cy.get(`div[title='${assetName}']`)
     .children('div[class*="checkbox"]')
     .children("label")
