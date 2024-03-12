@@ -10,8 +10,8 @@ describe('AssetPropertiesComponent', () => {
   let inventoryMock: any;
   let assetTypesMock: any;
   let permissionsServiceMock: any;
-  let dashboardChildMock:any;
-  let datePipe:any;
+  let dashboardChildMock: any;
+  let datePipe: any;
 
   beforeEach(() => {
     permissionsServiceMock = { canEdit: jest.fn() };
@@ -20,11 +20,11 @@ describe('AssetPropertiesComponent', () => {
       update: jest.fn(),
       detail: jest.fn(),
       childAdditionsRemove: jest.fn(),
-      childAdditionsAdd: jest.fn(),
+      childAdditionsAdd: jest.fn()
     };
     alertMock = { success: jest.fn(), addServerFailure: jest.fn() };
     inventoryBinaryMock = { create: jest.fn() };
-    dashboardChildMock = {changeEnd: jest.fn()};
+    dashboardChildMock = { changeEnd: jest.fn() };
 
     component = new AssetPropertiesComponent(
       assetTypesMock,
@@ -63,40 +63,40 @@ describe('AssetPropertiesComponent', () => {
                     minLength: 1,
                     minLengthValidate: true,
                     type: 'string',
-                    title: 'Country',
+                    title: 'Country'
                   },
                   city: {
                     minLengthValidate: true,
                     type: 'string',
-                    title: 'City',
+                    title: 'City'
                   },
                   street: {
                     minLength: 1,
                     minLengthValidate: true,
                     type: 'string',
-                    title: 'Street',
+                    title: 'Street'
                   },
                   postalCode: {
                     requiredMinimum: true,
                     type: 'number',
-                    title: 'Postal Code',
+                    title: 'Postal Code'
                   },
                   apartmentNumber: {
                     minLength: 1,
                     minLengthValidate: true,
                     type: 'string',
-                    title: 'Apartment Number',
-                  },
-                },
-              },
+                    title: 'Apartment Number'
+                  }
+                }
+              }
             },
             required: [],
-            key: 'address',
+            key: 'address'
           },
           description: '',
           label: 'Address',
           c8y_IsAssetProperty: {},
-          c8y_Global: {},
+          c8y_Global: {}
         },
         {
           id: 2,
@@ -108,15 +108,15 @@ describe('AssetPropertiesComponent', () => {
             title: 'TestName',
             properties: {
               nameTest: {
-                type: 'string',
-              },
+                type: 'string'
+              }
             },
             required: [],
-            key: 'nameTest',
+            key: 'nameTest'
           },
           description: '',
           label: 'TestName',
-          c8y_IsAssetProperty: {},
+          c8y_IsAssetProperty: {}
         },
         {
           id: 3,
@@ -129,15 +129,15 @@ describe('AssetPropertiesComponent', () => {
             properties: {
               fileTest: {
                 type: 'file',
-                allowedFileTypes: [''],
-              },
+                allowedFileTypes: ['']
+              }
             },
             required: [],
-            key: 'fileTest',
+            key: 'fileTest'
           },
           description: '',
           label: 'FileTest',
-          c8y_IsAssetProperty: {},
+          c8y_IsAssetProperty: {}
         },
         {
           id: 4,
@@ -149,15 +149,15 @@ describe('AssetPropertiesComponent', () => {
             title: 'TestDate1',
             properties: {
               dateTest1: {
-                type: 'date',
-              },
+                type: 'date'
+              }
             },
             required: [],
-            key: 'dateTest1',
+            key: 'dateTest1'
           },
           description: '',
           label: 'TestDate1',
-          c8y_IsAssetProperty: {},
+          c8y_IsAssetProperty: {}
         },
         {
           id: 5,
@@ -169,16 +169,16 @@ describe('AssetPropertiesComponent', () => {
             title: 'TestDate2',
             properties: {
               dateTest2: {
-                type: 'date',
-              },
+                type: 'date'
+              }
             },
             required: [],
-            key: 'dateTest2',
+            key: 'dateTest2'
           },
           description: '',
           label: 'TestDate2',
-          c8y_IsAssetProperty: {},
-        },
+          c8y_IsAssetProperty: {}
+        }
       ] as any as IManagedObject[];
       asset = {
         id: 12,
@@ -188,18 +188,18 @@ describe('AssetPropertiesComponent', () => {
           city: 'Düsseldorf',
           street: 'Toulouser Allee',
           postalCode: 40211,
-          apartmentNumber: '25',
+          apartmentNumber: '25'
         },
         fileTest: [
           {
             file: new File([new Blob(['some content'])], 'values.json', {
-              type: 'application/JSON',
-            }),
-          },
+              type: 'application/JSON'
+            })
+          }
         ],
         nameTest: 'test123',
         dateTest1: date.toISOString(),
-        dateTest2: '',
+        dateTest2: ''
       } as any as IManagedObject;
     });
     const control = {
@@ -207,7 +207,7 @@ describe('AssetPropertiesComponent', () => {
         pipe: () => of(null)
       }
     } as any;
-    const clusterMap = {mapView:{map:{invalidateSize : jest.fn()}}} as any;
+    const clusterMap = { mapView: { map: { invalidateSize: jest.fn() } } } as any;
 
     it('should use correct labels on complex object', async () => {
       // given
@@ -219,15 +219,9 @@ describe('AssetPropertiesComponent', () => {
 
       // then
       expect(result).toBeTruthy();
-      const labels = result[0].complex.map((obj) => obj.label);
+      const labels = result[0].complex.map(obj => obj.label);
       expect(result[0].label).toEqual('address');
-      expect(labels).toEqual([
-        'Country',
-        'City',
-        'Street',
-        'Postal Code',
-        'Apartment Number',
-      ]);
+      expect(labels).toEqual(['Country', 'City', 'Street', 'Postal Code', 'Apartment Number']);
     });
 
     it('should use correct label on simple text', async () => {
@@ -285,19 +279,17 @@ describe('AssetPropertiesComponent', () => {
         city: undefined,
         street: undefined,
         postalCode: undefined,
-        apartmentNumber: undefined,
+        apartmentNumber: undefined
       });
     });
 
     it('should try to upload files and attach it as childAddition', async () => {
       // given
-      const inventoryBinarySpy = jest
-        .spyOn(inventoryBinaryMock, 'create')
-        .mockReturnValue(
-          Promise.resolve({
-            data: { id: 1 },
-          })
-        );
+      const inventoryBinarySpy = jest.spyOn(inventoryBinaryMock, 'create').mockReturnValue(
+        Promise.resolve({
+          data: { id: 1 }
+        })
+      );
       const inventorySpy = jest
         .spyOn(inventoryMock, 'childAdditionsAdd')
         .mockReturnValue(Promise.resolve());
@@ -362,8 +354,8 @@ describe('AssetPropertiesComponent', () => {
       // given
       jest.spyOn(assetTypesMock, 'getAssetTypeByName').mockReturnValue({
         c8y_IsAssetType: {
-          properties: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
-        },
+          properties: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]
+        }
       });
       component.properties = properties;
       component.asset = asset;
@@ -379,8 +371,8 @@ describe('AssetPropertiesComponent', () => {
       // given
       jest.spyOn(assetTypesMock, 'getAssetTypeByName').mockReturnValue({
         c8y_IsAssetType: {
-          properties: [{ id: 1, isRequired: true }],
-        },
+          properties: [{ id: 1, isRequired: true }]
+        }
       });
       component.properties = properties;
       component.asset = asset;
@@ -391,11 +383,7 @@ describe('AssetPropertiesComponent', () => {
       // then
       expect(component.customProperties[0].jsonSchema.required).toEqual([]);
       expect(
-        (
-          component.customProperties[0].jsonSchema.properties[
-            'address'
-          ] as JSONSchema7
-        ).required
+        (component.customProperties[0].jsonSchema.properties['address'] as JSONSchema7).required
       ).toEqual(['country', 'city', 'street', 'postalCode', 'apartmentNumber']);
     });
 
@@ -408,14 +396,12 @@ describe('AssetPropertiesComponent', () => {
       );
 
       // then
-      expect(result[0].jsonSchema.properties.address).not.toHaveProperty(
-        'title'
-      );
+      expect(result[0].jsonSchema.properties.address).not.toHaveProperty('title');
     });
 
     it('should disabled properties edit icon', async () => {
       // given
-      component.dashboardChild= control;
+      component.dashboardChild = control;
       component.clusterMap = clusterMap;
       jest.spyOn(permissionsServiceMock, 'canEdit').mockReturnValue(true);
 
@@ -428,7 +414,7 @@ describe('AssetPropertiesComponent', () => {
 
     it('should enable properties edit icon', async () => {
       // given
-      component.dashboardChild= control;
+      component.dashboardChild = control;
       component.clusterMap = clusterMap;
       jest.spyOn(permissionsServiceMock, 'canEdit').mockReturnValue(false);
 

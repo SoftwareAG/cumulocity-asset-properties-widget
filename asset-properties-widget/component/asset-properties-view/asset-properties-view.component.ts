@@ -1,21 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IAlarm, IEvent, IManagedObject, IMeasurement, IOperation, InventoryService } from '@c8y/client';
-import { AlarmRealtimeService, EventRealtimeService, ManagedObjectRealtimeService, MeasurementRealtimeService, OperationRealtimeService } from '@c8y/ngx-components';
+import { IAlarm, IEvent, IManagedObject, InventoryService } from '@c8y/client';
+import {
+  AlarmRealtimeService,
+  DatePipe,
+  EventRealtimeService,
+  ManagedObjectRealtimeService,
+  MeasurementRealtimeService
+} from '@c8y/ngx-components';
 import { AssetPropertiesService } from '../asset-properties-config/asset-properties.service';
 import { some, cloneDeep, isEmpty } from 'lodash-es';
-import { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
-import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 import { AssetPropertiesViewService } from './asset-properties-view.service';
-import { DatePipe } from '@angular/common';
 import { devicePropertiesBaseObject } from '../../common/asset-property-constant';
 
-interface MeasurementValue {
-  unit?: string;
-  value: number;
-  date: string;
-  id: string;
-}
 interface ComputedPropertyObject {
   [key: string]: any;
 }
@@ -23,7 +19,7 @@ interface ComputedPropertyObject {
 @Component({
   selector: 'c8y-asset-properties-view',
   templateUrl: './asset-properties-view.component.html',
-  providers: [ManagedObjectRealtimeService, MeasurementRealtimeService],
+  providers: [ManagedObjectRealtimeService, MeasurementRealtimeService]
 })
 export class AssetPropertiesViewComponent implements OnInit {
   selected = { id: 'asset-properties-widget' };
@@ -34,74 +30,106 @@ export class AssetPropertiesViewComponent implements OnInit {
   @Input() config: any;
   computedPropertyObject: ComputedPropertyObject;
   isLoading = true;
-  DEFAULT_FROM_DATE:string = '1970-01-01';
 
   constructor(
     protected inventoryService: InventoryService,
     protected moRealtimeService: ManagedObjectRealtimeService,
     private assetPropertiesService: AssetPropertiesService,
-    private measurementRealtime: MeasurementRealtimeService,
     private assetPropertiesViewService: AssetPropertiesViewService,
     private datePipe: DatePipe,
     private alarmRealtimeService: AlarmRealtimeService,
-    private eventRealtimeService: EventRealtimeService,
-    private operationRealtimeService: OperationRealtimeService
+    private eventRealtimeService: EventRealtimeService
   ) {}
 
   async ngOnInit(): Promise<void> {
     if (this.config.device) {
       try {
-        this.selectedAsset = (
-          await this.inventoryService.detail(this.config.device.id)
-        ).data;
+        this.selectedAsset = (await this.inventoryService.detail(this.config.device.id)).data;
         setTimeout(async () => {
           // eslint-disable-next-line no-prototype-builtins
-          if(this.selectedAsset.hasOwnProperty('c8y_IsAsset')){
-            this.customProperties =
-            await this.assetPropertiesService.getCustomProperties(
+          if (this.selectedAsset.hasOwnProperty('c8y_IsAsset')) {
+            this.customProperties = await this.assetPropertiesService.getCustomProperties(
               this.selectedAsset
             );
-            this.properties = this.config.properties.filter((property) => {
+            this.properties = this.config.properties.filter(property => {
               if (
                 property.isExistingProperty ||
-                ((this.customProperties.length != 0 &&
-                  this.customProperties.find((prop) => prop.id === property.id)) || this.validateComplexProperty(property))
+                (this.customProperties.length != 0 &&
+                  this.customProperties.find(prop => prop.id === property.id)) ||
+                this.validateComplexProperty(property)
               ) {
                 return property;
               }
             });
-           this.config.properties = cloneDeep(this.properties);
-          }else{
+            this.config.properties = cloneDeep(this.properties);
+          } else {
             this.properties = cloneDeep(this.config.properties);
             this.customProperties = cloneDeep(devicePropertiesBaseObject);
           }
           this.constructComplexPropertyKeys();
-          this.config.properties.forEach(property =>{
-            if(property.computed && property.active){
-             switch (property.name) {
-              case 'alarmCountToday':
-                this.getAlarmCount(this.config.device, property,this.datePipe.transform(new Date(), 'yyyy-MM-dd'));
-                break;
-              case 'alarmCount3Months':
-                this.getAlarmCount(this.config.device, property, this.datePipe.transform(new Date().setMonth(new Date().getMonth() - 3), 'yyyy-MM-dd'));
-                break;
-              case 'eventCountToday':
-                this.getEventCount(this.config.device, property,this.datePipe.transform(new Date(), 'yyyy-MM-dd'));
-                break;
-              case 'eventCount3Months':
-                this.getEventCount(this.config.device, property, this.datePipe.transform(new Date().setMonth(new Date().getMonth() - 3), 'yyyy-MM-dd'));
-                break;
-              case 'lastMeasurement':
-                this.getLastMeasurement(property);
-                break;
-              case 'lastDeviceMessage':
-                if(!this.selectedAsset.c8y_Availability || !this.selectedAsset.c8y_Availability.lastMessage){
-                 this.getLastDeviceMessage(this.config.device);
-                }
-                break;
-              case 'configurationSnapshot':
-                this.getConfigurationSnapshot(this.selectedAsset);
-                break;
+          this.config.properties.forEach(property => {
+            if (property.computed && property.active) {
+              switch (property.name) {
+                case 'alarmCountToday':
+                  this.getAlarmCount(
+                    this.config.device,
+                    property,
+                    this.datePipe.transform(new Date(), 'yyyy-MM-dd')
+                  );
+                  break;
+                case 'alarmCount3Months':
+                  this.getAlarmCount(
+                    this.config.device,
+                    property,
+                    this.datePipe.transform(
+                      new Date().setMonth(new Date().getMonth() - 3),
+                      'yyyy-MM-dd'
+                    )
+                  );
+                  break;
+                case 'eventCountToday':
+                  this.getEventCount(
+                    this.config.device,
+                    property,
+                    this.datePipe.transform(new Date(), 'yyyy-MM-dd')
+                  );
+                  break;
+                case 'eventCount3Months':
+                  this.getEventCount(
+                    this.config.device,
+                    property,
+                    this.datePipe.transform(
+                      new Date().setMonth(new Date().getMonth() - 3),
+                      'yyyy-MM-dd'
+                    )
+                  );
+                  break;
+                case 'lastMeasurement':
+                  this.getLastMeasurement(property);
+                  break;
+                case 'lastDeviceMessage':
+                  if (
+                    !this.selectedAsset.c8y_Availability ||
+                    !this.selectedAsset.c8y_Availability.lastMessage
+                  ) {
+                    this.assetPropertiesViewService.getLastDeviceMessage(this.config.device);
+                    this.assetPropertiesViewService.dateSet$.subscribe((dateSet: Set<string>) => {
+                      const maxDate = this.datePipe.transform(
+                        Math.max(
+                          ...Array.from(dateSet).map(dateString => new Date(dateString).getTime())
+                        ),
+                        'yyyy-MM-ddThh:mm:ssZZZZZ'
+                      );
+                      this.computedPropertyObject = {
+                        ...this.computedPropertyObject,
+                        ...{ ['lastDeviceMessage']: maxDate }
+                      };
+                    });
+                  }
+                  break;
+                case 'configurationSnapshot':
+                  this.getConfigurationSnapshot(this.selectedAsset);
+                  break;
                 default:
                   break;
               }
@@ -116,152 +144,146 @@ export class AssetPropertiesViewComponent implements OnInit {
     } else this.isEmptyWidget = true;
   }
 
-  async getAlarmCount(device:IManagedObject, property:IManagedObject, dateFrom:string){
+  async getAlarmCount(device: IManagedObject, property: IManagedObject, dateFrom: string) {
     const filters = {
       dateFrom: dateFrom,
-      dateTo: this.datePipe.transform(new Date().setDate(new Date().getDate() + 1), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
+      dateTo: this.datePipe.transform(
+        new Date().setDate(new Date().getDate() + 1),
+        'yyyy-MM-ddThh:mm:ssZZZZZ'
+      ),
       source: device.id,
       pageSize: 2000,
-      type: property.config.type,
+      type: property.config.type
     };
-    const alarms = (await this.assetPropertiesViewService.getAlarms(filters));
-      this.alarmRealtimeService.onCreate$(this.selectedAsset.id)
-      .subscribe((alarm: IAlarm) => {
-        if(alarm.type === property.config.type){
-          this.computedPropertyObject = {...this.computedPropertyObject, ...{[`${property.name}_${property.config.id}`]: ++ this.computedPropertyObject[`${property.name}_${property.config.id}`]}};
-        }
-      });
-    this.computedPropertyObject = {...this.computedPropertyObject, ...{[`${property.name}_${property.config.id}`]: alarms.length}};
-  }
-
-  async getEventCount(device:IManagedObject, property:IManagedObject, dateFrom:string){
-    const filters = {
-      dateFrom: dateFrom,
-      dateTo: this.datePipe.transform(new Date().setDate(new Date().getDate() + 1), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
-      source: device.id,
-      pageSize: 2000,
-      type: property.config.type,
-    };
-   const events = (await this.assetPropertiesViewService.getEvents(filters));
-   this.eventRealtimeService.onCreate$(this.selectedAsset.id)
-      .subscribe((event: IEvent ) => {
-        if(event.type === property.config.type){
-        this.computedPropertyObject = {...this.computedPropertyObject, ...{[`${property.name}_${property.config.id}`]: ++ this.computedPropertyObject[`${property.name}_${property.config.id}`]}};
-        }
-      });
-   this.computedPropertyObject = {...this.computedPropertyObject, ...{[`${property.name}_${property.config.id}`]: events.length}};
-  }
-
-  getLastMeasurement(property){
-    // eslint-disable-next-line no-underscore-dangle
-    let datapoint = property.config.dp.find((dp) =>dp.__active);
-    datapoint = {...datapoint, ...{uniqId:property.config.id}};
-    this.getLatestMeasurement$(datapoint).subscribe(
-     (lastMeasurement) => {
-      this.computedPropertyObject = {...this.computedPropertyObject, ...{[`lastMeasurement_${lastMeasurement.id}`]: lastMeasurement}};
+    const alarms = await this.assetPropertiesViewService.getAlarms(filters);
+    this.alarmRealtimeService.onCreate$(this.selectedAsset.id).subscribe((alarm: IAlarm) => {
+      if (alarm.type === property.config.type) {
+        this.computedPropertyObject = {
+          ...this.computedPropertyObject,
+          ...{
+            [`${property.name}_${property.config.id}`]: ++this.computedPropertyObject[
+              `${property.name}_${property.config.id}`
+            ]
+          }
+        };
       }
-   );
+    });
+    this.computedPropertyObject = {
+      ...this.computedPropertyObject,
+      ...{ [`${property.name}_${property.config.id}`]: alarms.length }
+    };
   }
 
-  async getLastDeviceMessage(device: IManagedObject) {
+  async getEventCount(device: IManagedObject, property: IManagedObject, dateFrom: string) {
     const filters = {
-      dateFrom: this.DEFAULT_FROM_DATE,
-      dateTo: this.datePipe.transform(new Date().setDate(new Date().getDate() + 1), 'yyyy-MM-ddThh:mm:ssZZZZZ'),
+      dateFrom: dateFrom,
+      dateTo: this.datePipe.transform(
+        new Date().setDate(new Date().getDate() + 1),
+        'yyyy-MM-ddThh:mm:ssZZZZZ'
+      ),
       source: device.id,
       pageSize: 2000,
+      type: property.config.type
     };
-    const [alarms, events, measurements, operations] = await Promise.all([
-      this.assetPropertiesViewService.getAlarms(filters),
-      this.assetPropertiesViewService.getEvents(filters),
-      this.assetPropertiesViewService.getMeasurements(filters),
-      this.assetPropertiesViewService.getOperation(filters)
-    ]);
-
-    const dateSet = new Set<string>();
-
-    const updateDateSet = (items: any[], timestampProp: string) => {
-      items.forEach(item => {
-        dateSet.add(item[timestampProp]);
-      });
+    const events = await this.assetPropertiesViewService.getEvents(filters);
+    this.computedPropertyObject = {
+      ...this.computedPropertyObject,
+      ...{ [`${property.name}_${property.config.id}`]: events.length }
     };
-
-    updateDateSet(alarms, 'creationTime');
-    updateDateSet(events, 'creationTime');
-    updateDateSet(measurements, 'time');
-    updateDateSet(operations, 'creationTime');
-
-    this.updateTimeStamp(dateSet);
-
-    const handleRealtimeUpdate = (item: any, timestampProp: string) => {
-      dateSet.add(item[timestampProp]);
-      this.updateTimeStamp(dateSet);
-    };
-
-    this.alarmRealtimeService.onCreate$(device.id).subscribe((alarm: IAlarm) => {
-      handleRealtimeUpdate(alarm, 'creationTime');
-    });
-
-    this.eventRealtimeService.onCreate$(device.id).subscribe((event: IEvent) => {
-      handleRealtimeUpdate(event, 'creationTime');
-    });
-
-    this.measurementRealtime.onCreate$(device.id).subscribe((measurement: IMeasurement) => {
-      handleRealtimeUpdate(measurement, 'time');
-    });
-
-    this.operationRealtimeService.onCreate$(device.id).subscribe((operation: IOperation) => {
-      handleRealtimeUpdate(operation, 'creationTime');
+    this.eventRealtimeService.onCreate$(this.selectedAsset.id).subscribe((event: IEvent) => {
+      if (event.type === property.config.type) {
+        this.computedPropertyObject = {
+          ...this.computedPropertyObject,
+          ...{
+            [`${property.name}_${property.config.id}`]: ++this.computedPropertyObject[
+              `${property.name}_${property.config.id}`
+            ]
+          }
+        };
+      }
     });
   }
 
-  updateTimeStamp(dateSet: Set<string>) {
-    // Get the maximum date
-    const maxDate = this.datePipe.transform(new Date(Math.max(...Array.from(dateSet).map(dateString => new Date(dateString).getTime()))), 'yyyy-MM-ddThh:mm:ssZZZZZ');
-    this.computedPropertyObject = { ...this.computedPropertyObject, ...{ ['lastDeviceMessage']: maxDate } };
+  getLastMeasurement(property) {
+    // eslint-disable-next-line no-underscore-dangle
+    let datapoint = property.config.dp.find(dp => dp.__active);
+    datapoint = { ...datapoint, ...{ uniqId: property.config.id } };
+    this.assetPropertiesViewService.getLatestMeasurement$(datapoint).subscribe(lastMeasurement => {
+      this.computedPropertyObject = {
+        ...this.computedPropertyObject,
+        ...{ [`lastMeasurement_${lastMeasurement.id}`]: lastMeasurement }
+      };
+    });
   }
 
- async getConfigurationSnapshot(device){
+  async getConfigurationSnapshot(device) {
     const configId = (device.c8y_ConfigurationDump || {}).id;
     if (!configId) return;
     try {
       const { data: configuration } = await this.inventoryService.detail(configId);
-      this.computedPropertyObject = { ...this.computedPropertyObject, ...{ ['configurationSnapshot']: configuration?.name } };
+      this.computedPropertyObject = {
+        ...this.computedPropertyObject,
+        ...{ ['configurationSnapshot']: configuration?.name }
+      };
     } catch (ex) {
       // do nothing
     }
   }
 
-  parseNestedComplexPropertyItem(property, item){
-    Object.keys(property.properties).forEach((key)=>{
+  parseNestedComplexPropertyItem(property, item) {
+    Object.keys(property.properties).forEach(key => {
       const object = property.properties[key];
-      if(!isEmpty(object.properties) && Object.prototype.hasOwnProperty.call(object, 'properties')){
+      if (
+        !isEmpty(object.properties) &&
+        Object.prototype.hasOwnProperty.call(object, 'properties')
+      ) {
         this.parseNestedComplexPropertyItem(object, item);
-      }else if(property.properties[key].title === item.title && (property.name === item.keyPath?.[item.keyPath.length-2] || property.properties[key].name === item.keyPath?.[item.keyPath.length-2])){
-              property.properties[key] = item;
+      } else if (
+        property.properties[key].title === item.title &&
+        (property.name === item.keyPath?.[item.keyPath.length - 2] ||
+          property.properties[key].name === item.keyPath?.[item.keyPath.length - 2])
+      ) {
+        property.properties[key] = item;
       }
     });
   }
-  constructComplexPropertyKeys(){
-    const customizedProperty =[];
+
+  constructComplexPropertyKeys() {
+    const customizedProperty = [];
     this.properties.forEach(element => {
-      if(element.keyPath && element.active){
-        const property = this.properties.find((prop) => prop.name === element.keyPath?.[0]) || this.customProperties.find((prop) => prop.name === element.keyPath?.[0]);
-        if(property && !property.c8y_JsonSchema.properties[property.name].properties[element.keyPath?.[1]]?.hasOwnProperty('properties')){
-          if(!property.isParentKeySelected){
+      if (element.keyPath && element.active) {
+        const property =
+          this.properties.find(prop => prop.name === element.keyPath?.[0]) ||
+          this.customProperties.find(prop => prop.name === element.keyPath?.[0]);
+        if (
+          property &&
+          !property.c8y_JsonSchema.properties[property.name].properties[
+            element.keyPath?.[1]
+          ]?.hasOwnProperty('properties')
+        ) {
+          if (!property.isParentKeySelected) {
             property.isParentKeySelected = true;
             property.active = true;
             property.c8y_JsonSchema.properties[property.name].properties = {};
           }
-          property.c8y_JsonSchema.properties[property.name].properties[element.keyPath?.[1]] = {...element};
-        }else{
+          property.c8y_JsonSchema.properties[property.name].properties[element.keyPath?.[1]] = {
+            ...element
+          };
+        } else {
           property.active = true;
           property.isNestedComplexProperty = true;
-          this.parseNestedComplexPropertyItem(property.c8y_JsonSchema.properties[property.name], element);
+          this.parseNestedComplexPropertyItem(
+            property.c8y_JsonSchema.properties[property.name],
+            element
+          );
         }
-        if(!customizedProperty.find((prop) => prop.name === property.name)){
+        if (!customizedProperty.find(prop => prop.name === property.name)) {
           customizedProperty.push(property);
         }
-      }else if (element.active && (!customizedProperty.find((prop) => prop.name === element.name) || element.computed)){
+      } else if (
+        element.active &&
+        (!customizedProperty.find(prop => prop.name === element.name) || element.computed)
+      ) {
         customizedProperty.push(element);
       }
     });
@@ -269,64 +291,48 @@ export class AssetPropertiesViewComponent implements OnInit {
     this.properties = customizedProperty;
   }
 
-  constructNestedComplexProperty(customizedProperty){
+  constructNestedComplexProperty(customizedProperty) {
     customizedProperty.forEach(element => {
-      if(element.active && element.isNestedComplexProperty){
+      if (element.active && element.isNestedComplexProperty) {
         this.refineNestedComplexProperty(element.c8y_JsonSchema.properties[element.name]);
       }
     });
   }
-  refineNestedComplexProperty(property, parentReferance?){
-    Object.keys(property.properties).forEach((key)=>{
+
+  refineNestedComplexProperty(property, parentReferance?) {
+    Object.keys(property.properties).forEach(key => {
       const object = property.properties[key];
-      if(!isEmpty(object.properties)&& (some(object.properties, 'active') || some(object.properties, 'properties')) && !object.active){
-        this.refineNestedComplexProperty(object,property);
-      }else if(!object.active){
+      if (
+        !isEmpty(object.properties) &&
+        (some(object.properties, 'active') || some(object.properties, 'properties')) &&
+        !object.active
+      ) {
+        this.refineNestedComplexProperty(object, property);
+      } else if (!object.active) {
         delete property.properties[key];
-        if(isEmpty(property.properties)){
+        if (isEmpty(property.properties)) {
           delete parentReferance.properties[property.name];
         }
       }
     });
   }
 
-  validateComplexProperty(item): boolean{
-    if(item.keyPath){
-      const property = this.customProperties.find((prop) => prop.name === item.keyPath?.[0]);
-      return some(Object.keys(property.c8y_JsonSchema.properties[property.name].properties), function(key) {
-        return (key === item.keyPath?.[1]);
-      });
+  validateComplexProperty(item): boolean {
+    if (item.keyPath) {
+      const property = this.customProperties.find(prop => prop.name === item.keyPath?.[0]);
+      return some(
+        Object.keys(property.c8y_JsonSchema.properties[property.name].properties),
+        function (key) {
+          return key === item.keyPath?.[1];
+        }
+      );
     }
     return false;
   }
 
   private handleRealtime() {
-    this.moRealtimeService
-      .onUpdate$(this.selectedAsset.id)
-      .subscribe((asset: IManagedObject) => {
-        this.selectedAsset = asset;
-      });
-  }
-
-  getLatestMeasurement$(datapoint: KPIDetails): Observable<MeasurementValue> {
-    return this.measurementRealtime
-      .latestValueOfSpecificMeasurement$(
-        datapoint.fragment,
-        datapoint.series,
-        datapoint.__target.id,
-        // we only need the last two values in case we want to show a trend
-         1
-      )
-      .pipe(
-        filter(measurement => !!measurement),
-        map(measurement => {
-          return {
-            unit: measurement[datapoint.fragment][datapoint.series].unit,
-            value: measurement[datapoint.fragment][datapoint.series].value,
-            date: measurement.time as string,
-            id: datapoint.uniqId
-          };
-        })
-      );
+    this.moRealtimeService.onUpdate$(this.selectedAsset.id).subscribe((asset: IManagedObject) => {
+      this.selectedAsset = asset;
+    });
   }
 }

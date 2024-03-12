@@ -4,6 +4,7 @@ import {
   CoreModule,
   EventRealtimeService,
   HOOK_COMPONENTS,
+  MeasurementRealtimeService,
   OperationRealtimeService,
   RealtimeModule,
 } from '@c8y/ngx-components';
@@ -21,7 +22,7 @@ import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
 import { ComputedPropertyConfigComponent } from './component/asset-properties-config/computed-asset-property/computed-property-config.component';
 import { DatapointSelectorModule } from '@c8y/ngx-components/datapoint-selector';
 import { ComputedPropertyLastMeasurementConfigComponent } from './component/asset-properties-config/computed-asset-property/properties/last-measurement-config.component';
-import { DatePipe } from '@angular/common';
+import { AssetPropertiesViewService } from './component/asset-properties-view/asset-properties-view.service';
 
 @NgModule({
   declarations: [
@@ -44,10 +45,11 @@ import { DatePipe } from '@angular/common';
     DatapointSelectorModule,
   ],
   providers: [
+    AssetPropertiesViewService,
     AlarmRealtimeService,
-    DatePipe,
     EventRealtimeService,
     OperationRealtimeService,
+    MeasurementRealtimeService,
     {
       provide: HOOK_COMPONENTS,
       multi: true,

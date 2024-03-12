@@ -6,20 +6,20 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
 import {
   IManagedObject,
   IManagedObjectBinary,
   InventoryBinaryService,
-  InventoryService,
+  InventoryService
 } from '@c8y/client';
 import {
   AlertService,
   AssetTypesService,
   DashboardChildComponent,
   DatePipe,
-  gettext,
+  gettext
 } from '@c8y/ngx-components';
 import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
@@ -31,7 +31,7 @@ import { RESULT_TYPES } from '../../../common/asset-property-constant';
 
 @Component({
   selector: 'c8y-asset-properties',
-  templateUrl: './asset-properties.component.html',
+  templateUrl: './asset-properties.component.html'
 })
 export class AssetPropertiesComponent implements OnChanges, OnInit {
   @Input() computedPropertyObject: IManagedObject;
@@ -47,7 +47,7 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
   private destroy$ = new Subject();
   @ViewChild(AssetLocationComponent)
   clusterMap: AssetLocationComponent;
-  component: { changeEnd: any; };
+  component: { changeEnd: any };
 
   constructor(
     private assetTypes: AssetTypesService,
@@ -67,8 +67,12 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
     this.listenToWidgetResizeEvent(this.dashboardChild);
   }
 
- async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    if (changes.asset?.currentValue || changes.properties?.currentValue || changes.computedPropertyObject?.currentValue) {
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    if (
+      changes.asset?.currentValue ||
+      changes.properties?.currentValue ||
+      changes.computedPropertyObject?.currentValue
+    ) {
       this.assetType = undefined;
       this.customProperties = [];
       this.loadAsset();
@@ -100,11 +104,7 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
     delete (mo?.c8y_JsonSchema?.properties[property] || {}).title;
   }
 
-  async parseItem(
-    mo: IManagedObject,
-    properties,
-    asset
-  ): Promise<AssetPropertiesItem[]> {
+  async parseItem(mo: IManagedObject, properties, asset): Promise<AssetPropertiesItem[]> {
     if (!asset) {
       return [];
     }
@@ -113,11 +113,11 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
     for (const key of keys) {
       if (properties[key]) {
         let value = asset[key];
-        if(mo.computed){
-          value = this.getComputedPropertyValue(mo,asset);
+        if (mo.computed) {
+          value = this.getComputedPropertyValue(mo, asset);
         }
-        const {type} = properties[key];
-        const {title} = properties[key];
+        const { type } = properties[key];
+        const { title } = properties[key];
         let file;
         if (type === 'file' && value) {
           const fileId = typeof value === 'object' ? value[0]?.file?.id : value;
@@ -152,9 +152,9 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
               : undefined,
           isEdit: false,
           jsonSchema: mo.c8y_JsonSchema,
-            lastUpdated: mo.lastUpdated,
-            isEditable: mo.isEditable,
-            active: properties[key].active as boolean,
+          lastUpdated: mo.lastUpdated,
+          isEditable: mo.isEditable,
+          active: properties[key].active as boolean
         });
       }
     }
@@ -257,7 +257,7 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
       });
   }
 
-  getComputedPropertyValue(mo,asset){
+  getComputedPropertyValue(mo, asset) {
     let value = '';
 
     switch (mo.name) {
@@ -268,10 +268,18 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
         value = this.computedPropertyObject?.[`${mo.name}_${mo.config.id}`] ?? 0;
         break;
       case 'lastDeviceMessage':
-        value = asset.c8y_Availability?.lastMessage ?? this.computedPropertyObject?.[mo.name] ?? 'Undefined';
+        value =
+          asset.c8y_Availability?.lastMessage ??
+          this.computedPropertyObject?.[mo.name] ??
+          'Undefined';
         break;
       case 'lastMeasurement':
-        value = this.computedPropertyObject ? this.getLastMeasurementWithFormat(this.computedPropertyObject[`${mo.name}_${mo.config.id}`],mo.config.resultTypes) : 'Undefined';
+        value = this.computedPropertyObject
+          ? this.getLastMeasurementWithFormat(
+              this.computedPropertyObject[`${mo.name}_${mo.config.id}`],
+              mo.config.resultTypes
+            )
+          : 'Undefined';
         break;
       case 'childDevicesCount':
         value = asset.childDevices.references.length;
@@ -289,23 +297,23 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
     return value;
   }
 
-  getLastMeasurementWithFormat ( measurementObj ,resultType) {
+  getLastMeasurementWithFormat(measurementObj, resultType) {
     let out = '';
-    if(measurementObj){
-      const { date,value, unit } = measurementObj;
+    if (measurementObj) {
+      const { date, value, unit } = measurementObj;
       const type = resultType || RESULT_TYPES.VALUE.value;
       switch (type) {
         case RESULT_TYPES.VALUE.value:
           out = value;
           break;
         case RESULT_TYPES.VALUE_UNIT.value:
-          out = `${value } ${ unit || ''}`;
+          out = `${value} ${unit || ''}`;
           break;
         case RESULT_TYPES.VALUE_UNIT_TIME.value:
-          out = ` ${this.datePipe.transform(date, 'short')} | ${`${value } ${ unit || ''}`}`;
+          out = ` ${this.datePipe.transform(date, 'short')} | ${`${value} ${unit || ''}`}`;
           break;
         default:
-         out = '';
+          out = '';
           break;
       }
     }

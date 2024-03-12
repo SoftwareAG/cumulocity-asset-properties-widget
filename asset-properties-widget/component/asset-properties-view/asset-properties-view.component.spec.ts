@@ -11,7 +11,6 @@ describe('AssetPropertiesViewComponent', () => {
   let asset: any;
   let customPropertyObjects: any;
   let configCustomPropertyObjects: any;
-  let measurementRealtimeMock:any;
   let assetPropertiesViewServiceMock: any;
   let datePipeMock: any;
   let alarmRealtimeServiceMock: any;
@@ -20,53 +19,63 @@ describe('AssetPropertiesViewComponent', () => {
   let constructedComplexProperty: any;
   let nestedComplexProperty: any;
   let deviceMO: any;
-  let operationRealtimeServiceMock: any;
 
   beforeEach(() => {
     inventoryMock = { detail: jest.fn() };
     moRealtimeServiceMock = { onUpdate$: jest.fn() };
-    assetPropertiesServiceMock = { getCustomProperties:jest.fn() };
-    datePipeMock = { transform:jest.fn() };
-    assetPropertiesViewServiceMock = { getAlarms:jest.fn(), getEvents:jest.fn(), getMeasurements:jest.fn(), getOperation:jest.fn() };
-    alarmRealtimeServiceMock = { onCreate$:jest.fn() };
-    eventRealtimeServiceMock = { onCreate$:jest.fn() };
-    operationRealtimeServiceMock = { onCreate$:jest.fn() };
-    measurementRealtimeMock = { latestValueOfSpecificMeasurement$:jest.fn(),onCreate$:jest.fn() };
+    assetPropertiesServiceMock = { getCustomProperties: jest.fn() };
+    datePipeMock = { transform: jest.fn() };
+    assetPropertiesViewServiceMock = {
+      getAlarms: jest.fn(),
+      getEvents: jest.fn(),
+      getMeasurements: jest.fn(),
+      getOperation: jest.fn(),
+      getLastDeviceMessage: jest.fn(),
+      getLatestMeasurement$: jest.fn(),
+      dateSet$: of(
+        new Set([
+          '2024-02-06T07:51:27.691Z',
+          '2024-02-19T06:36:47.043Z',
+          '2024-02-19T06:36:48.537Z',
+          '2024-02-12T09:20:01.807Z'
+        ])
+      )
+    };
+    alarmRealtimeServiceMock = { onCreate$: jest.fn() };
+    eventRealtimeServiceMock = { onCreate$: jest.fn() };
     jest.useFakeTimers();
 
     component = new AssetPropertiesViewComponent(
       inventoryMock,
       moRealtimeServiceMock,
       assetPropertiesServiceMock,
-      measurementRealtimeMock,
       assetPropertiesViewServiceMock,
       datePipeMock,
       alarmRealtimeServiceMock,
-      eventRealtimeServiceMock,
-      operationRealtimeServiceMock
+      eventRealtimeServiceMock
     );
 
     asset = {
       id: 12,
       name: 'Test',
-      c8y_IsAsset:[],
+      c8y_IsAsset: [],
       address: {
         country: 'Germany',
         city: 'Düsseldorf',
         street: 'Toulouser Allee',
         postalCode: 40211,
-        apartmentNumber: '25',
+        apartmentNumber: '25'
       },
       fileTest: [
         {
           file: new File([new Blob(['some content'])], 'values.json', {
-            type: 'application/JSON',
-          }),
-        },
+            type: 'application/JSON'
+          })
+        }
       ],
       nameTest: 'test123',
       dateTest1: date.toISOString(),
-      dateTest2: '',
+      dateTest2: ''
     } as any as IManagedObject;
     deviceMO = {
       id: '674366',
@@ -85,7 +94,7 @@ describe('AssetPropertiesViewComponent', () => {
       c8y_IsDevice: {},
       c8y_SupportedOperations: [],
       c8y_Position: { lng: 5, alt: 5, lat: null },
-      c8y_ConfigurationDump:{id:9123856}
+      c8y_ConfigurationDump: { id: 9123856 }
     };
     configCustomPropertyObjects = [
       {
@@ -163,7 +172,7 @@ describe('AssetPropertiesViewComponent', () => {
         }
       }
     ];
-    complexProperty =[
+    complexProperty = [
       {
         active: true,
         label: 'Active alarms status',
@@ -171,25 +180,32 @@ describe('AssetPropertiesViewComponent', () => {
         isEditable: false,
         name: 'c8y_ActiveAlarmsStatus',
         c8y_JsonSchema: {
-          properties: { c8y_ActiveAlarmsStatus: {key:'c8y_ActiveAlarmsStatus', type: 'object', label: 'Active alarms status',properties: {
-            critical: {
-              title: 'Critical',
-              type: 'number',
-            },
-            major: {
-              title: 'Major',
-              type: 'number',
-            },
-            minor: {
-              title: 'Minor',
-              type: 'number',
-            },
-            warning: {
-              title: 'Warning',
-              type: 'number',
+          properties: {
+            c8y_ActiveAlarmsStatus: {
+              key: 'c8y_ActiveAlarmsStatus',
+              type: 'object',
+              label: 'Active alarms status',
+              properties: {
+                critical: {
+                  title: 'Critical',
+                  type: 'number'
+                },
+                major: {
+                  title: 'Major',
+                  type: 'number'
+                },
+                minor: {
+                  title: 'Minor',
+                  type: 'number'
+                },
+                warning: {
+                  title: 'Warning',
+                  type: 'number'
+                }
+              }
             }
-          } } },
-        },
+          }
+        }
       },
       {
         active: true,
@@ -201,13 +217,13 @@ describe('AssetPropertiesViewComponent', () => {
         active: true,
         keyPath: ['c8y_ActiveAlarmsStatus', 'major'],
         title: 'Major',
-        type: 'number',
+        type: 'number'
       },
       {
         ctive: false,
         keyPath: ['c8y_ActiveAlarmsStatus', 'minor'],
         title: 'Minor',
-        type: 'number',
+        type: 'number'
       }
     ];
     nestedComplexProperty = [
@@ -217,52 +233,59 @@ describe('AssetPropertiesViewComponent', () => {
         isEditable: true,
         name: 'c8y_Network',
         c8y_JsonSchema: {
-          properties: { c8y_Network: {key:'c8y_Network', type: 'object', label: 'Network',properties : {
-            c8y_DHCP: {
-              title: 'DHCP',
+          properties: {
+            c8y_Network: {
+              key: 'c8y_Network',
               type: 'object',
-              printFormat: 'hidden',
-              name: 'c8y_DHCP',
+              label: 'Network',
               properties: {
-                addressRange: {
-                  title: 'Address range',
+                c8y_DHCP: {
+                  title: 'DHCP',
                   type: 'object',
-                  name: 'addressRange',
                   printFormat: 'hidden',
+                  name: 'c8y_DHCP',
                   properties: {
-                    start: {
-                      title: 'Start',
+                    addressRange: {
+                      title: 'Address range',
+                      type: 'object',
+                      name: 'addressRange',
+                      printFormat: 'hidden',
+                      properties: {
+                        start: {
+                          title: 'Start',
+                          type: 'string'
+                        },
+                        end: {
+                          title: 'End',
+                          type: 'string'
+                        }
+                      }
+                    },
+                    dns1: {
+                      title: 'DNS 1',
                       type: 'string'
                     },
-                    end: {
-                      title: 'End',
+                    dns2: {
+                      title: 'DNS 2',
                       type: 'string'
+                    },
+                    enabled: {
+                      title: 'Enabled',
+                      type: 'integer'
                     }
                   }
                 },
-                dns1: {
-                  title: 'DNS 1',
-                  type: 'string'
-                },
-                dns2: {
-                  title: 'DNS 2',
-                  type: 'string'
-                },
-                enabled: {
-                  title: 'Enabled',
-                  type: 'integer'
+                c8y_LAN: {
+                  title: 'LAN',
+                  type: 'object',
+                  name: 'c8y_LAN',
+                  printFormat: 'hidden',
+                  properties: {}
                 }
               }
-            },
-            c8y_LAN: {
-              title: 'LAN',
-              type: 'object',
-              name: 'c8y_LAN',
-              printFormat: 'hidden',
-              properties: {}
             }
-          }}}
-        },
+          }
+        }
       },
       {
         keyPath: ['c8y_Network', 'c8y_DHCP', 'addressRange'],
@@ -322,24 +345,29 @@ describe('AssetPropertiesViewComponent', () => {
         type: 'object',
         isEditable: false,
         name: 'c8y_ActiveAlarmsStatus',
-        c8y_JsonSchema: { properties: {
-          c8y_ActiveAlarmsStatus: {
-            key: 'c8y_ActiveAlarmsStatus',
-            type: 'object',
-            label: 'Active alarms status',
-            properties: { critical: {
-              active: true,
-              keyPath: [ 'c8y_ActiveAlarmsStatus', 'critical' ],
-              title: 'Critical',
-              type: 'number'
-            }, major: {
-              active: true,
-              keyPath: [ 'c8y_ActiveAlarmsStatus', 'major' ],
-              title: 'Major',
-              type: 'number'
-            } }
+        c8y_JsonSchema: {
+          properties: {
+            c8y_ActiveAlarmsStatus: {
+              key: 'c8y_ActiveAlarmsStatus',
+              type: 'object',
+              label: 'Active alarms status',
+              properties: {
+                critical: {
+                  active: true,
+                  keyPath: ['c8y_ActiveAlarmsStatus', 'critical'],
+                  title: 'Critical',
+                  type: 'number'
+                },
+                major: {
+                  active: true,
+                  keyPath: ['c8y_ActiveAlarmsStatus', 'major'],
+                  title: 'Major',
+                  type: 'number'
+                }
+              }
+            }
           }
-        } },
+        },
         isParentKeySelected: true
       }
     ];
@@ -357,7 +385,9 @@ describe('AssetPropertiesViewComponent', () => {
     it('should get selected asset details and validate selected asset properties', async () => {
       // given
       component.config.properties = configCustomPropertyObjects;
-      jest.spyOn(assetPropertiesServiceMock, 'getCustomProperties').mockReturnValue(customPropertyObjects);
+      jest
+        .spyOn(assetPropertiesServiceMock, 'getCustomProperties')
+        .mockReturnValue(customPropertyObjects);
 
       // when
       await component.ngOnInit();
@@ -373,7 +403,9 @@ describe('AssetPropertiesViewComponent', () => {
     it('should get selected asset details and construct selected complex properties', async () => {
       // given
       component.config.properties = complexProperty;
-      jest.spyOn(assetPropertiesServiceMock, 'getCustomProperties').mockReturnValue([...customPropertyObjects, complexProperty[0]]);
+      jest
+        .spyOn(assetPropertiesServiceMock, 'getCustomProperties')
+        .mockReturnValue([...customPropertyObjects, complexProperty[0]]);
 
       // when
       await component.ngOnInit();
@@ -398,41 +430,42 @@ describe('AssetPropertiesViewComponent', () => {
       expect(component.isEmptyWidget).toBe(true);
     });
   }),
+    it('should get selected device details and construct selected nestedcomplex properties', async () => {
+      // given
+      component.config = { device: deviceMO, properties: nestedComplexProperty };
+      jest.spyOn(inventoryMock, 'detail').mockReturnValue(Promise.resolve({ data: deviceMO }));
+      jest.spyOn(moRealtimeServiceMock, 'onUpdate$').mockReturnValue(of(deviceMO));
+      jest
+        .spyOn(assetPropertiesServiceMock, 'getCustomProperties')
+        .mockReturnValue(nestedComplexProperty);
 
-  it('should get selected device details and construct selected nestedcomplex properties', async () => {
-    // given
-    component.config = { device: deviceMO,properties: nestedComplexProperty};
-    jest
-      .spyOn(inventoryMock, 'detail')
-      .mockReturnValue(Promise.resolve({ data: deviceMO }));
-    jest.spyOn(moRealtimeServiceMock, 'onUpdate$').mockReturnValue(of(deviceMO));
-    jest.spyOn(assetPropertiesServiceMock, 'getCustomProperties').mockReturnValue(nestedComplexProperty);
+      // when
+      await component.ngOnInit();
 
-    // when
-    await component.ngOnInit();
-
-    // then
-    jest.runAllTimers();
-    await Promise.resolve();
-    expect(component.selectedAsset).toEqual(deviceMO);
-    expect(component.properties[0].isNestedComplexProperty).toBe(true);
-    expect(component.isEmptyWidget).toBe(false);
-  });
+      // then
+      jest.runAllTimers();
+      await Promise.resolve();
+      expect(component.selectedAsset).toEqual(deviceMO);
+      expect(component.properties[0].isNestedComplexProperty).toBe(true);
+      expect(component.isEmptyWidget).toBe(false);
+    });
 
   describe('Computed Properties test', () => {
     const computedProperties = [
       {
         c8y_JsonSchema: {
-          properties: { alarmCountToday: {
-            label: 'Alarm count today',
-            type: 'number',
-          },},
+          properties: {
+            alarmCountToday: {
+              label: 'Alarm count today',
+              type: 'number'
+            }
+          }
         },
         name: 'alarmCountToday',
         label: 'Alarm count today',
         title: 'Alarm type',
         type: 'string',
-        config:{id: '8005633676046595', type: 'test' },
+        config: { id: '8005633676046595', type: 'test' },
         computed: true,
         isEditable: false,
         isExistingProperty: true,
@@ -440,16 +473,18 @@ describe('AssetPropertiesViewComponent', () => {
       },
       {
         c8y_JsonSchema: {
-          properties: { alarmCount3Months: {
-            label: 'Alarm count 3 months',
-            type: 'number',
-          },},
+          properties: {
+            alarmCount3Months: {
+              label: 'Alarm count 3 months',
+              type: 'number'
+            }
+          }
         },
         name: 'alarmCount3Months',
         label: 'Alarm count 3 months',
         title: 'Alarm type',
         type: 'string',
-        config:{id: '8005633676046596', type: 'test'},
+        config: { id: '8005633676046596', type: 'test' },
         computed: true,
         isEditable: false,
         isExistingProperty: true,
@@ -457,16 +492,18 @@ describe('AssetPropertiesViewComponent', () => {
       },
       {
         c8y_JsonSchema: {
-          properties: { eventCountToday: {
-            label: 'Event count today',
-            type: 'number',
-          },},
+          properties: {
+            eventCountToday: {
+              label: 'Event count today',
+              type: 'number'
+            }
+          }
         },
         name: 'eventCountToday',
         label: 'Event count today',
         title: 'Event type',
         type: 'string',
-        config:{id: '8005633676046597', type: 'test'},
+        config: { id: '8005633676046597', type: 'test' },
         computed: true,
         isEditable: false,
         isExistingProperty: true,
@@ -474,44 +511,18 @@ describe('AssetPropertiesViewComponent', () => {
       },
       {
         c8y_JsonSchema: {
-          properties: { eventCount3Months: {
-            label: 'Event count 3 months',
-            type: 'number',
-          },},
+          properties: {
+            eventCount3Months: {
+              label: 'Event count 3 months',
+              type: 'number'
+            }
+          }
         },
         name: 'eventCount3Months',
         label: 'Event count 3 months',
         title: 'Event type',
         type: 'string',
-        config:{id: '8005633676046598', type: 'test'},
-        computed: true,
-        isEditable: false,
-        isExistingProperty: true,
-        active: true
-      },
-      {
-        c8y_JsonSchema: {properties: { lastMeasurement: {
-          label: 'Last measurement',
-            type: 'string',
-          },},},
-        name: 'lastMeasurement',
-        label: 'Last measurement',
-        type: 'string',
-        config:{dp:[{
-          color: '#b3460c',
-          fragment: 'c8y_Demo1',
-          label: 'c8y_Demo1 → ZZZZ1',
-          series: 'ZZZZ1',
-          unit: 'mole',
-          __active: true,
-          __target: {
-            id: 674366,
-            name: 'Ar-alarm-test #1'
-          }
-        }],
-        id: '16137034983190457',
-        isValid: true,
-        resultTypes: 1},
+        config: { id: '8005633676046598', type: 'test' },
         computed: true,
         isEditable: false,
         isExistingProperty: true,
@@ -519,10 +530,48 @@ describe('AssetPropertiesViewComponent', () => {
       },
       {
         c8y_JsonSchema: {
-          properties: { lastDeviceMessage: {
-            label: 'Last device message',
-            type: 'string',
-          },},
+          properties: {
+            lastMeasurement: {
+              label: 'Last measurement',
+              type: 'string'
+            }
+          }
+        },
+        name: 'lastMeasurement',
+        label: 'Last measurement',
+        type: 'string',
+        config: {
+          dp: [
+            {
+              color: '#b3460c',
+              fragment: 'c8y_Demo1',
+              label: 'c8y_Demo1 → ZZZZ1',
+              series: 'ZZZZ1',
+              unit: 'mole',
+              __active: true,
+              __target: {
+                id: 674366,
+                name: 'Ar-alarm-test #1'
+              }
+            }
+          ],
+          id: '16137034983190457',
+          isValid: true,
+          resultTypes: 1
+        },
+        computed: true,
+        isEditable: false,
+        isExistingProperty: true,
+        active: true
+      },
+      {
+        c8y_JsonSchema: {
+          properties: {
+            lastDeviceMessage: {
+              label: 'Last device message',
+              type: 'string'
+            }
+          }
         },
         name: 'lastDeviceMessage',
         label: 'Last device message',
@@ -535,10 +584,12 @@ describe('AssetPropertiesViewComponent', () => {
       },
       {
         c8y_JsonSchema: {
-          properties: { configurationSnapshot: {
-            label: 'Configuration snapshot',
-            type: 'string',
-          },},
+          properties: {
+            configurationSnapshot: {
+              label: 'Configuration snapshot',
+              type: 'string'
+            }
+          }
         },
         name: 'configurationSnapshot',
         label: 'Configuration snapshot',
@@ -549,7 +600,7 @@ describe('AssetPropertiesViewComponent', () => {
         active: true
       }
     ];
-    const alarmObject =[
+    const alarmObject = [
       {
         count: '2349',
         creationTime: '2024-02-01T05:39:26.300Z',
@@ -581,10 +632,10 @@ describe('AssetPropertiesViewComponent', () => {
       jest.spyOn(datePipeMock, 'transform').mockReturnValue(date);
     });
 
-    it('should retrieve the values for the computed properties alarmCountToday and alarmCount3Months, then update them in the computedPropertyObject.',async ()=>{
+    it('should retrieve the values for the computed properties alarmCountToday and alarmCount3Months, then update them in the computedPropertyObject.', async () => {
       // given
       const alarmComputedProperties = [...computedProperties.slice(0, 2)];
-      component.config = { device: asset, properties: alarmComputedProperties};
+      component.config = { device: asset, properties: alarmComputedProperties };
       jest.spyOn(assetPropertiesViewServiceMock, 'getAlarms').mockReturnValue(alarmObject);
       jest.spyOn(alarmRealtimeServiceMock, 'onCreate$').mockReturnValue(of(alarmObject[0]));
 
@@ -596,14 +647,17 @@ describe('AssetPropertiesViewComponent', () => {
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(asset);
       await Promise.resolve();
-      expect(component.computedPropertyObject).toEqual({ alarmCountToday_8005633676046595: 1 ,alarmCount3Months_8005633676046596: 1});
+      expect(component.computedPropertyObject).toEqual({
+        alarmCountToday_8005633676046595: 1,
+        alarmCount3Months_8005633676046596: 1
+      });
       expect(component.isEmptyWidget).toBe(false);
     });
 
-    it('should retrieve the values for the computed properties eventCountToday and eventCount3Months, then update them in the computedPropertyObject.',async ()=>{
+    it('should retrieve the values for the computed properties eventCountToday and eventCount3Months, then update them in the computedPropertyObject.', async () => {
       // given
       const eventComputedProperties = [...computedProperties.slice(2, 4)];
-      component.config = { device: asset, properties: eventComputedProperties};
+      component.config = { device: asset, properties: eventComputedProperties };
       jest.spyOn(assetPropertiesViewServiceMock, 'getEvents').mockReturnValue(alarmObject);
       jest.spyOn(eventRealtimeServiceMock, 'onCreate$').mockReturnValue(of(alarmObject[0]));
 
@@ -615,11 +669,14 @@ describe('AssetPropertiesViewComponent', () => {
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(asset);
       await Promise.resolve();
-      expect(component.computedPropertyObject).toEqual({ eventCount3Months_8005633676046598: 1 ,eventCountToday_8005633676046597: 1});
+      expect(component.computedPropertyObject).toEqual({
+        eventCount3Months_8005633676046598: 2,
+        eventCountToday_8005633676046597: 2
+      });
       expect(component.isEmptyWidget).toBe(false);
     });
 
-    it('should retrieve the values for the computed properties lastMeasurement and update it to the computedPropertyObject.',async ()=>{
+    it('should retrieve the values for the computed properties lastMeasurement and update it to the computedPropertyObject.', async () => {
       // given
       const measurementValue = {
         date: '2024-02-17T17:03:14.000+02:00',
@@ -628,8 +685,10 @@ describe('AssetPropertiesViewComponent', () => {
         value: 30
       };
       const eventComputedProperties = [...computedProperties.slice(4, 5)];
-      component.config = { device: asset, properties: eventComputedProperties};
-      jest.spyOn(component, 'getLatestMeasurement$').mockReturnValue(of(measurementValue));
+      component.config = { device: asset, properties: eventComputedProperties };
+      jest
+        .spyOn(assetPropertiesViewServiceMock, 'getLatestMeasurement$')
+        .mockReturnValue(of(measurementValue));
 
       // when
       await component.ngOnInit();
@@ -639,23 +698,20 @@ describe('AssetPropertiesViewComponent', () => {
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(asset);
       await Promise.resolve();
-      expect(component.computedPropertyObject).toEqual({lastMeasurement_16137034983190457:measurementValue});
+      expect(component.computedPropertyObject).toEqual({
+        lastMeasurement_16137034983190457: measurementValue
+      });
       expect(component.isEmptyWidget).toBe(false);
     });
 
-    it('should retrieve the values for the computed properties Last device message and update it to the computedPropertyObject.',async ()=>{
+    it('should retrieve the values for the computed properties Last device message and update it to the computedPropertyObject.', async () => {
       // given
       const eventComputedProperties = [...computedProperties.slice(5, 6)];
-      component.config = { device: asset, properties: eventComputedProperties};
-     const spyOnAlarms = jest.spyOn(assetPropertiesViewServiceMock, 'getAlarms').mockReturnValue(alarmObject);
-      jest.spyOn(alarmRealtimeServiceMock, 'onCreate$').mockReturnValue(of(alarmObject[0]));
-      const spyOnEvents = jest.spyOn(assetPropertiesViewServiceMock, 'getEvents').mockReturnValue(alarmObject);
-      jest.spyOn(eventRealtimeServiceMock, 'onCreate$').mockReturnValue(of(alarmObject[0]));
-      const spyOnMeasurements = jest.spyOn(assetPropertiesViewServiceMock, 'getMeasurements').mockReturnValue(alarmObject);
-      jest.spyOn(measurementRealtimeMock, 'onCreate$').mockReturnValue(of(alarmObject[0]));
-      const spyOnOperation = jest.spyOn(assetPropertiesViewServiceMock, 'getOperation').mockReturnValue(alarmObject);
-      jest.spyOn(operationRealtimeServiceMock, 'onCreate$').mockReturnValue(of(alarmObject[0]));
-
+      component.config = { device: asset, properties: eventComputedProperties };
+      const spyOnGetLastDeviceMessage = jest
+        .spyOn(assetPropertiesViewServiceMock, 'getLastDeviceMessage')
+        .mockReturnValue(alarmObject);
+      jest.spyOn(datePipeMock, 'transform').mockReturnValue('2024-02-19T06:36:48.537Z');
 
       // when
       await component.ngOnInit();
@@ -664,15 +720,14 @@ describe('AssetPropertiesViewComponent', () => {
       jest.runAllTimers();
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(asset);
-      await Promise.all([spyOnAlarms, spyOnEvents, spyOnMeasurements, spyOnOperation]);
-      expect(spyOnAlarms).toBeCalledTimes(1);
-      expect(spyOnEvents).toBeCalledTimes(1);
-      expect(spyOnMeasurements).toBeCalledTimes(1);
-      expect(spyOnOperation).toBeCalledTimes(1);
+      expect(spyOnGetLastDeviceMessage).toBeCalledTimes(1);
+      expect(component.computedPropertyObject).toEqual({
+        lastDeviceMessage: '2024-02-19T06:36:48.537Z'
+      });
       expect(component.isEmptyWidget).toBe(false);
     });
 
-    it('should retrieve the values for the computed properties Configuration snapshot and update it to the computedPropertyObject.',async ()=>{
+    it('should retrieve the values for the computed properties Configuration snapshot and update it to the computedPropertyObject.', async () => {
       // given
       const measurementValue = {
         date: '2024-02-17T17:03:14.000+02:00',
@@ -681,10 +736,12 @@ describe('AssetPropertiesViewComponent', () => {
         value: 30
       };
       const eventComputedProperties = [...computedProperties.slice(6, 7)];
-      component.config = { device: deviceMO, properties: eventComputedProperties};
+      component.config = { device: deviceMO, properties: eventComputedProperties };
       jest.spyOn(inventoryMock, 'detail').mockReturnValue(Promise.resolve({ data: deviceMO }));
       jest.spyOn(moRealtimeServiceMock, 'onUpdate$').mockReturnValue(of(deviceMO));
-      jest.spyOn(component, 'getLatestMeasurement$').mockReturnValue(of(measurementValue));
+      jest
+        .spyOn(assetPropertiesViewServiceMock, 'getLatestMeasurement$')
+        .mockReturnValue(of(measurementValue));
 
       // when
       await component.ngOnInit();
@@ -694,7 +751,9 @@ describe('AssetPropertiesViewComponent', () => {
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(deviceMO);
       await Promise.resolve();
-      expect(component.computedPropertyObject).toEqual({configurationSnapshot: 'Ar-alarm-test #1'});
+      expect(component.computedPropertyObject).toEqual({
+        configurationSnapshot: 'Ar-alarm-test #1'
+      });
       expect(component.isEmptyWidget).toBe(false);
     });
   });

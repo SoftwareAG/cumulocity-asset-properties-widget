@@ -5,26 +5,26 @@ import { IManagedObject } from '@c8y/client';
 
 @Component({
   selector: 'c8y-computed-property-config-component',
-  templateUrl: './computed-property-config-component.html',
+  templateUrl: './computed-property-config-component.html'
 })
-
 export class ComputedPropertyConfigComponent implements OnInit {
   @Input() title?: string;
   @Input() property?: IManagedObject;
-  @Input() index?:number;
+  @Input() index?: number;
 
   @Output() savePropertyConfiguration = new EventEmitter<object>();
   @Output() cancelPropertyConfiguration = new EventEmitter<any>();
 
   tempProperty: IManagedObject;
   constructor(private bsModal: BsModalRef) {}
+
   ngOnInit(): void {
     this.tempProperty = cloneDeep(this.property);
   }
 
   onSaveButtonClicked(): void {
     this.property = this.tempProperty;
-    this.savePropertyConfiguration.emit({property:this.property,index:this.index});
+    this.savePropertyConfiguration.emit({ property: this.property, index: this.index });
     this.bsModal.hide();
   }
 
@@ -32,7 +32,10 @@ export class ComputedPropertyConfigComponent implements OnInit {
     this.cancelPropertyConfiguration.emit(this.index);
     this.bsModal.hide();
   }
+
   isSaveButtonDisabled(): boolean {
-    return this.tempProperty.name === 'lastMeasurement' ? !this.tempProperty.config?.isValid : !this.tempProperty.config?.type;
+    return this.tempProperty.name === 'lastMeasurement'
+      ? !this.tempProperty.config?.isValid
+      : !this.tempProperty.config?.type;
   }
 }
