@@ -671,7 +671,6 @@ describe('Device properties widget', function () {
     after(function () {
       cy.deleteAllDevices();
       cy.cleanup();
-      cy.logout();
     });
   });
 });
