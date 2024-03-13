@@ -299,7 +299,7 @@ describe('Device properties widget', function () {
     });
   });
 
-  context('Child Assets/Devices', { testIsolation: false }, function () {
+  context('Child Assets/Devices', function () {
     before(function () {
       cy.login();
       const devices = ['Device1', 'Device2', 'Device3'];
