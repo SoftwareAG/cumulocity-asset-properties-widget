@@ -350,7 +350,7 @@ describe('Device properties widget', function () {
     });
   });
 
-  context.only('Last Measurements', function () {
+  context('Last Measurements', function () {
     const last_measurement_str = 'Last measurement';
     const last_recent_measurement_str = 'Last measurement most recent';
     const flowDataPointLabel = 's7aFlow → F';
