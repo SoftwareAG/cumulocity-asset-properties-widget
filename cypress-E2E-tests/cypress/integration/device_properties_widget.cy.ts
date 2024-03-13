@@ -26,7 +26,7 @@ describe("Device properties widget", function () {
       name: "",
       category: "",
     },
-    name: "Amazon",
+    name: asset,
     c8y_IsAsset: {},
     c8y_IsDeviceGroup: {},
   };
@@ -47,7 +47,6 @@ describe("Device properties widget", function () {
   }
 
   context("Generic", function () {
-    const asset = "Amazon";
     before(function () {
       cy.login();
       cy.createAssetTypesAndPropertyForBuildingHierarchy();
