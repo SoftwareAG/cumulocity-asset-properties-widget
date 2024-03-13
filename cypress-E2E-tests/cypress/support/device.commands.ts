@@ -1,4 +1,4 @@
-import cockpit_page_elements from "./page_objects/cockpit_page_elements";
+import cockpit_page_elements from './page_objects/cockpit_page_elements';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -88,7 +88,7 @@ declare global {
 
 function getDeviceId(deviceName: string) {
   return cy.apiRequest({
-    method: "GET",
+    method: 'GET',
     url: `/inventory/managedObjects?pageSize=1&query=$filter=(has(c8y_IsDevice) and ('name' eq '${deviceName}'))`,
     failOnStatusCode: false,
   });
@@ -96,14 +96,14 @@ function getDeviceId(deviceName: string) {
 
 function setPastDate(requestBody) {
   const currentDate = new Date();
-  if ("pastDate" in requestBody) {
+  if ('pastDate' in requestBody) {
     currentDate.setMonth(currentDate.getMonth() - requestBody.pastDate.month);
     currentDate.setDate(currentDate.getDate() - requestBody.pastDate.day);
   }
   return currentDate.toISOString();
 }
 
-Cypress.Commands.add("createMeasurement", (requestBody) => {
+Cypress.Commands.add('createMeasurement', (requestBody) => {
   getDeviceId(requestBody.deviceName).then((response: any) => {
     const deviceId = response.body.managedObjects[0].id;
     const formattedTimestamp = setPastDate(requestBody);
@@ -121,20 +121,20 @@ Cypress.Commands.add("createMeasurement", (requestBody) => {
       type: requestBody.fragment,
     };
     cy.apiRequest({
-      method: "POST",
-      url: "/measurement/measurements",
+      method: 'POST',
+      url: '/measurement/measurements',
       headers: {
-        Accept: "application/vnd.com.nsn.cumulocity.measurement+json",
+        Accept: 'application/vnd.com.nsn.cumulocity.measurement+json',
       },
       body: body,
       failOnStatusCode: false,
     })
-      .its("status")
-      .should("eq", 201);
+      .its('status')
+      .should('eq', 201);
   });
 });
 
-Cypress.Commands.add("createNewAlarm", (alarmObject) => {
+Cypress.Commands.add('createNewAlarm', (alarmObject) => {
   getDeviceId(alarmObject.deviceName).then((response: any) => {
     const deviceId = response.body.managedObjects[0].id;
     const formattedTimestamp = setPastDate(alarmObject);
@@ -142,74 +142,74 @@ Cypress.Commands.add("createNewAlarm", (alarmObject) => {
       source: {
         id: deviceId,
       },
-      type: "DeviceAlarm",
+      type: alarmObject.type,
       text: alarmObject.text,
       severity: alarmObject.severity,
       status: alarmObject.status,
       time: formattedTimestamp,
     };
     cy.apiRequest({
-      method: "POST",
-      url: "/alarm/alarms",
+      method: 'POST',
+      url: '/alarm/alarms',
       body: modifiedObj,
       failOnStatusCode: false,
     })
-      .its("status")
-      .should("eq", 201);
+      .its('status')
+      .should('eq', 201);
   });
 });
 
-Cypress.Commands.add("createDevice", (deviceName, pastDate) => {
+Cypress.Commands.add('createDevice', (deviceName, pastDate) => {
   const request = {
-    url: "/inventory/managedObjects",
-    method: "Post",
+    url: '/inventory/managedObjects',
+    method: 'Post',
     body: {
       name: deviceName,
       c8y_IsDevice: {},
-      c8y_DeviceTypes: ["deviceSubsetType"],
-      c8y_SupportedOperations: ["c8y_Restart"],
+      c8y_DeviceTypes: ['deviceSubsetType'],
+      c8y_SupportedOperations: ['c8y_Restart'],
     },
   };
   if (pastDate) {
     const currentDate = new Date();
     currentDate.setMonth(currentDate.getMonth() - pastDate.month);
     currentDate.setDate(currentDate.getDate() - pastDate.day);
-    request.body["creationTime"] = currentDate.toISOString();
+    request.body['creationTime'] = currentDate.toISOString();
   }
   cy.apiRequest(request);
 });
 
-Cypress.Commands.add("deleteAllDevices", () => {
+Cypress.Commands.add('deleteAllDevices', () => {
   cy.apiRequest({
-    url: "inventory/managedObjects?fragmentType=c8y_IsDevice",
-    method: "GET",
+    url: 'inventory/managedObjects?fragmentType=c8y_IsDevice',
+    method: 'GET',
     failOnStatusCode: false,
   }).then((response: any) => {
     for (const mo of response.body.managedObjects) {
-      cy.log("Deleting ", mo.id);
+      cy.log('Deleting ', mo.id);
       cy.apiRequest({
-        method: "DELETE",
+        method: 'DELETE',
         url: `/inventory/managedObjects/${mo.id}`,
       });
     }
   });
 });
 
-Cypress.Commands.add("addChildDevice", (parentDevice, childDevice) => {
+Cypress.Commands.add('addChildDevice', (parentDevice, childDevice) => {
   cy.apiRequest({
     url: `/inventory/managedObjects?q=$filter=(name eq '${parentDevice}' and has('c8y_IsDevice'))`,
-    method: "GET",
+    method: 'GET',
   }).then((response: any) => {
     const parentDeviceId = response.body.managedObjects[0].id;
     cy.apiRequest({
-      method: "GET",
+      method: 'GET',
       url: `/inventory/managedObjects?q=$filter=(name eq '${childDevice}' and has('c8y_IsDevice'))`,
     }).then((response: any) => {
       const childDeviceId = response.body.managedObjects[0].id;
       cy.log(childDeviceId);
       cy.apiRequest({
         url: `/inventory/managedObjects/${parentDeviceId}/childDevices`,
-        method: "POST",
+        method: 'POST',
         body: {
           managedObject: { id: `${childDeviceId}` },
         },
@@ -218,7 +218,7 @@ Cypress.Commands.add("addChildDevice", (parentDevice, childDevice) => {
   });
 });
 
-Cypress.Commands.add("createEvent", (request) => {
+Cypress.Commands.add('createEvent', (request) => {
   getDeviceId(request.deviceName).then((response: any) => {
     const deviceId = response.body.managedObjects[0].id;
     const formattedTimestamp = setPastDate(request);
@@ -231,16 +231,16 @@ Cypress.Commands.add("createEvent", (request) => {
       time: formattedTimestamp,
     };
     cy.apiRequest({
-      method: "POST",
-      url: "/event/events",
+      method: 'POST',
+      url: '/event/events',
       headers: {
-        Accept: "application/vnd.com.nsn.cumulocity.event+json",
+        Accept: 'application/vnd.com.nsn.cumulocity.event+json',
       },
       body: body,
       failOnStatusCode: false,
     })
-      .its("status")
-      .should("eq", 201);
+      .its('status')
+      .should('eq', 201);
   });
 });
 

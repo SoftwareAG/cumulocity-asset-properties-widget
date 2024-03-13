@@ -1,4 +1,4 @@
-import asset_properties_widget_elements from "./page_objects/asset_properties_widget_elements";
+import asset_properties_widget_elements from './page_objects/asset_properties_widget_elements';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -39,10 +39,7 @@ declare global {
        * @param property key of the asset property
        * Usage: cy.verifyTheAbsenceOfAssetProperty("Building", "name");
        */
-      verifyTheAbsenceOfAssetProperty(
-        assetName: string,
-        property: string
-      ): void;
+      verifyTheAbsenceOfAssetProperty(assetName: string, property: string): void;
 
       /**
        * This command is being used to select the asset property and save it under configuration section of asset properties widget.
@@ -93,14 +90,38 @@ declare global {
        * This command is being used to validate the property value in the view.
        * @param propertyLabel Property label
        * @param value Property value
+       * @param isComplex If you want to validate complex property, specify the isComplex as "true"; otherwise, it is optional.
+       * Note: If the properties are complex, pass them as comma-separated values, for example, "Minor:2,Major:3,Critical:1".
        * Usage: cy.validatePropertyValue('Alarm count today','2');
        */
-      validatePropertyValue(propertyLabel: string, value: string): void;
+      validatePropertyValue(propertyLabel: string, value: string, isComplex?: boolean): void;
+
+      /**
+       * This command is being used to add or remove the data point in configuration section of asset properties widget.
+       * @param label label of the data point.
+       * @param action The action pertains to adding or removing a data point.
+       * Usage: cy.addOrRmoveDataPoint('s7aFlow → F', 'add'/'remove');
+       */
+      addOrRmoveDataPoint(label: string, action: string): void;
+
+      /**
+       * This command is being used to expand or collapse the data point in configuration section of asset properties widget.
+       * @param label label of the data point.
+       * Usage: cy.addOrRmoveDataPoint('s7aFlow → F');
+       */
+      expandOrCollapseDataPoint(label: string): void;
+
+      /**
+       * This command is being used to switch datadpoint toggle button the in configuration section of asset properties widget.
+       * @param label label of the data point.
+       * Usage: cy.switchDataPointToggleButton('s7aFlow → F');
+       */
+      switchDataPointToggleButton(label: string): void;
     }
   }
 }
 
-Cypress.Commands.add("chooseAssetOrDevice", (label, targetIndex?: number) => {
+Cypress.Commands.add('chooseAssetOrDevice', (label, targetIndex?: number) => {
   let index = 0;
   if (targetIndex) {
     index = targetIndex;
@@ -108,73 +129,60 @@ Cypress.Commands.add("chooseAssetOrDevice", (label, targetIndex?: number) => {
   cy.get(`div[title*='${label}']`)
     .eq(index)
     .children('div[class*="checkbox"]')
-    .children("label")
+    .children('label')
     .children('input[type="radio"]')
     .check({ force: true });
 });
 
-Cypress.Commands.add("selectProperty", (title) => {
-  cy.get(asset_properties_widget_elements.filterPropertiesTextBox)
-    .should("be.visible")
-    .clear();
+Cypress.Commands.add('selectProperty', title => {
+  cy.get(asset_properties_widget_elements.filterPropertiesTextBox).should('be.visible').clear();
   cy.get(asset_properties_widget_elements.filterPropertiesTextBox).type(title);
   cy.get(`div[title='${title}']`)
-    .parent("div")
-    .children("div")
-    .children("label")
+    .parent('div')
+    .children('div')
+    .children('label')
     .children('input[type="checkbox"]')
     .check({ force: true });
 });
 
-Cypress.Commands.add("unselectProperty", (title) => {
-  cy.get(asset_properties_widget_elements.filterPropertiesTextBox)
-    .should("be.visible")
-    .clear();
+Cypress.Commands.add('unselectProperty', title => {
+  cy.get(asset_properties_widget_elements.filterPropertiesTextBox).should('be.visible').clear();
   cy.get(asset_properties_widget_elements.filterPropertiesTextBox).type(title);
   cy.get(`div[title='${title}']`)
-    .parent("div")
-    .children("div")
-    .children("label")
+    .parent('div')
+    .children('div')
+    .children('label')
     .children('input[type="checkbox"]')
     .uncheck({ force: true });
 });
 
-Cypress.Commands.add("deleteCard", () => {
+Cypress.Commands.add('deleteCard', () => {
   cy.intercept({
-    method: "PUT",
-    url: "**/inventory/managedObjects/**",
-  }).as("removed");
-  cy.get(asset_properties_widget_elements.settingsButton)
-    .should("be.visible")
-    .click();
-  cy.get(asset_properties_widget_elements.removeWidgetButton)
-    .should("be.visible")
-    .click();
-  cy.get(asset_properties_widget_elements.removeButton)
-    .should("be.visible")
-    .click();
-  cy.wait("@removed");
+    method: 'PUT',
+    url: '**/inventory/managedObjects/**'
+  }).as('removed');
+  cy.get(asset_properties_widget_elements.settingsButton).should('be.visible').click();
+  cy.get(asset_properties_widget_elements.removeWidgetButton).should('be.visible').click();
+  cy.get(asset_properties_widget_elements.removeButton).should('be.visible').click();
+  cy.wait('@removed');
 });
 
-Cypress.Commands.add(
-  "verifyTheAbsenceOfAssetProperty",
-  (assetName, property) => {
-    cy.chooseAssetOrDevice(assetName);
-    cy.get(asset_properties_widget_elements.addPropertyButton).click();
-    // workaround for assettypes cache issue
-    cy.selectProperty("owner");
-    cy.get(asset_properties_widget_elements.selectButton).click();
-    cy.get(asset_properties_widget_elements.addPropertyButton).click();
-    // workaround for assettypes cache issue
-    cy.get(`div[title='${property}']`).should("not.exist");
-  }
-);
-
-Cypress.Commands.add("selectAssetPropertyAndSave", (assetName, property) => {
+Cypress.Commands.add('verifyTheAbsenceOfAssetProperty', (assetName, property) => {
   cy.chooseAssetOrDevice(assetName);
   cy.get(asset_properties_widget_elements.addPropertyButton).click();
   // workaround for assettypes cache issue
-  cy.selectProperty("owner");
+  cy.selectProperty('owner');
+  cy.get(asset_properties_widget_elements.selectButton).click();
+  cy.get(asset_properties_widget_elements.addPropertyButton).click();
+  // workaround for assettypes cache issue
+  cy.get(`div[title='${property}']`).should('not.exist');
+});
+
+Cypress.Commands.add('selectAssetPropertyAndSave', (assetName, property) => {
+  cy.chooseAssetOrDevice(assetName);
+  cy.get(asset_properties_widget_elements.addPropertyButton).click();
+  // workaround for assettypes cache issue
+  cy.selectProperty('owner');
   cy.get(asset_properties_widget_elements.selectButton).click();
   cy.get(asset_properties_widget_elements.addPropertyButton).click();
   // workaround for assettypes cache issue
@@ -183,78 +191,106 @@ Cypress.Commands.add("selectAssetPropertyAndSave", (assetName, property) => {
   cy.get(asset_properties_widget_elements.saveButton).click();
 });
 
-Cypress.Commands.add("clickPropertyEditButton", (property) => {
+Cypress.Commands.add('clickPropertyEditButton', property => {
   cy.get(`p[title='${property}']`)
     .siblings("button[data-cy='asset-properties-edit-icon']")
     .children("i[c8yicon='pencil']")
     .click();
 });
 
-Cypress.Commands.add("deleteWidgetInstances", (title) => {
+Cypress.Commands.add('deleteWidgetInstances', title => {
   cy.intercept({
-    method: "PUT",
-    url: "**/inventory/managedObjects/**",
-  }).as("removed");
+    method: 'PUT',
+    url: '**/inventory/managedObjects/**'
+  }).as('removed');
   for (let i = 0; i < title.length; i++) {
-    cy.get("c8y-dashboard-child-title span")
+    cy.get('c8y-dashboard-child-title span')
       .eq(0)
-      .parents("c8y-dashboard-child-title")
+      .parents('c8y-dashboard-child-title')
       .siblings("div[class*='header-actions']")
       .children("div[placement='bottom right']")
       .children("button[title='Settings']")
       .click();
-    cy.get(asset_properties_widget_elements.removeWidgetButton)
-      .should("be.visible")
-      .click();
-    cy.get(asset_properties_widget_elements.removeButton)
-      .should("be.visible")
-      .click();
-    cy.wait("@removed");
+    cy.get(asset_properties_widget_elements.removeWidgetButton).should('be.visible').click();
+    cy.get(asset_properties_widget_elements.removeButton).should('be.visible').click();
+    cy.wait('@removed');
   }
 });
 
-Cypress.Commands.add("selectAssetAndSave", (assetName) => {
+Cypress.Commands.add('selectAssetAndSave', assetName => {
   cy.chooseAssetOrDevice(assetName);
   // added wait to resolve flakyness after selecting asset its takes few ms to enabled save button
   cy.wait(1000);
   cy.get(asset_properties_widget_elements.saveButton).click();
 });
 
-Cypress.Commands.add("selectSubasset", (assetName) => {
+Cypress.Commands.add('selectSubasset', assetName => {
   cy.get(`div[title='${assetName}']`)
     .children('div[class*="checkbox"]')
-    .children("label")
+    .children('label')
     .children('input[type="radio"]')
     .check({ force: true });
 });
 
-Cypress.Commands.add("clickOnAsset", (assetName, targetIndex?: number) => {
+Cypress.Commands.add('clickOnAsset', (assetName, targetIndex?: number) => {
   let index = 0;
   if (targetIndex) {
     index = targetIndex;
   }
-  cy.intercept("/inventory/managedObjects/**").as("manageObjectCall");
-  cy.get(`button p[title='${assetName}']`)
-    .eq(index)
-    .should("be.visible")
-    .click({ force: true });
-  cy.wait("@manageObjectCall").its("response.statusCode").should("eq", 200);
+  cy.intercept('/inventory/managedObjects/**').as('manageObjectCall');
+  cy.get(`button p[title='${assetName}']`).eq(index).should('be.visible').click({ force: true });
+  cy.wait('@manageObjectCall').its('response.statusCode').should('eq', 200);
 });
 
-Cypress.Commands.add("validatePropertyValue", (propertyLabel, value) => {
-  cy.get(`p[title='${propertyLabel}']`)
-    .parent("div")
-    .siblings("c8y-asset-properties-item")
-    .children(`p[title='${value}']`).as('propertyValue');
-  cy.get('@propertyValue').scrollIntoView();
-  cy.get('@propertyValue').should('be.visible');
+Cypress.Commands.add('validatePropertyValue', (propertyLabel, value, isComplex?) => {
+  if (isComplex) {
+    const commaSeparatedValues = value.split(',');
+    const complexPropertyKeysAndValues = commaSeparatedValues.map(pair => {
+      const [key, value] = pair.split(':');
+      return { key, value };
+    });
+    for (let i = 0; i < complexPropertyKeysAndValues.length; i++) {
+      cy.get(`p[title='${propertyLabel}']`)
+        .parent('div')
+        .siblings('c8y-asset-properties-item')
+        .children('ul')
+        .children('span')
+        .children('li')
+        .children(`label[title='${complexPropertyKeysAndValues[i].key}']`)
+        .siblings('span')
+        .children('c8y-asset-properties-item')
+        .children(`p[title*='${complexPropertyKeysAndValues[i].value}']`)
+        .as('propertyValue');
+      cy.get('@propertyValue').scrollIntoView();
+      cy.get('@propertyValue').should('be.visible');
+    }
+  } else {
+    cy.get(`p[title='${propertyLabel}']`)
+      .parent('div')
+      .siblings('c8y-asset-properties-item')
+      .children(`p[title*='${value}']`)
+      .as('propertyValue');
+    cy.get('@propertyValue').scrollIntoView();
+    cy.get('@propertyValue').should('be.visible');
+  }
 });
 
-Cypress.Commands.add("validatePropertyValue", (propertyLabel, value) => {
-  cy.get(`p[title='${propertyLabel}']`)
-    .parent("div")
-    .siblings("c8y-asset-properties-item")
-    .children(`p[title='${value}']`).as('propertyValue');
-  cy.get('@propertyValue').scrollIntoView();
-  cy.get('@propertyValue').should('be.visible');
+Cypress.Commands.add('addOrRmoveDataPoint', (label, action) => {
+  cy.get(`[title*='${label}']`)
+    .parent('button')
+    .siblings('div')
+    .children(`button[data-cy="datapoint-selector-list-item--${action}-datapoint-button"]`)
+    .click();
+});
+
+Cypress.Commands.add('expandOrCollapseDataPoint', label => {
+  cy.get(`[title*='${label}']`)
+    .parents('div')
+    .siblings('div')
+    .children('button[data-cy="c8y-li--collapse-btn"]')
+    .click();
+});
+
+Cypress.Commands.add('switchDataPointToggleButton', label => {
+  cy.get(`[title*='${label}']`).parents('div').siblings('c8y-li-checkbox').click();
 });
