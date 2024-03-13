@@ -21,8 +21,12 @@ export default {
   backButton: "button i[c8yicon='angle-left']",
   addDataPointConfigButton: '.card-footer > .btn',
   computedPropertyConfigSaveButton: '[data-cy="computed-property-config-save-button"]',
-  computedPropertySelectorConfigButton:'[data-cy="asset-property-selector-config-computed-property-button"]',
+  computedPropertySelectorConfigButton:
+    '[data-cy="asset-property-selector-config-computed-property-button"]',
   addDataPointsButton: '[title="Add data points"] ',
+  dataPointRemoveButton: 'button i[c8yicon="minus-circle"]',
+  dataPointAddButton: 'button i[c8yicon="plus-circle"]',
+  widgetSaveButton: '[data-cy="widget-config--save-widget"]',
 
   // ###############[Dropdowns]############
 
@@ -36,5 +40,6 @@ export default {
   // ###############[Other]################
   cardElement: "div[title='Editable form for asset properties widget']",
   filterProperties: "input[placeholder='Filter properties']",
-  datapointSelectionList: 'c8y-datapoint-selection-list'
+  datapointSelectionList: 'c8y-datapoint-selection-list',
+  measurmentReturnTypeValueSelector: '#returnTypeField'
 };
