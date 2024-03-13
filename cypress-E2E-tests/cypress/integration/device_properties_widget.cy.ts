@@ -42,7 +42,6 @@ describe('Device properties widget', function () {
   }
 
   context('Generic', function () {
-    const asset = 'Amazon';
     before(function () {
       cy.login();
       cy.createAssetTypesAndPropertyForBuildingHierarchy();
