@@ -24,7 +24,7 @@ export default {
 
   // ###############[Textbox]##############
   filterPropertiesTextBox: "input[data-cy='asset-property-item-input-search']",
-  assetPropertySlectorLabelTextBox: '#modal-body-property input',
+  assetPropertySlectorLabelTextBox: "#modal-body-property input",
 
   // ###############[Other]################
   cardElement: "div[title='Editable form for asset properties widget']",
