@@ -607,7 +607,7 @@ describe('Device properties widget', function () {
         url: '**/inventory/managedObjects?**'
       }).as('loadDevices');
       cy.get(unassignedDevice).click();
-      cy.wait('@loadDevices');
+      cy.wait('@loadDevices').its('response.statusCode').should('eq', 200);
     });
 
     function validate(propertyLabel: string, propertyValue: string) {
