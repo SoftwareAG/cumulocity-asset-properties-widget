@@ -393,7 +393,6 @@ describe('AssetPropertiesViewComponent', () => {
       await component.ngOnInit();
 
       // then
-      jest.runAllTimers();
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(asset);
       expect(component.config.properties).toEqual(customPropertyObjects);
@@ -411,7 +410,6 @@ describe('AssetPropertiesViewComponent', () => {
       await component.ngOnInit();
 
       // then
-      jest.runAllTimers();
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(asset);
       expect(component.properties).toEqual(constructedComplexProperty);
@@ -443,7 +441,6 @@ describe('AssetPropertiesViewComponent', () => {
       await component.ngOnInit();
 
       // then
-      jest.runAllTimers();
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(deviceMO);
       expect(component.properties[0].isNestedComplexProperty).toBe(true);
@@ -643,7 +640,6 @@ describe('AssetPropertiesViewComponent', () => {
       await component.ngOnInit();
 
       // then
-      jest.runAllTimers();
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(asset);
       await Promise.resolve();
@@ -665,7 +661,6 @@ describe('AssetPropertiesViewComponent', () => {
       await component.ngOnInit();
 
       // then
-      jest.runAllTimers();
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(asset);
       await Promise.resolve();
@@ -694,7 +689,6 @@ describe('AssetPropertiesViewComponent', () => {
       await component.ngOnInit();
 
       // then
-      jest.runAllTimers();
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(asset);
       await Promise.resolve();
@@ -717,7 +711,6 @@ describe('AssetPropertiesViewComponent', () => {
       await component.ngOnInit();
 
       // then
-      jest.runAllTimers();
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(asset);
       expect(spyOnGetLastDeviceMessage).toBeCalledTimes(1);
@@ -747,7 +740,6 @@ describe('AssetPropertiesViewComponent', () => {
       await component.ngOnInit();
 
       // then
-      jest.runAllTimers();
       await Promise.resolve();
       expect(component.selectedAsset).toEqual(deviceMO);
       await Promise.resolve();
