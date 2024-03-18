@@ -45,99 +45,97 @@ export class AssetPropertiesViewComponent implements OnInit {
     if (this.config.device) {
       try {
         this.selectedAsset = (await this.inventoryService.detail(this.config.device.id)).data;
-        setTimeout(async () => {
-          // eslint-disable-next-line no-prototype-builtins
-          if (this.selectedAsset.hasOwnProperty('c8y_IsAsset')) {
-            this.customProperties = await this.assetPropertiesService.getCustomProperties(
-              this.selectedAsset
-            );
-            this.properties = this.config.properties.filter(property => {
-              if (
-                property.isExistingProperty ||
-                (this.customProperties.length != 0 &&
-                  this.customProperties.find(prop => prop.id === property.id)) ||
-                this.validateComplexProperty(property)
-              ) {
-                return property;
-              }
-            });
-            this.config.properties = cloneDeep(this.properties);
-          } else {
-            this.properties = cloneDeep(this.config.properties);
-            this.customProperties = cloneDeep(devicePropertiesBaseObject);
-          }
-          this.constructComplexPropertyKeys();
-          this.config.properties.forEach(property => {
-            if (property.computed && property.active) {
-              switch (property.name) {
-                case 'alarmCountToday':
-                  this.getAlarmCount(
-                    this.config.device,
-                    property,
-                    this.datePipe.transform(new Date(), 'yyyy-MM-dd')
-                  );
-                  break;
-                case 'alarmCount3Months':
-                  this.getAlarmCount(
-                    this.config.device,
-                    property,
-                    this.datePipe.transform(
-                      new Date().setMonth(new Date().getMonth() - 3),
-                      'yyyy-MM-dd'
-                    )
-                  );
-                  break;
-                case 'eventCountToday':
-                  this.getEventCount(
-                    this.config.device,
-                    property,
-                    this.datePipe.transform(new Date(), 'yyyy-MM-dd')
-                  );
-                  break;
-                case 'eventCount3Months':
-                  this.getEventCount(
-                    this.config.device,
-                    property,
-                    this.datePipe.transform(
-                      new Date().setMonth(new Date().getMonth() - 3),
-                      'yyyy-MM-dd'
-                    )
-                  );
-                  break;
-                case 'lastMeasurement':
-                  this.getLastMeasurement(property);
-                  break;
-                case 'lastDeviceMessage':
-                  if (
-                    !this.selectedAsset.c8y_Availability ||
-                    !this.selectedAsset.c8y_Availability.lastMessage
-                  ) {
-                    this.assetPropertiesViewService.getLastDeviceMessage(this.config.device);
-                    this.assetPropertiesViewService.dateSet$.subscribe((dateSet: Set<string>) => {
-                      const maxDate = this.datePipe.transform(
-                        Math.max(
-                          ...Array.from(dateSet).map(dateString => new Date(dateString).getTime())
-                        ),
-                        'yyyy-MM-ddThh:mm:ssZZZZZ'
-                      );
-                      this.computedPropertyObject = {
-                        ...this.computedPropertyObject,
-                        ...{ ['lastDeviceMessage']: maxDate }
-                      };
-                    });
-                  }
-                  break;
-                case 'configurationSnapshot':
-                  this.getConfigurationSnapshot(this.selectedAsset);
-                  break;
-                default:
-                  break;
-              }
+        // eslint-disable-next-line no-prototype-builtins
+        if (this.selectedAsset.hasOwnProperty('c8y_IsAsset')) {
+          this.customProperties = await this.assetPropertiesService.getCustomProperties(
+            this.selectedAsset
+          );
+          this.properties = this.config.properties.filter(property => {
+            if (
+              property.isExistingProperty ||
+              (this.customProperties.length != 0 &&
+                this.customProperties.find(prop => prop.id === property.id)) ||
+              this.validateComplexProperty(property)
+            ) {
+              return property;
             }
           });
-          this.handleRealtime();
-          this.isLoading = false;
-        }, 1000);
+          this.config.properties = cloneDeep(this.properties);
+        } else {
+          this.properties = cloneDeep(this.config.properties);
+          this.customProperties = cloneDeep(devicePropertiesBaseObject);
+        }
+        this.constructComplexPropertyKeys();
+        this.config.properties.forEach(property => {
+          if (property.computed && property.active) {
+            switch (property.name) {
+              case 'alarmCountToday':
+                this.getAlarmCount(
+                  this.config.device,
+                  property,
+                  this.datePipe.transform(new Date(), 'yyyy-MM-dd')
+                );
+                break;
+              case 'alarmCount3Months':
+                this.getAlarmCount(
+                  this.config.device,
+                  property,
+                  this.datePipe.transform(
+                    new Date().setMonth(new Date().getMonth() - 3),
+                    'yyyy-MM-dd'
+                  )
+                );
+                break;
+              case 'eventCountToday':
+                this.getEventCount(
+                  this.config.device,
+                  property,
+                  this.datePipe.transform(new Date(), 'yyyy-MM-dd')
+                );
+                break;
+              case 'eventCount3Months':
+                this.getEventCount(
+                  this.config.device,
+                  property,
+                  this.datePipe.transform(
+                    new Date().setMonth(new Date().getMonth() - 3),
+                    'yyyy-MM-dd'
+                  )
+                );
+                break;
+              case 'lastMeasurement':
+                this.getLastMeasurement(property);
+                break;
+              case 'lastDeviceMessage':
+                if (
+                  !this.selectedAsset.c8y_Availability ||
+                  !this.selectedAsset.c8y_Availability.lastMessage
+                ) {
+                  this.assetPropertiesViewService.getLastDeviceMessage(this.config.device);
+                  this.assetPropertiesViewService.dateSet$.subscribe((dateSet: Set<string>) => {
+                    const maxDate = this.datePipe.transform(
+                      Math.max(
+                        ...Array.from(dateSet).map(dateString => new Date(dateString).getTime())
+                      ),
+                      'yyyy-MM-ddThh:mm:ssZZZZZ'
+                    );
+                    this.computedPropertyObject = {
+                      ...this.computedPropertyObject,
+                      ...{ ['lastDeviceMessage']: maxDate }
+                    };
+                  });
+                }
+                break;
+              case 'configurationSnapshot':
+                this.getConfigurationSnapshot(this.selectedAsset);
+                break;
+              default:
+                break;
+            }
+          }
+        });
+        this.handleRealtime();
+        this.isLoading = false;
       } catch (error) {
         this.isEmptyWidget = true;
       }
