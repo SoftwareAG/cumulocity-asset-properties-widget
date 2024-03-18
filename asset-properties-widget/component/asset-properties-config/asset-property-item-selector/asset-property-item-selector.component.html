@@ -31,19 +31,13 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-xs-2">
-          <label data-cy="asset-property-item-show-column">{{
-            "Show" | translate
-          }}</label>
+          <label data-cy="asset-property-item-show-column">{{ 'Show' | translate }}</label>
         </div>
         <div class="col-xs-5">
-          <label data-cy="asset-property-item-label-column">{{
-            "Label" | translate
-          }}</label>
+          <label data-cy="asset-property-item-label-column">{{ 'Label' | translate }}</label>
         </div>
         <div class="col-xs-5">
-          <label data-cy="asset-property-item-key-column">{{
-            "Key" | translate
-          }}</label>
+          <label data-cy="asset-property-item-key-column">{{ 'Key' | translate }}</label>
         </div>
       </div>
     </div>
@@ -55,10 +49,7 @@
     style="max-height: calc(100vh - 340px)"
   >
     <div class="row">
-      <div
-        class="d-flex a-i-center property"
-        *ngFor="let property of customProperties | filter : search"
-      >
+      <div class="d-flex a-i-center property" *ngFor="let property of properties | filter : search">
         <div class="col-xs-2">
           <label class="c8y-checkbox">
             <input
@@ -76,9 +67,7 @@
           title="{{ property.label | translate }}"
           [ngClass]="{ strong: isComplexProperty(property) }"
         >
-          <span *ngFor="let i of property.keyPath"
-            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span
-          >
+          <span *ngFor="let i of property.keyPath">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <button
             class="btn btn-dot"
             type="button"
@@ -101,26 +90,16 @@
         <div
           data-cy="asset-property-item-property-name"
           class="col-xs-5 text-truncate"
-          title="{{
-            (property.keyPath?.join('.') | translate) ||
-              (property.name | translate)
-          }}"
+          title="{{ (property.keyPath?.join('.') | translate) || (property.name | translate) }}"
         >
-          {{
-            (property.keyPath?.join(".") | translate) ||
-              (property.name | translate)
-          }}
+          {{ (property.keyPath?.join('.') | translate) || (property.name | translate) }}
         </div>
-      </div>
-      <div
-        data-cy="asset-property-item-empty-text-message"
-        class="a-i-center"
-        *ngIf="customProperties.length < 1"
-      >
-        {{ "No property to display" | translate }}
       </div>
     </div>
   </div>
+</div>
+<div class="text-center" *ngIf="!properties">
+  <c8y-loading></c8y-loading>
 </div>
 <div class="modal-footer">
   <button
@@ -130,7 +109,7 @@
     data-cy="asset-property-item-property-cancel-button"
     (click)="onCancelButtonClicked()"
   >
-    {{ "Cancel" | translate }}
+    {{ 'Cancel' | translate }}
   </button>
   <button
     class="btn btn-primary"
@@ -140,6 +119,6 @@
     [disabled]="selectIsDisabled()"
     (click)="onSaveButtonClicked()"
   >
-    {{ "Select" | translate }}
+    {{ 'Select' | translate }}
   </button>
 </div>
