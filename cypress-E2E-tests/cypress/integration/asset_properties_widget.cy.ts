@@ -91,7 +91,12 @@ const assetObject3 = [
   }
 ];
 
-const roomProperties = [{ label: 'Color', isRequired: 'false' }, { label: 'Location', isRequired: false }, { label: 'File', isRequired: 'false' }, { label: 'ComplexProperty', isRequired: 'false' }];
+const roomProperties = [
+  { label: 'Color', isRequired: 'false' },
+  { label: 'Location', isRequired: false },
+  { label: 'File', isRequired: 'false' },
+  { label: 'ComplexProperty', isRequired: 'false' }
+];
 const marker = "div[class*='dlt-c8y-icon-marker']";
 const mapZoomIn = "a[title='Zoom in']";
 const mapZoomOut = "a[title='Zoom out']";
@@ -101,30 +106,29 @@ const map = 'c8y-asset-location c8y-map';
 const propertyDragHandle1 = ':nth-child(1) > .cdk-drag-handle';
 const propertyDragHandle3 = ':nth-child(3) > .cdk-drag-handle';
 const labelElement = '[data-cy=asset-property-selector-label]';
-const lat="input[min='-90']";
-const lng="input[min='-180']";
-const alt="input[id='formly_5_number_alt_1']";
+const lat = "input[min='-90']";
+const lng = "input[min='-180']";
+const alt = "input[id='formly_5_number_alt_1']";
 
-  // This function is being used to check File validation error message
-  function verifyFileValidationError(errorText) {
-    cy.get('c8y-drop-area p').should('contain.text', errorText);
-  }
+// This function is being used to check File validation error message
+function verifyFileValidationError(errorText) {
+  cy.get('c8y-drop-area p').should('contain.text', errorText);
+}
 
-  // This function is being used to select a file for an asset property
-  // Note: type is an optional parameter. If you are selecting a file for complex property then mention the type as 'complex'.
-  function selectFile(propertyName, fileName, type?) {
-    if (type) {
-      cy.get('c8y-asset-properties-item formly-field label')
-        .contains(propertyName)
-        .find("~c8y-drop-area div~input[type='file']")
-        .selectFile(`cypress/fixtures/${fileName}`, { force: true });
-    } else
-      cy.get('c8y-asset-properties-item formly-field p')
-        .contains(propertyName)
-        .find("~formly-field div~input[type='file']")
-        .selectFile(`cypress/fixtures/${fileName}`, { force: true });
-  }
-
+// This function is being used to select a file for an asset property
+// Note: type is an optional parameter. If you are selecting a file for complex property then mention the type as 'complex'.
+function selectFile(propertyName, fileName, type?) {
+  if (type) {
+    cy.get('c8y-asset-properties-item formly-field label')
+      .contains(propertyName)
+      .find("~c8y-drop-area div~input[type='file']")
+      .selectFile(`cypress/fixtures/${fileName}`, { force: true });
+  } else
+    cy.get('c8y-asset-properties-item formly-field p')
+      .contains(propertyName)
+      .find("~formly-field div~input[type='file']")
+      .selectFile(`cypress/fixtures/${fileName}`, { force: true });
+}
 
 describe('Asset Properties Widget: Configuration/View screen tests', function () {
   before(function () {
@@ -149,7 +153,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
             lng: 77.6904,
             alt: null,
             lat: 12.9322
-        }
+          }
         }
       ];
       cy.apiCreateSimpleAsset(assetObject);
@@ -242,7 +246,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(asset_properties_widget_elements.saveButton).should('be.visible');
   });
 
-    // Change the order of properties and click on cancel button,Verify that the changes are not being saved.
+  // Change the order of properties and click on cancel button,Verify that the changes are not being saved.
   it('TC_Asset_Properties_Widget_config_009', () => {
     cy.get(propertyDragHandle3).dragTo(propertyDragHandle1);
     cy.get(asset_properties_widget_elements.cancelButton).click();
@@ -373,7 +377,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const subassetName = 'check 2';
     cy.get(asset_properties_widget_elements.loadMoreButton).click();
     cy.get(`p[title='${assetName1}']`).click();
-    cy.get(textElement).should('contains.text', ` Groups > ${ assetName1}`);
+    cy.get(textElement).should('contains.text', ` Groups > ${assetName1}`);
     cy.get(`p[title='${subassetName}']`).should('be.visible');
   });
 
@@ -383,7 +387,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const subassetName = 'check 2';
     cy.get(asset_properties_widget_elements.loadMoreButton).click();
     cy.get(`p[title='${assetName1}']`).click();
-    cy.get(textElement).should('contains.text', `Groups > ${ assetName1}`);
+    cy.get(textElement).should('contains.text', `Groups > ${assetName1}`);
     cy.get(`p[title='${subassetName}']`).should('be.visible');
     cy.get(backArrowElement).click();
     cy.get(assetsTextElement).should('contain.text', 'Groups');
@@ -465,7 +469,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(assetsTextElement).should('contain.text', 'Groups');
     cy.get(asset_properties_widget_elements.loadMoreButton).click();
     cy.get(`p[title='${assetName}']`).click();
-    cy.get(textElement).should('contains.text', `Groups > ${ assetName}`);
+    cy.get(textElement).should('contains.text', `Groups > ${assetName}`);
     cy.get(backArrowElement).should('be.visible');
     cy.get('input[placeholder="Filter…"]').click();
     cy.get(filterElement).should('be.visible');
@@ -503,8 +507,8 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.deleteWidgetInstances([assetProperties, assetProperties]);
   });
 
-    // If user does not select any property or unchecks all the properties and tries to click on save button,a warning error will be displayed which disappears once the asset and properties selected
-    it('TC_Asset_Properties_Widget_config_035', () => {
+  // If user does not select any property or unchecks all the properties and tries to click on save button,a warning error will be displayed which disappears once the asset and properties selected
+  it('TC_Asset_Properties_Widget_config_035', () => {
     const configElement = 'c8y-asset-property-selector';
     const alertMessage = ' Add and select at least one property. ';
     const labels = ['Name', 'ID', 'Asset model'];
@@ -515,7 +519,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(checkboxElement).eq(0).click();
     cy.chooseAssetOrDevice(assetName);
     cy.get(configElement).should('not.contain.text', alertMessage);
-    });
+  });
 
   // Verify the presence "No widgets to display" meessage in the dashboard
   it('TC_Asset_Properties_Widget_view_001', () => {
@@ -611,7 +615,8 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     const invalidFileName = 'Image SAG LOGO.png';
     const invalidFileSize = 'image1.jpg';
     const errorMessage = 'The selected file is not supported.';
-    const invalidFileSizeErrorMessage= 'The selected file is too large. The size limit is 102.4 kB.';
+    const invalidFileSizeErrorMessage =
+      'The selected file is too large. The size limit is 102.4 kB.';
     const editPropertyCancelButton = "button[title='Cancel']";
     const complexPropertyTitle = 'ComplexProperty';
     cy.selectAssetPropertyAndSave('Test Asset3', propKey);
@@ -623,23 +628,16 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     verifyFileValidationError(errorMessage);
     cy.get(editPropertyCancelButton).click();
     cy.get(asset_properties_widget_elements.settingsButton).click();
-    cy.intercept({ method: 'GET', url: '/inventory/managedObjects/**/childAdditions?pageSize=2000&query=%24filter%3D(has(%27c8y_IsAssetProperty%27))' }).as(
-      'assetpropertyresponse'
-    );
     cy.get(asset_properties_widget_elements.editWidgetButton).click();
-    cy.wait('@assetpropertyresponse')
-      .its('response.statusCode')
-      .should('eq', 200);
     cy.get(asset_properties_widget_elements.addPropertyButton).click();
     cy.selectProperty(complexPropertyTitle);
     cy.get(asset_properties_widget_elements.selectButton).click();
-    cy.intercept({ method: 'GET', url: '/inventory/managedObjects/**/childAdditions?pageSize=2000&query=%24filter%3D(has(%27c8y_IsAssetProperty%27))' }).as(
-      'saveresponse'
-    );
+    cy.intercept({
+      method: 'GET',
+      url: '/inventory/managedObjects/**/childAdditions?pageSize=2000&query=%24filter%3D(has(%27c8y_IsAssetProperty%27))'
+    }).as('saveresponse');
     cy.get(asset_properties_widget_elements.saveButton).click();
-    cy.wait('@saveresponse')
-      .its('response.statusCode')
-      .should('eq', 200);
+    cy.wait('@saveresponse').its('response.statusCode').should('eq', 200);
     cy.clickPropertyEditButton(complexPropertyTitle);
     selectFile('Fileupload', invalidFileSize, 'complex');
     verifyFileValidationError(invalidFileSizeErrorMessage);
@@ -674,36 +672,36 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.deleteCard();
   });
 
-    // On click of Cancel the values should not get saved in location property.
-    it('TC_Asset_Properties_Widget_Location_Edit_002', () => {
-      cy.selectAssetPropertyAndSave(assetName1, locationPropertyKey);
-      cy.clickPropertyEditButton(location);
-      cy.get(lng).should('contain.value', 77.6904);
-      cy.get(lng).clear();
-      cy.get(alt).should('contain.value', '');
-      cy.get(alt).clear();
-      cy.get(lat).should('contain.value', 12.9322);
-      cy.get(lat).clear();
-      cy.get(cancelElement).click();
-      cy.get(assetNameElement).eq(4).should('contain.text', 77.6904);
-      cy.get(assetNameElement).eq(5).should('contain.text', '');
-      cy.get(assetNameElement).eq(6).should('contain.text', 12.9322);
-      cy.deleteCard();
-    });
+  // On click of Cancel the values should not get saved in location property.
+  it('TC_Asset_Properties_Widget_Location_Edit_002', () => {
+    cy.selectAssetPropertyAndSave(assetName1, locationPropertyKey);
+    cy.clickPropertyEditButton(location);
+    cy.get(lng).should('contain.value', 77.6904);
+    cy.get(lng).clear();
+    cy.get(alt).should('contain.value', '');
+    cy.get(alt).clear();
+    cy.get(lat).should('contain.value', 12.9322);
+    cy.get(lat).clear();
+    cy.get(cancelElement).click();
+    cy.get(assetNameElement).eq(4).should('contain.text', 77.6904);
+    cy.get(assetNameElement).eq(5).should('contain.text', '');
+    cy.get(assetNameElement).eq(6).should('contain.text', 12.9322);
+    cy.deleteCard();
+  });
 
-    // If any one of the values(lat or lng) is not available then map will be shown but marker will not be available anywhere on the map.
-    // User has to click anywhere on the map, then the marker will be visible.
-    it('TC_Asset_Properties_Widget_Location_Edit_003', () => {
-      cy.selectAssetPropertyAndSave(assetName3, locationPropertyKey);
-      cy.clickPropertyEditButton(location);
-      cy.get(lat).clear();
-      cy.get(lng).click();
-      cy.get(marker).should('not.be.visible');
-      cy.get(map).click();
-      cy.get(marker).scrollIntoView().should('be.visible');
-      cy.get(saveElement).click();
-      cy.deleteCard();
-    });
+  // If any one of the values(lat or lng) is not available then map will be shown but marker will not be available anywhere on the map.
+  // User has to click anywhere on the map, then the marker will be visible.
+  it('TC_Asset_Properties_Widget_Location_Edit_003', () => {
+    cy.selectAssetPropertyAndSave(assetName3, locationPropertyKey);
+    cy.clickPropertyEditButton(location);
+    cy.get(lat).clear();
+    cy.get(lng).click();
+    cy.get(marker).should('not.be.visible');
+    cy.get(map).click();
+    cy.get(marker).scrollIntoView().should('be.visible');
+    cy.get(saveElement).click();
+    cy.deleteCard();
+  });
 
   // If the property 'Location' has values:
   // The values should be shown in respective fields.
@@ -740,9 +738,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(assetNameElement).eq(4).should('contain.text', 60);
     cy.get(assetNameElement).eq(5).should('contain.text', 10);
     cy.get(assetNameElement).eq(6).should('contain.text', 15);
-    cy.wait('@saveresponse')
-      .its('response.statusCode')
-      .should('eq', 200);
+    cy.wait('@saveresponse').its('response.statusCode').should('eq', 200);
     cy.clickPropertyEditButton(location);
     cy.get(map).click();
     cy.get(lng).should('not.have.value', 60);
