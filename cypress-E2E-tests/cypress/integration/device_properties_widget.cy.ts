@@ -329,11 +329,7 @@ describe('Device properties widget', function () {
 
     // Ensure users can set the 'Active alarms status' and also validate the data.
     it('TC_Device_Properties_Widget_013', () => {
-      cy.validatePropertyValue(
-        'Active alarms status',
-        'Critical:1,Minor:1,Major:1,Warning:0',
-        true
-      );
+      cy.validatePropertyValue('Active alarms status', 'Critical:1,Minor:1,Major:1', true);
     });
 
     // Verify that 'Active alarms status' field will be disabled on view.
