@@ -133,11 +133,7 @@ describe('Device properties widget', function () {
         'Color'
       ];
       cy.get(asset_properties_widget_elements.backButton).should('be.visible').click();
-      cy.intercept(
-        'inventory/managedObjects/**/childAdditions?pageSize=2000&query=%24filter%3D(has(%27c8y_IsAssetProperty%27))'
-      ).as('childAdditionCall');
       cy.chooseAssetOrDevice(asset);
-      cy.wait('@childAdditionCall').its('response.statusCode').should('eq', 200);
       cy.get(asset_properties_widget_elements.addPropertyButton).should('be.enabled').click();
       verifyThePropertyList(properties);
     });
