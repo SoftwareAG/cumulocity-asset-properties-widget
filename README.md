@@ -1,6 +1,6 @@
 # Cumulocity Asset Properties Widget Plugin [<img width="35" src="https://user-images.githubusercontent.com/32765455/211497905-561e9197-18b9-43d5-a023-071d3635f4eb.png"/>](https://github.com/SoftwareAG/cumulocity-asset-properties-widget/releases/download/sag-pkg-asset-properties-widget-1.0.1/sag-pkg-asset-properties-widget-1.0.1.zip)
 
-This Asset Properties Widget is the Cumulocity module federation plugin created using c8ycli. This plugin can be used in Application Builder or Cockpit. It fetches Inventory data based on the Asset and displays the same in a widget.
+This Asset Properties Widget is the Cumulocity module federation plugin created using c8ycli. This plugin can be used in Application Builder or Cockpit. It fetches Inventory data based on the Asset or Devices and displays the same in a widget.
 
 ### Compatibility:
 
@@ -12,7 +12,7 @@ This Asset Properties Widget is the Cumulocity module federation plugin created 
 
 ## Features
 
-- **Display Asset list:** Displays Asset list present in the tenant.
+- **Display Asset/Device list:** Displays Asset and Device list present in the tenant.
 
 - **Configurable Properties:** User can choose what properties to display and also option to display custom label for each property.
 
@@ -59,7 +59,7 @@ This guide will teach you how to add widget in your existing or new dashboard.
 
 4. Search for `Asset Properties 2.0`
 
-5. Select `Target Asset`
+5. Select `Target Asset` or `Target Device`
 
 6. Add Property by clicking `Add Property` button.
 
