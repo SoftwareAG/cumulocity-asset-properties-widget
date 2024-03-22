@@ -43,6 +43,7 @@
             [complex]="prop.complex"
             [isEdit]="prop.isEdit"
             [jsonSchema]="prop.jsonSchema"
+            [isExistingProperty]="prop.isExistingProperty"
           ></c8y-asset-properties-item>
           <div
             *ngIf="
@@ -66,7 +67,7 @@
             type="button"
             (click)="toggleEdit(prop)"
           >
-            {{ "Cancel" | translate }}
+            {{ 'Cancel' | translate }}
           </button>
           <button
             class="btn btn-primary btn-sm"
@@ -76,7 +77,7 @@
             [disabled]="!assetProps?.form?.valid"
             (click)="save(assetProps.form.value, prop)"
           >
-            {{ "Save" | translate }}
+            {{ 'Save' | translate }}
           </button>
         </div>
       </div>

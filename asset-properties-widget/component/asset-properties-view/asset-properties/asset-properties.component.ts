@@ -154,7 +154,8 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
           jsonSchema: mo.c8y_JsonSchema,
           lastUpdated: mo.lastUpdated,
           isEditable: mo.isEditable,
-          active: properties[key].active as boolean
+          active: properties[key].active as boolean,
+          isExistingProperty: mo.isExistingProperty
         });
       }
     }
@@ -271,7 +272,7 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
         value =
           asset.c8y_Availability?.lastMessage ??
           this.computedPropertyObject?.[mo.name] ??
-          'Undefined';
+          'No data';
         break;
       case 'lastMeasurement':
         value = this.computedPropertyObject
@@ -279,7 +280,7 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
               this.computedPropertyObject[`${mo.name}_${mo.config.id}`],
               mo.config.resultTypes
             )
-          : 'Undefined';
+          : 'No data';
         break;
       case 'childDevicesCount':
         value = asset.childDevices.references.length;
@@ -288,10 +289,10 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
         value = asset.childAssets.references.length;
         break;
       case 'configurationSnapshot':
-        value = this.computedPropertyObject?.[mo.name] ?? 'Undefined';
+        value = this.computedPropertyObject?.[mo.name] ?? 'No data';
         break;
       default:
-        value = 'Undefined';
+        value = 'No data';
         break;
     }
     return value;
