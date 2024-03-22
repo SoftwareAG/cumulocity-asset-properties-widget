@@ -1,12 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { IManagedObjectBinary } from '@c8y/client';
-import {
-  AlertService,
-  C8yJSONSchema,
-  gettext,
-  FilesService,
-} from '@c8y/ngx-components';
+import { AlertService, C8yJSONSchema, gettext, FilesService } from '@c8y/ngx-components';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
@@ -19,7 +14,7 @@ export class MaxLengthValidator {
         return null;
       }
       if (control.value.length > maxLength) {
-         control.setValue(control.value.substring(0, maxLength));
+        control.setValue(control.value.substring(0, maxLength));
       }
       return null;
     };
@@ -28,11 +23,9 @@ export class MaxLengthValidator {
 
 @Component({
   selector: 'c8y-asset-properties-item',
-  templateUrl: './asset-properties-item.component.html',
+  templateUrl: './asset-properties-item.component.html'
 })
-export class AssetPropertiesItemComponent
-  implements AssetPropertiesItem, OnChanges
-{
+export class AssetPropertiesItemComponent implements AssetPropertiesItem, OnChanges {
   @Input()
   key: string;
   @Input()
@@ -55,11 +48,14 @@ export class AssetPropertiesItemComponent
   isEditable: boolean;
   @Input()
   active: boolean;
+  @Input()
+  isExistingProperty: boolean;
 
   form: FormGroup;
   fields: FormlyFieldConfig[];
   model: any;
   previewImage: string;
+  defaultEmptyValue: string;
 
   constructor(
     private alert: AlertService,
@@ -72,6 +68,7 @@ export class AssetPropertiesItemComponent
       this.resolveJsonSchema();
       await this.resolveFile();
     }
+    this.defaultEmptyValue = this.isExistingProperty ? 'No data' : 'Undefined';
   }
 
   private async resolveFile() {
@@ -114,8 +111,10 @@ export class AssetPropertiesItemComponent
       const fieldConfig = this.c8yJsonSchemaService.toFieldConfig(this.jsonSchema as JSONSchema7, {
         map(mappedField: FormlyFieldConfig) {
           const result: FormlyFieldConfig = mappedField;
-          if(mappedField.key === 'name'){
-            mappedField.validators = {...{validation: [MaxLengthValidator.maxLength(assetNameMaxLength)]}};
+          if (mappedField.key === 'name') {
+            mappedField.validators = {
+              ...{ validation: [MaxLengthValidator.maxLength(assetNameMaxLength)] }
+            };
           }
           return result;
         }
