@@ -57,14 +57,14 @@ declare global {
        * addChildDevice("Device1", "DEvice2");
        */
       addChildDevice(parentDevice: string, childDevice: string): void;
-      
-       /**
+
+      /**
        * This command is being used to add the child device.
        * @param parentDevice Name of the parent device.
        * @param asset Name of the asset as a child of device.
        * addChildDevice("Device1", "Building");
        */
-       addAssetToDevice(parentDevice: string, asset: string): void;
+      addAssetToDevice(parentDevice: string, asset: string): void;
 
       /**
        * This command is being used to create a new event
@@ -90,7 +90,7 @@ function getDeviceId(deviceName: string) {
   return cy.apiRequest({
     method: 'GET',
     url: `/inventory/managedObjects?pageSize=1&query=$filter=(has(c8y_IsDevice) and ('name' eq '${deviceName}'))`,
-    failOnStatusCode: false,
+    failOnStatusCode: false
   });
 }
 
@@ -103,7 +103,7 @@ function setPastDate(requestBody) {
   return currentDate.toISOString();
 }
 
-Cypress.Commands.add('createMeasurement', (requestBody) => {
+Cypress.Commands.add('createMeasurement', requestBody => {
   getDeviceId(requestBody.deviceName).then((response: any) => {
     const deviceId = response.body.managedObjects[0].id;
     const formattedTimestamp = setPastDate(requestBody);
@@ -111,48 +111,48 @@ Cypress.Commands.add('createMeasurement', (requestBody) => {
       [requestBody.fragment]: {
         [requestBody.series]: {
           value: requestBody.value,
-          unit: requestBody.unit,
-        },
+          unit: requestBody.unit
+        }
       },
       time: formattedTimestamp,
       source: {
-        id: deviceId,
+        id: deviceId
       },
-      type: requestBody.fragment,
+      type: requestBody.fragment
     };
     cy.apiRequest({
       method: 'POST',
       url: '/measurement/measurements',
       headers: {
-        Accept: 'application/vnd.com.nsn.cumulocity.measurement+json',
+        Accept: 'application/vnd.com.nsn.cumulocity.measurement+json'
       },
       body: body,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     })
       .its('status')
       .should('eq', 201);
   });
 });
 
-Cypress.Commands.add('createNewAlarm', (alarmObject) => {
+Cypress.Commands.add('createNewAlarm', alarmObject => {
   getDeviceId(alarmObject.deviceName).then((response: any) => {
     const deviceId = response.body.managedObjects[0].id;
     const formattedTimestamp = setPastDate(alarmObject);
     const modifiedObj = {
       source: {
-        id: deviceId,
+        id: deviceId
       },
       type: alarmObject.type,
       text: alarmObject.text,
       severity: alarmObject.severity,
       status: alarmObject.status,
-      time: formattedTimestamp,
+      time: formattedTimestamp
     };
     cy.apiRequest({
       method: 'POST',
       url: '/alarm/alarms',
       body: modifiedObj,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     })
       .its('status')
       .should('eq', 201);
@@ -167,8 +167,8 @@ Cypress.Commands.add('createDevice', (deviceName, pastDate) => {
       name: deviceName,
       c8y_IsDevice: {},
       c8y_DeviceTypes: ['deviceSubsetType'],
-      c8y_SupportedOperations: ['c8y_Restart'],
-    },
+      c8y_SupportedOperations: ['c8y_Restart']
+    }
   };
   if (pastDate) {
     const currentDate = new Date();
@@ -183,13 +183,13 @@ Cypress.Commands.add('deleteAllDevices', () => {
   cy.apiRequest({
     url: 'inventory/managedObjects?fragmentType=c8y_IsDevice',
     method: 'GET',
-    failOnStatusCode: false,
+    failOnStatusCode: false
   }).then((response: any) => {
     for (const mo of response.body.managedObjects) {
       cy.log('Deleting ', mo.id);
       cy.apiRequest({
         method: 'DELETE',
-        url: `/inventory/managedObjects/${mo.id}`,
+        url: `/inventory/managedObjects/${mo.id}`
       });
     }
   });
@@ -198,12 +198,12 @@ Cypress.Commands.add('deleteAllDevices', () => {
 Cypress.Commands.add('addChildDevice', (parentDevice, childDevice) => {
   cy.apiRequest({
     url: `/inventory/managedObjects?q=$filter=(name eq '${parentDevice}' and has('c8y_IsDevice'))`,
-    method: 'GET',
+    method: 'GET'
   }).then((response: any) => {
     const parentDeviceId = response.body.managedObjects[0].id;
     cy.apiRequest({
       method: 'GET',
-      url: `/inventory/managedObjects?q=$filter=(name eq '${childDevice}' and has('c8y_IsDevice'))`,
+      url: `/inventory/managedObjects?q=$filter=(name eq '${childDevice}' and has('c8y_IsDevice'))`
     }).then((response: any) => {
       const childDeviceId = response.body.managedObjects[0].id;
       cy.log(childDeviceId);
@@ -211,61 +211,60 @@ Cypress.Commands.add('addChildDevice', (parentDevice, childDevice) => {
         url: `/inventory/managedObjects/${parentDeviceId}/childDevices`,
         method: 'POST',
         body: {
-          managedObject: { id: `${childDeviceId}` },
-        },
+          managedObject: { id: `${childDeviceId}` }
+        }
       });
     });
   });
 });
 
-Cypress.Commands.add('createEvent', (request) => {
+Cypress.Commands.add('createEvent', request => {
   getDeviceId(request.deviceName).then((response: any) => {
     const deviceId = response.body.managedObjects[0].id;
     const formattedTimestamp = setPastDate(request);
     const body = {
       source: {
-        id: deviceId,
+        id: deviceId
       },
       type: request.type,
       text: request.text,
-      time: formattedTimestamp,
+      time: formattedTimestamp
     };
     cy.apiRequest({
       method: 'POST',
       url: '/event/events',
       headers: {
-        Accept: 'application/vnd.com.nsn.cumulocity.event+json',
+        Accept: 'application/vnd.com.nsn.cumulocity.event+json'
       },
       body: body,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     })
       .its('status')
       .should('eq', 201);
   });
 });
 
-Cypress.Commands.add("addAssetToDevice", (parentDevice, asset) => {
+Cypress.Commands.add('addAssetToDevice', (parentDevice, asset) => {
   cy.apiRequest({
     url: `/inventory/managedObjects?q=$filter=(name eq '${parentDevice}' and has('c8y_IsDevice'))`,
-    method: "GET",
+    method: 'GET'
   }).then((response: any) => {
     const parentDeviceId = response.body.managedObjects[0].id;
     cy.apiRequest({
-      method: "GET",
-    url: `/inventory/managedObjects?query=$filter=((has(c8y_IsAsset)) and ('name' eq '${asset}'))`,
-    failOnStatusCode: false,
-  }).then((response: any) => {
-    const assetId = response.body.managedObjects[0].id;
+      method: 'GET',
+      url: `/inventory/managedObjects?query=$filter=((has(c8y_IsAsset)) and ('name' eq '${asset}'))`,
+      failOnStatusCode: false
+    }).then((response: any) => {
+      const assetId = response.body.managedObjects[0].id;
       cy.log(assetId);
-      console.log(parentDeviceId,assetId)
+      console.log(parentDeviceId, assetId);
       cy.apiRequest({
         url: `/inventory/managedObjects/${parentDeviceId}/childAssets`,
-        method: "POST",
+        method: 'POST',
         body: {
-          managedObject: { id: `${assetId}` },
-        },
+          managedObject: { id: `${assetId}` }
+        }
       });
     });
   });
 });
-
