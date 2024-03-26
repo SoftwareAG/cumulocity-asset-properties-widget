@@ -73,7 +73,7 @@ describe('Device properties widget', function () {
       const properties = [
         'Name',
         'ID',
-        'Asset model',
+        'Type',
         'Notes',
         'Owner',
         'Last updated',

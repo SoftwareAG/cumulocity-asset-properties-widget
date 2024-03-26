@@ -200,7 +200,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
 
   // Verify the presence of Properties section row elements
   it('TC_Asset_Properties_Widget_config_004', () => {
-    const labels = ['Name', 'ID', 'Asset model'];
+    const labels = ['Name', 'ID', 'Type'];
     const keys = ['name', 'id', 'type'];
     for (let i = 0; i < labels.length; i++) {
       cy.get(propertyDragHandle).eq(i).should('be.visible');
@@ -261,7 +261,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     // addeding wait so that drag will work as expected otherwise drag will not work
     cy.wait(1000);
     cy.get(propertyDragHandle3).dragTo(propertyDragHandle1);
-    cy.get(labelElement).eq(0).should('have.value', 'Asset model');
+    cy.get(labelElement).eq(0).should('have.value', 'Type');
     cy.get(asset_properties_widget_elements.saveButton).click();
     cy.get(cardTitleElement).should('contain.text', assetProperties);
     cy.deleteCard();
@@ -511,7 +511,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
   it('TC_Asset_Properties_Widget_config_035', () => {
     const configElement = 'c8y-asset-property-selector';
     const alertMessage = ' Add and select at least one property. ';
-    const labels = ['Name', 'ID', 'Asset model'];
+    const labels = ['Name', 'ID', 'Type'];
     for (let i = 0; i < labels.length; i++) {
       cy.get(checkboxElement).eq(i).should('be.visible').click();
     }
@@ -534,7 +534,7 @@ describe('Asset Properties Widget: Configuration/View screen tests', function ()
     cy.get(cardTitleElement).should('contain.text', assetProperties);
     cy.get("p[title='Name']").should('be.visible');
     cy.get("p[title='ID']").should('be.visible');
-    cy.get("p[title='Asset model']").scrollIntoView().should('be.visible');
+    cy.get("p[title='Type']").scrollIntoView().should('be.visible');
     cy.deleteCard();
   });
 
