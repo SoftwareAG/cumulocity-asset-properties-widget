@@ -15,26 +15,26 @@ describe('AssetPropertiesConfigComponent', () => {
     properties = [
       {
         c8y_JsonSchema: {
-          properties: { name: { type: 'string', label: 'Name' } },
+          properties: { name: { type: 'string', label: 'Name' } }
         },
         name: 'name',
         label: 'Name',
         type: 'string',
         active: true,
         isEditable: true,
-        isExistingProperty: true,
+        isExistingProperty: true
       },
       {
         c8y_JsonSchema: {
-          properties: { type: { type: 'string', label: 'Asset model' } },
+          properties: { type: { type: 'string', label: 'Type' } }
         },
         name: 'type',
-        label: 'Asset model',
+        label: 'Type',
         type: 'string',
         active: true,
         isEditable: false,
-        isExistingProperty: true,
-      },
+        isExistingProperty: true
+      }
     ];
     asset = {
       id: 12,
@@ -44,18 +44,18 @@ describe('AssetPropertiesConfigComponent', () => {
         city: 'Düsseldorf',
         street: 'Toulouser Allee',
         postalCode: 40211,
-        apartmentNumber: '25',
+        apartmentNumber: '25'
       },
       fileTest: [
         {
           file: new File([new Blob(['some content'])], 'values.json', {
-            type: 'application/JSON',
-          }),
-        },
+            type: 'application/JSON'
+          })
+        }
       ],
       nameTest: 'test123',
       dateTest1: date.toISOString(),
-      dateTest2: '',
+      dateTest2: ''
     } as any as IManagedObject;
     deviceMO = {
       id: '674366',
@@ -73,7 +73,7 @@ describe('AssetPropertiesConfigComponent', () => {
       c8y_ActiveAlarmsStatus: { critical: 3, major: 2, minor: 0, warning: 0 },
       c8y_IsDevice: {},
       c8y_SupportedOperations: [],
-      c8y_Position: { lng: 5, alt: 5, lat: null },
+      c8y_Position: { lng: 5, alt: 5, lat: null }
     };
   });
 
@@ -84,9 +84,7 @@ describe('AssetPropertiesConfigComponent', () => {
   it('should get selected asset MOs', async () => {
     // given
     component.config = { settings: true, device: asset };
-    jest
-      .spyOn(inventoryServiceMock, 'detail')
-      .mockReturnValue(Promise.resolve({ data: asset }));
+    jest.spyOn(inventoryServiceMock, 'detail').mockReturnValue(Promise.resolve({ data: asset }));
 
     // when
     await component.ngOnChanges();
@@ -98,9 +96,7 @@ describe('AssetPropertiesConfigComponent', () => {
   it('should not retrieve device MOs if the device is selected', async () => {
     // given
     component.config = { settings: true, device: deviceMO };
-    jest
-      .spyOn(inventoryServiceMock, 'detail')
-      .mockReturnValue(Promise.resolve({ data: deviceMO }));
+    jest.spyOn(inventoryServiceMock, 'detail').mockReturnValue(Promise.resolve({ data: deviceMO }));
 
     // when
     await component.ngOnChanges();
