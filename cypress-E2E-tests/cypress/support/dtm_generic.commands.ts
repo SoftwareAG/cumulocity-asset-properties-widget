@@ -1,6 +1,6 @@
-import { IManagedObject } from "@c8y/client";
-import { UrlParams } from "./models/data.model";
-import dtm_generic_page_elements from "./page_objects/dtm_generic_page_elements";
+import { IManagedObject } from '@c8y/client';
+import { UrlParams } from './models/data.model';
+import dtm_generic_page_elements from './page_objects/dtm_generic_page_elements';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -189,92 +189,92 @@ declare global {
   }
 }
 
-Cypress.Commands.add("navigateToLocalizationPage", () => {
+Cypress.Commands.add('navigateToLocalizationPage', () => {
   cy.get(dtm_generic_page_elements.configurationLink).click({ force: true });
   cy.get(dtm_generic_page_elements.localizationLink).click({ force: true });
 });
 
-Cypress.Commands.add("navigateToAssetsPage", () => {
+Cypress.Commands.add('navigateToAssetsPage', () => {
   cy.get(dtm_generic_page_elements.assetsLink).click({ force: true });
 });
 
-Cypress.Commands.add("navigateToPropertyLibraryPage", () => {
+Cypress.Commands.add('navigateToPropertyLibraryPage', () => {
   cy.get(dtm_generic_page_elements.configurationLink).click({ force: true });
   cy.get(dtm_generic_page_elements.propertyLibraryLink).click({ force: true });
 });
 
-Cypress.Commands.add("navigateToAssetTypesPage", () => {
+Cypress.Commands.add('navigateToAssetTypesPage', () => {
   cy.get(dtm_generic_page_elements.configurationLink).click({ force: true });
   cy.get(dtm_generic_page_elements.assetTypesLink).click({ force: true });
 });
 
-Cypress.Commands.add("navigateToHomePage", () => {
+Cypress.Commands.add('navigateToHomePage', () => {
   cy.get(dtm_generic_page_elements.homePageLink).click({ force: true });
 });
 
-Cypress.Commands.add("verifyTheAlertMsg", (alertMsg) => {
-  const alertPopup = "div.c8y-prompt.alert";
-  cy.get(alertPopup).should("be.visible").contains(alertMsg);
+Cypress.Commands.add('verifyTheAlertMsg', (alertMsg) => {
+  const alertPopup = 'div.c8y-prompt.alert';
+  cy.get(alertPopup).should('be.visible').contains(alertMsg);
 });
 
-Cypress.Commands.add("configureColumns", (option, columnName) => {
+Cypress.Commands.add('configureColumns', (option, columnName) => {
   const column = `label[title='${columnName}']>input`;
   cy.get(dtm_generic_page_elements.configureCloumnsButton).click();
-  if (option === "Check") {
+  if (option === 'Check') {
     cy.get(column).check();
-  } else if (option === "Uncheck") {
+  } else if (option === 'Uncheck') {
     cy.get(column).uncheck();
   } else {
-    cy.log("Mentioned option is incorrect");
+    cy.log('Mentioned option is incorrect');
   }
   cy.get(dtm_generic_page_elements.configureCloumnsButton).click();
 });
 
-Cypress.Commands.add("cleanup", () => {
+Cypress.Commands.add('cleanup', () => {
   cy.getUniqueId().then((id) => {
     cy.apiRequest({
-      method: "GET",
+      method: 'GET',
       url: `/inventory/managedObjects?pageSize=2000&nocache=${id}&query=$filter=(has(c8y_IsAssetProperty) and (owner eq ${Cypress.env(
-        "username"
+        'username'
       )}) and (not(name eq 'c8y_Position')))`,
       failOnStatusCode: false,
     }).then((response: any) => {
       for (const mo of response.body.managedObjects) {
-        cy.log("Deleting ", mo.id);
+        cy.log('Deleting ', mo.id);
         cy.apiRequest({
-          method: "DELETE",
+          method: 'DELETE',
           url: `/inventory/managedObjects/${mo.id}`,
           failOnStatusCode: false,
         });
       }
     });
     cy.apiRequest({
-      method: "GET",
+      method: 'GET',
       url: `/inventory/managedObjects?pageSize=2000&nocache=${id}&query=$filter=(has(c8y_IsAssetType) and (owner eq ${Cypress.env(
-        "username"
+        'username'
       )}) and (not(name eq 'c8y_DeviceGroup')))`,
       failOnStatusCode: false,
     }).then((response: any) => {
       for (const mo of response.body.managedObjects) {
-        cy.log("Deleting ", mo.id);
+        cy.log('Deleting ', mo.id);
         cy.apiRequest({
-          method: "DELETE",
+          method: 'DELETE',
           url: `/inventory/managedObjects/${mo.id}`,
           failOnStatusCode: false,
         });
       }
     });
     cy.apiRequest({
-      method: "GET",
+      method: 'GET',
       url: `/inventory/managedObjects?pageSize=2000&fragmentType=c8y_IsAsset&withChildren=false&onlyRoots=true&owner=${Cypress.env(
-        "username"
+        'username'
       )}&nocache=${id}`,
       failOnStatusCode: false,
     }).then((response: any) => {
       for (const mo of response.body.managedObjects) {
-        cy.log("Deleting ", mo.id);
+        cy.log('Deleting ', mo.id);
         cy.apiRequest({
-          method: "DELETE",
+          method: 'DELETE',
           url: `/inventory/managedObjects/${mo.id}`,
           failOnStatusCode: false,
         });
@@ -283,62 +283,62 @@ Cypress.Commands.add("cleanup", () => {
   });
 });
 
-Cypress.Commands.add("cleanupByFragmentType", (fragmentType: string) => {
+Cypress.Commands.add('cleanupByFragmentType', (fragmentType: string) => {
   cy.apiRequest({
-    method: "GET",
+    method: 'GET',
     url: `/inventory/managedObjects?pageSize=100&fragmentType=${fragmentType}`,
     failOnStatusCode: false,
   }).then((response: any) => {
     if (!response.body.managedObjects) return;
     for (const mo of response.body.managedObjects) {
-      cy.log("Deleting ", mo.id);
+      cy.log('Deleting ', mo.id);
       cy.apiRequest({
-        method: "DELETE",
+        method: 'DELETE',
         url: `/inventory/managedObjects/${mo.id}`,
       });
     }
   });
 });
 
-Cypress.Commands.add("cleanupByQuery", (query, urlParams) => {
+Cypress.Commands.add('cleanupByQuery', (query, urlParams) => {
   cy.getManagedObjectsByQuery(query, urlParams).then((managedObjects) => {
     if (!managedObjects) return;
     for (const mo of managedObjects) {
-      cy.log("Deleting ", mo.id);
+      cy.log('Deleting ', mo.id);
       cy.apiRequest({
-        method: "DELETE",
+        method: 'DELETE',
         url: `/inventory/managedObjects/${mo.id}`,
       });
     }
   });
 });
 
-Cypress.Commands.add("editConfirmationPopup", (option) => {
-  cy.get(".alert-warning")
-    .should("be.visible")
+Cypress.Commands.add('editConfirmationPopup', (option) => {
+  cy.get('.alert-warning')
+    .should('be.visible')
     .then(() => {
-      if (option === "Cancel") {
+      if (option === 'Cancel') {
         // requiredCheckbox.check({force: true})
         cy.get(dtm_generic_page_elements.cancelEditPopupButton).click();
       } else {
         cy.get(dtm_generic_page_elements.confirmEditPopupButton).click();
-        cy.get(".alert > div", { timeout: 3000 }).should("exist");
+        cy.get('.alert > div', { timeout: 3000 }).should('exist');
         cy.get(dtm_generic_page_elements.closeAlert).click();
       }
     });
 });
 
-Cypress.Commands.add("getJsonFile", (jsonName) => {
+Cypress.Commands.add('getJsonFile', (jsonName) => {
   cy.fixture(jsonName).then(function (data) {
     return data;
   });
 });
 
-Cypress.Commands.add("apiCreateSimpleAsset", (assetObject) => {
+Cypress.Commands.add('apiCreateSimpleAsset', (assetObject) => {
   for (let i = 0; i < assetObject.length; i++) {
     cy.apiRequest({
-      url: "/inventory/managedObjects",
-      method: "POST",
+      url: '/inventory/managedObjects',
+      method: 'POST',
       body: assetObject[i],
     }).then((response) => response.body.id);
   }
@@ -350,20 +350,20 @@ function assignDeviceOrChildAsset(
   label
 ) {
   cy.apiRequest({
-    method: "GET",
+    method: 'GET',
     url: `/inventory/managedObjects?query=$filter=((has(c8y_IsAsset)) and ('name' eq '${label}'))`,
     failOnStatusCode: false,
   }).then((response: any) => {
     const assetId = response.body.managedObjects[0].id;
     for (let i = 0; i < listOfAssetsOrDevices.length; i++) {
       cy.apiRequest({
-        method: "GET",
+        method: 'GET',
         url: `/inventory/managedObjects?query=$filter=((has(${option})) and ('name' eq '${listOfAssetsOrDevices[i]}'))`,
         failOnStatusCode: false,
       }).then((response: any) => {
         const childAssetOrDeviceId = response.body.managedObjects[0].id;
         cy.apiRequest({
-          method: "POST",
+          method: 'POST',
           url: `/inventory/managedObjects/${assetId}/childAssets`,
           body: {
             managedObject: {
@@ -376,32 +376,32 @@ function assignDeviceOrChildAsset(
   });
 }
 
-Cypress.Commands.add("apiAssignChildAsset", (childAssets, asset) => {
-  assignDeviceOrChildAsset("c8y_IsAsset", childAssets, asset);
+Cypress.Commands.add('apiAssignChildAsset', (childAssets, asset) => {
+  assignDeviceOrChildAsset('c8y_IsAsset', childAssets, asset);
 });
 
-Cypress.Commands.add("apiAssignDevice", (devices, asset) => {
-  assignDeviceOrChildAsset("c8y_IsDevice", devices, asset);
+Cypress.Commands.add('apiAssignDevice', (devices, asset) => {
+  assignDeviceOrChildAsset('c8y_IsDevice', devices, asset);
 });
 
-Cypress.Commands.add("getUniqueId", () => {
+Cypress.Commands.add('getUniqueId', () => {
   const uniqueSeed = Date.now().toString();
   return Cypress._.uniqueId(uniqueSeed);
 });
 
-Cypress.Commands.add("getManagedObjectsByQuery", (query, urlParams) => {
-  const baseUrl = "/inventory/managedObjects";
+Cypress.Commands.add('getManagedObjectsByQuery', (query, urlParams) => {
+  const baseUrl = '/inventory/managedObjects';
   let url;
   const params = Object.entries(urlParams)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .filter(([key, value]) => value !== undefined && value !== null)
     .map(([key, value]) => `${key}=${value}`)
-    .join("&");
+    .join('&');
   if (params) url = `${baseUrl}?${params}&${query}`;
   else url = `baseUrl?${query}`;
 
   cy.apiRequest({
-    method: "GET",
+    method: 'GET',
     url: url,
     failOnStatusCode: false,
   }).then((response) => {
@@ -409,39 +409,39 @@ Cypress.Commands.add("getManagedObjectsByQuery", (query, urlParams) => {
   });
 });
 
-Cypress.Commands.add("verifyAlertNotificationMessage", (message) => {
-  cy.get("[data-cy=c8y-alert--message]").within(() => {
-    cy.get("div strong.message").should("have.text", message);
+Cypress.Commands.add('verifyAlertNotificationMessage', (message) => {
+  cy.get('[data-cy=c8y-alert--message]').within(() => {
+    cy.get('div strong.message').should('have.text', message);
   });
 });
 
-Cypress.Commands.add("verifyAlertNotificationDetails", (message) => {
-  cy.get("[data-cy=c8y-alert--message]").within(() => {
-    cy.get('button[title="Show details"]').should("be.visible").click();
-    cy.get("div > div > pre > code").should("contain", message);
+Cypress.Commands.add('verifyAlertNotificationDetails', (message) => {
+  cy.get('[data-cy=c8y-alert--message]').within(() => {
+    cy.get('button[title="Show details"]').should('be.visible').click();
+    cy.get('div > div > pre > code').should('contain', message);
   });
 });
 
 Cypress.Commands.add(
-  "addNetworkIntercept",
+  'addNetworkIntercept',
   (
     method: string,
     endPoint: any,
-    networkStatus: string = "SUCCESS",
+    networkStatus: string = 'SUCCESS',
     nthCallToFail: number = 1
   ) => {
     let apiCallCounter = 0;
 
     switch (networkStatus) {
-      case "SUCCESS":
+      case 'SUCCESS':
         return cy.intercept(method, endPoint);
-      case "FAILURE":
+      case 'FAILURE':
         return cy.intercept(method, endPoint, (req) => {
           apiCallCounter++;
           if (apiCallCounter === nthCallToFail) {
             req.reply({
               statusCode: 500,
-              body: "Something went wrong in the inventory API",
+              body: 'Something went wrong in the inventory API',
             });
           }
         });
@@ -449,15 +449,15 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add("convertToUTC", (inputDateString) => {
+Cypress.Commands.add('convertToUTC', (inputDateString) => {
   const inputDate = new Date(inputDateString);
 
   const utcYear = inputDate.getUTCFullYear();
-  const utcMonth = (inputDate.getUTCMonth() + 1).toString().padStart(2, "0");
-  const utcDay = inputDate.getUTCDate().toString().padStart(2, "0");
-  const utcHours = inputDate.getUTCHours().toString().padStart(2, "0");
-  const utcMinutes = inputDate.getUTCMinutes().toString().padStart(2, "0");
-  const utcSeconds = inputDate.getUTCSeconds().toString().padStart(2, "0");
+  const utcMonth = (inputDate.getUTCMonth() + 1).toString().padStart(2, '0');
+  const utcDay = inputDate.getUTCDate().toString().padStart(2, '0');
+  const utcHours = inputDate.getUTCHours().toString().padStart(2, '0');
+  const utcMinutes = inputDate.getUTCMinutes().toString().padStart(2, '0');
+  const utcSeconds = inputDate.getUTCSeconds().toString().padStart(2, '0');
 
   const utcTimeString = `${utcYear}-${utcMonth}-${utcDay}T${utcHours}:${utcMinutes}:${utcSeconds}`;
   cy.wrap(utcTimeString).then((value) => {
@@ -466,29 +466,29 @@ Cypress.Commands.add("convertToUTC", (inputDateString) => {
 });
 
 Cypress.Commands.add(
-  "getCreationOrLastUpdatedTime",
+  'getCreationOrLastUpdatedTime',
   (option: string, selection: string, label: string) => {
     let url;
     switch (selection) {
-      case "asset":
+      case 'asset':
         url = `/inventory/managedObjects?query=$filter=((has(c8y_IsAsset)) and ('name' eq '${label}'))`;
         break;
-      case "assetmodel":
+      case 'assetmodel':
         url = `/inventory/managedObjects?query=$filter=((has(c8y_IsAssetType)) and ('label' eq '${label}'))`;
         break;
-      case "assetproperty":
+      case 'assetproperty':
         url = `/inventory/managedObjects?query=$filter=((has(c8y_JsonSchema)) and (has(c8y_IsAssetProperty)) and ('label' eq '${label}'))`;
         break;
     }
     return cy
       .apiRequest({
-        method: "GET",
+        method: 'GET',
         url: url,
         failOnStatusCode: false,
       })
       .then((response: any) => {
         let time;
-        if (option === "created") {
+        if (option === 'created') {
           time = response.body.managedObjects[0].creationTime;
         } else {
           time = response.body.managedObjects[0].lastUpdated;
@@ -500,11 +500,11 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add("apiDeleteGridConfig", (fragmentName) => {
+Cypress.Commands.add('apiDeleteGridConfig', (fragmentName) => {
   cy.apiRequest({
-    method: "GET",
+    method: 'GET',
     url: `/inventory/managedObjects?fragmentType=${fragmentName}${Cypress.env(
-      "username"
+      'username'
     )}`,
     failOnStatusCode: false,
   }).then((response) => {
@@ -512,7 +512,7 @@ Cypress.Commands.add("apiDeleteGridConfig", (fragmentName) => {
       const [{ id }] = response.body.managedObjects;
       cy.log(`Deleting grid-config ${id}`);
       cy.apiRequest({
-        method: "DELETE",
+        method: 'DELETE',
         url: `/inventory/managedObjects/${id}`,
         failOnStatusCode: false,
       });
@@ -520,7 +520,7 @@ Cypress.Commands.add("apiDeleteGridConfig", (fragmentName) => {
   });
 });
 
-Cypress.Commands.add("dragTo", { prevSubject: "element" }, function (
+Cypress.Commands.add('dragTo', { prevSubject: 'element' }, function (
   subject,
   targetEl
 ) {
@@ -528,14 +528,14 @@ Cypress.Commands.add("dragTo", { prevSubject: "element" }, function (
   cy.wrap(subject)
     .first()
     .realMouseDown({
-      button: "left",
-      position: "center",
-      scrollBehavior: "nearest",
+      button: 'left',
+      position: 'center',
+      scrollBehavior: 'nearest',
     })
-    .realMouseMove(10, 0, { position: "center", scrollBehavior: "nearest" });
+    .realMouseMove(10, 0, { position: 'center', scrollBehavior: 'nearest' });
   cy.get(targetEl)
     .first()
-    .realMouseMove(10, 0, { position: "center", scrollBehavior: "nearest" })
-    .realMouseUp({ position: "center", scrollBehavior: "center" });
+    .realMouseMove(10, 0, { position: 'center', scrollBehavior: 'nearest' })
+    .realMouseUp({ position: 'center', scrollBehavior: 'center' });
   cy.wait(1000);
 });
