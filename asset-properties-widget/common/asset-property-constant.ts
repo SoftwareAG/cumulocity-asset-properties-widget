@@ -21,10 +21,10 @@ export const defaultProperty = [
   },
   {
     c8y_JsonSchema: {
-      properties: { type: { type: 'string', label: 'Asset model' } }
+      properties: { type: { type: 'string', label: 'Type' } }
     },
     name: 'type',
-    label: 'Asset model',
+    label: 'Type',
     type: 'string',
     active: true,
     isEditable: false,
