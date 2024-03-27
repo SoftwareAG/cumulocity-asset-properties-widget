@@ -465,7 +465,7 @@ describe('AssetPropertiesViewComponent', () => {
         config: { id: '8005633676046595', type: 'test' },
         computed: true,
         isEditable: false,
-        isExistingProperty: true,
+        isStandardProperty: true,
         active: true
       },
       {
@@ -484,7 +484,7 @@ describe('AssetPropertiesViewComponent', () => {
         config: { id: '8005633676046596', type: 'test' },
         computed: true,
         isEditable: false,
-        isExistingProperty: true,
+        isStandardProperty: true,
         active: true
       },
       {
@@ -503,7 +503,7 @@ describe('AssetPropertiesViewComponent', () => {
         config: { id: '8005633676046597', type: 'test' },
         computed: true,
         isEditable: false,
-        isExistingProperty: true,
+        isStandardProperty: true,
         active: true
       },
       {
@@ -522,7 +522,7 @@ describe('AssetPropertiesViewComponent', () => {
         config: { id: '8005633676046598', type: 'test' },
         computed: true,
         isEditable: false,
-        isExistingProperty: true,
+        isStandardProperty: true,
         active: true
       },
       {
@@ -558,7 +558,7 @@ describe('AssetPropertiesViewComponent', () => {
         },
         computed: true,
         isEditable: false,
-        isExistingProperty: true,
+        isStandardProperty: true,
         active: true
       },
       {
@@ -576,7 +576,7 @@ describe('AssetPropertiesViewComponent', () => {
         type: 'string',
         computed: true,
         isEditable: false,
-        isExistingProperty: true,
+        isStandardProperty: true,
         active: true
       },
       {
@@ -593,7 +593,7 @@ describe('AssetPropertiesViewComponent', () => {
         type: 'string',
         computed: true,
         isEditable: false,
-        isExistingProperty: true,
+        isStandardProperty: true,
         active: true
       }
     ];

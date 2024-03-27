@@ -22,7 +22,7 @@ describe('AssetPropertiesConfigComponent', () => {
         type: 'string',
         active: true,
         isEditable: true,
-        isExistingProperty: true
+        isStandardProperty: true
       },
       {
         c8y_JsonSchema: {
@@ -33,7 +33,7 @@ describe('AssetPropertiesConfigComponent', () => {
         type: 'string',
         active: true,
         isEditable: false,
-        isExistingProperty: true
+        isStandardProperty: true
       }
     ];
     asset = {

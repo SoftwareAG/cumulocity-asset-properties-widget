@@ -30,6 +30,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   @Input() config: any;
   computedPropertyObject: ComputedPropertyObject;
   isLoading = true;
+  dateTimeWithTimeZone = 'yyyy-MM-ddThh:mm:ssZZZZZ';
 
   constructor(
     protected inventoryService: InventoryService,
@@ -52,7 +53,7 @@ export class AssetPropertiesViewComponent implements OnInit {
           );
           this.properties = this.config.properties.filter(property => {
             if (
-              property.isExistingProperty ||
+              property.isStandardProperty ||
               (this.customProperties.length != 0 &&
                 this.customProperties.find(prop => prop.id === property.id)) ||
               this.validateComplexProperty(property)
@@ -117,7 +118,7 @@ export class AssetPropertiesViewComponent implements OnInit {
                       Math.max(
                         ...Array.from(dateSet).map(dateString => new Date(dateString).getTime())
                       ),
-                      'yyyy-MM-ddThh:mm:ssZZZZZ'
+                      this.dateTimeWithTimeZone
                     );
                     this.computedPropertyObject = {
                       ...this.computedPropertyObject,
@@ -143,11 +144,12 @@ export class AssetPropertiesViewComponent implements OnInit {
   }
 
   async getAlarmCount(device: IManagedObject, property: IManagedObject, dateFrom: string) {
+    // By incrementing the dateTo parameter by 1 day, this code aims to mitigate timezone-related inconsistencies.
     const filters = {
       dateFrom: dateFrom,
       dateTo: this.datePipe.transform(
         new Date().setDate(new Date().getDate() + 1),
-        'yyyy-MM-ddThh:mm:ssZZZZZ'
+        this.dateTimeWithTimeZone
       ),
       source: device.id,
       pageSize: 2000,
@@ -173,11 +175,12 @@ export class AssetPropertiesViewComponent implements OnInit {
   }
 
   async getEventCount(device: IManagedObject, property: IManagedObject, dateFrom: string) {
+    // By incrementing the dateTo parameter by 1 day, this code aims to mitigate timezone-related inconsistencies.
     const filters = {
       dateFrom: dateFrom,
       dateTo: this.datePipe.transform(
         new Date().setDate(new Date().getDate() + 1),
-        'yyyy-MM-ddThh:mm:ssZZZZZ'
+        this.dateTimeWithTimeZone
       ),
       source: device.id,
       pageSize: 2000,

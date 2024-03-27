@@ -8,7 +8,7 @@ export const defaultProperty = [
     type: 'string',
     active: true,
     isEditable: true,
-    isExistingProperty: true
+    isStandardProperty: true
   },
   {
     c8y_JsonSchema: { properties: { id: { type: 'string', label: 'ID' } } },
@@ -17,7 +17,7 @@ export const defaultProperty = [
     type: 'string',
     active: true,
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   },
   {
     c8y_JsonSchema: {
@@ -28,7 +28,7 @@ export const defaultProperty = [
     type: 'string',
     active: true,
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   },
   {
     c8y_JsonSchema: {
@@ -38,7 +38,7 @@ export const defaultProperty = [
     label: 'Owner',
     type: 'string',
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   },
   {
     c8y_JsonSchema: {
@@ -48,7 +48,7 @@ export const defaultProperty = [
     label: 'Last updated',
     type: 'string',
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   }
 ];
 
@@ -69,7 +69,7 @@ export const computedPropertiesBaseObject = [
     config: { type: '' },
     computed: true,
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   },
   {
     c8y_JsonSchema: {
@@ -87,7 +87,7 @@ export const computedPropertiesBaseObject = [
     config: { type: '' },
     computed: true,
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   },
   {
     c8y_JsonSchema: {
@@ -105,7 +105,7 @@ export const computedPropertiesBaseObject = [
     config: { type: '' },
     computed: true,
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   },
   {
     c8y_JsonSchema: {
@@ -123,7 +123,7 @@ export const computedPropertiesBaseObject = [
     config: { type: '' },
     computed: true,
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   },
   {
     c8y_JsonSchema: {
@@ -140,7 +140,7 @@ export const computedPropertiesBaseObject = [
     config: { dp: [], isValid: null, resultTypes: 1 },
     computed: true,
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   },
   {
     c8y_JsonSchema: {
@@ -156,7 +156,7 @@ export const computedPropertiesBaseObject = [
     type: 'number',
     computed: true,
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   },
   {
     c8y_JsonSchema: {
@@ -172,7 +172,7 @@ export const computedPropertiesBaseObject = [
     type: 'number',
     computed: true,
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   },
   {
     c8y_JsonSchema: {
@@ -189,7 +189,7 @@ export const computedPropertiesBaseObject = [
     type: 'string',
     computed: true,
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   },
   {
     c8y_JsonSchema: {
@@ -205,7 +205,7 @@ export const computedPropertiesBaseObject = [
     type: 'string',
     computed: true,
     isEditable: false,
-    isExistingProperty: true
+    isStandardProperty: true
   }
 ];
 
@@ -214,7 +214,7 @@ export const devicePropertiesBaseObject = [
     label: 'Active alarms status',
     type: 'object',
     isEditable: false,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_ActiveAlarmsStatus',
     c8y_JsonSchema: {
       properties: {
@@ -248,7 +248,7 @@ export const devicePropertiesBaseObject = [
     label: 'Address',
     type: 'object',
     isEditable: true,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_Address',
     c8y_JsonSchema: {
       properties: {
@@ -290,7 +290,7 @@ export const devicePropertiesBaseObject = [
     label: 'Agent',
     type: 'object',
     isEditable: true,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_Agent',
     c8y_JsonSchema: {
       properties: {
@@ -324,7 +324,7 @@ export const devicePropertiesBaseObject = [
     label: 'Availability',
     type: 'object',
     isEditable: false,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_Availability',
     c8y_JsonSchema: {
       properties: {
@@ -351,7 +351,7 @@ export const devicePropertiesBaseObject = [
     label: 'Connection',
     type: 'object',
     isEditable: false,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_Connection',
     c8y_JsonSchema: {
       properties: {
@@ -373,7 +373,7 @@ export const devicePropertiesBaseObject = [
     label: 'Communication mode',
     type: 'object',
     isEditable: true,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_CommunicationMode',
     c8y_JsonSchema: {
       properties: {
@@ -395,7 +395,7 @@ export const devicePropertiesBaseObject = [
     label: 'Firmware',
     type: 'object',
     isEditable: false,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_Firmware',
     c8y_JsonSchema: {
       properties: {
@@ -429,7 +429,7 @@ export const devicePropertiesBaseObject = [
     label: 'Hardware',
     type: 'object',
     isEditable: true,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_Hardware',
     c8y_JsonSchema: {
       properties: {
@@ -459,7 +459,7 @@ export const devicePropertiesBaseObject = [
     label: 'LPWAN device',
     type: 'object',
     isEditable: false,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_LpwanDevice',
     c8y_JsonSchema: {
       properties: {
@@ -481,7 +481,7 @@ export const devicePropertiesBaseObject = [
     label: 'Mobile',
     type: 'object',
     isEditable: true,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_Mobile',
     c8y_JsonSchema: {
       properties: {
@@ -577,7 +577,7 @@ export const devicePropertiesBaseObject = [
     label: 'Notes',
     type: 'string',
     isEditable: true,
-    isExistingProperty: true,
+    isStandardProperty: true,
     c8y_JsonSchema: {
       properties: {
         c8y_Notes: {
@@ -594,7 +594,7 @@ export const devicePropertiesBaseObject = [
     label: 'Position',
     type: 'object',
     isEditable: true,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_Position',
     c8y_JsonSchema: {
       properties: {
@@ -624,7 +624,7 @@ export const devicePropertiesBaseObject = [
     label: 'Required availability',
     type: 'object',
     isEditable: true,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_RequiredAvailability',
     c8y_JsonSchema: {
       properties: {
@@ -650,7 +650,7 @@ export const devicePropertiesBaseObject = [
     label: 'Software',
     type: 'object',
     isEditable: false,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_Software',
     c8y_JsonSchema: {
       properties: {
@@ -680,7 +680,7 @@ export const devicePropertiesBaseObject = [
     label: 'Network',
     type: 'object',
     isEditable: true,
-    isExistingProperty: true,
+    isStandardProperty: true,
     name: 'c8y_Network',
     c8y_JsonSchema: {
       properties: {

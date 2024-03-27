@@ -49,7 +49,7 @@ export class AssetPropertiesItemComponent implements AssetPropertiesItem, OnChan
   @Input()
   active: boolean;
   @Input()
-  isExistingProperty: boolean;
+  isStandardProperty: boolean;
 
   form: FormGroup;
   fields: FormlyFieldConfig[];
@@ -68,7 +68,7 @@ export class AssetPropertiesItemComponent implements AssetPropertiesItem, OnChan
       this.resolveJsonSchema();
       await this.resolveFile();
     }
-    this.defaultEmptyValue = this.isExistingProperty ? 'No data' : 'Undefined';
+    this.defaultEmptyValue = this.isStandardProperty ? 'No data' : 'Undefined';
   }
 
   private async resolveFile() {

@@ -155,7 +155,7 @@ export class AssetPropertiesComponent implements OnChanges, OnInit {
           lastUpdated: mo.lastUpdated,
           isEditable: mo.isEditable,
           active: properties[key].active as boolean,
-          isExistingProperty: mo.isExistingProperty
+          isStandardProperty: mo.isStandardProperty
         });
       }
     }

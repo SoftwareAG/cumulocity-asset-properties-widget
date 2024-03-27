@@ -78,11 +78,13 @@ export class AssetPropertiesViewService {
   }
 
   async getLastDeviceMessage(device: IManagedObject) {
+    // By incrementing the dateTo parameter by 1 day, this code aims to mitigate timezone-related inconsistencies.
+    const dateTimeWithTimeZone = 'yyyy-MM-ddThh:mm:ssZZZZZ';
     const filters = {
       dateFrom: this.DEFAULT_FROM_DATE,
       dateTo: this.datePipe.transform(
         new Date().setDate(new Date().getDate() + 1),
-        'yyyy-MM-ddThh:mm:ssZZZZZ'
+        dateTimeWithTimeZone
       ),
       source: device.id,
       pageSize: 2000
