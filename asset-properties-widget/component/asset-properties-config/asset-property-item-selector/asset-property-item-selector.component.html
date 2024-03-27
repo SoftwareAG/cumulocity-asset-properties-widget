@@ -85,7 +85,7 @@
           >
             <i c8yIcon="bolt" class="text-primary-light"></i>
           </button>
-          {{ property.label ? property.label : (property.title | translate) }}
+          {{ property.label ? (property.label | translate) : (property.title | translate) }}
         </div>
         <div
           data-cy="asset-property-item-property-name"
