@@ -1,4 +1,4 @@
-import asset_properties_widget_elements from "./page_objects/asset_properties_widget_elements";
+import asset_properties_widget_elements from './page_objects/asset_properties_widget_elements';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -106,7 +106,7 @@ declare global {
   }
 }
 
-Cypress.Commands.add("chooseAssetOrDevice", (label, targetIndex?: number) => {
+Cypress.Commands.add('chooseAssetOrDevice', (label, targetIndex?: number) => {
   let index = 0;
   if (targetIndex) {
     index = targetIndex;
@@ -114,38 +114,38 @@ Cypress.Commands.add("chooseAssetOrDevice", (label, targetIndex?: number) => {
   cy.get(`div[title*='${label}']`)
     .eq(index)
     .children('div[class*="checkbox"]')
-    .children("label")
+    .children('label')
     .children('input[type="radio"]')
     .check({ force: true });
 });
 
-Cypress.Commands.add("selectProperty", (title) => {
+Cypress.Commands.add('selectProperty', (title) => {
   cy.get(asset_properties_widget_elements.filterPropertiesTextBox)
-    .should("be.visible")
+    .should('be.visible')
     .clear();
   cy.get(asset_properties_widget_elements.filterPropertiesTextBox).type(title);
   cy.get(`div[title='${title}']`)
-    .parent("div")
-    .children("div")
-    .children("label")
+    .parent('div')
+    .children('div')
+    .children('label')
     .children('input[type="checkbox"]')
     .check({ force: true });
 });
 
-Cypress.Commands.add("unselectProperty", (title) => {
+Cypress.Commands.add('unselectProperty', (title) => {
   cy.get(asset_properties_widget_elements.filterPropertiesTextBox)
-    .should("be.visible")
+    .should('be.visible')
     .clear();
   cy.get(asset_properties_widget_elements.filterPropertiesTextBox).type(title);
   cy.get(`div[title='${title}']`)
-    .parent("div")
-    .children("div")
-    .children("label")
+    .parent('div')
+    .children('div')
+    .children('label')
     .children('input[type="checkbox"]')
     .uncheck({ force: true });
 });
 
-Cypress.Commands.add("deleteCard", () => {
+Cypress.Commands.add('deleteCard', () => {
   cy.intercept({
     method: 'PUT',
     url: '**/inventory/managedObjects/**',
@@ -202,9 +202,9 @@ Cypress.Commands.add('deleteWidgetInstances', (title) => {
     url: '**/inventory/managedObjects/**',
   }).as('removed');
   for (let i = 0; i < title.length; i++) {
-    cy.get("c8y-dashboard-child-title span")
+    cy.get('c8y-dashboard-child-title span')
       .eq(0)
-      .parents("c8y-dashboard-child-title")
+      .parents('c8y-dashboard-child-title')
       .siblings("div[class*='header-actions']")
       .children("div[placement='bottom right']")
       .children("button[title='Settings']")
@@ -229,56 +229,56 @@ Cypress.Commands.add('selectAssetAndSave', (assetName) => {
 Cypress.Commands.add('selectSubasset', (assetName) => {
   cy.get(`div[title='${assetName}']`)
     .children('div[class*="checkbox"]')
-    .children("label")
+    .children('label')
     .children('input[type="radio"]')
     .check({ force: true });
 });
 
-Cypress.Commands.add("clickOnAsset", (assetName, targetIndex?: number) => {
+Cypress.Commands.add('clickOnAsset', (assetName, targetIndex?: number) => {
   let index = 0;
   if (targetIndex) {
     index = targetIndex;
   }
-  cy.intercept("/inventory/managedObjects/**").as("manageObjectCall");
+  cy.intercept('/inventory/managedObjects/**').as('manageObjectCall');
   cy.get(`button p[title='${assetName}']`)
     .eq(index)
-    .should("be.visible")
+    .should('be.visible')
     .click({ force: true });
-  cy.wait("@manageObjectCall").its("response.statusCode").should("eq", 200);
+  cy.wait('@manageObjectCall').its('response.statusCode').should('eq', 200);
 });
 
 Cypress.Commands.add(
-  "validatePropertyValue",
+  'validatePropertyValue',
   (propertyLabel, value, isComplex?) => {
     if (isComplex) {
-      const commaSeparatedValues = value.split(",");
+      const commaSeparatedValues = value.split(',');
       const complexPropertyKeysAndValues = commaSeparatedValues.map((pair) => {
-        const [key, value] = pair.split(":");
+        const [key, value] = pair.split(':');
         return { key, value };
       });
       for (let i = 0; i < complexPropertyKeysAndValues.length; i++) {
         cy.get(`p[title='${propertyLabel}']`)
-          .parent("div")
-          .siblings("c8y-asset-properties-item")
-          .children("ul")
-          .children("span")
+          .parent('div')
+          .siblings('c8y-asset-properties-item')
+          .children('ul')
+          .children('span')
           .children('li')
           .children(`label[title='${complexPropertyKeysAndValues[i].key}']`)
-          .siblings("span")
-          .children("c8y-asset-properties-item")
+          .siblings('span')
+          .children('c8y-asset-properties-item')
           .children(`p[title*='${complexPropertyKeysAndValues[i].value}']`)
-          .as("propertyValue");
-        cy.get("@propertyValue").scrollIntoView();
-        cy.get("@propertyValue").should("be.visible");
+          .as('propertyValue');
+        cy.get('@propertyValue').scrollIntoView();
+        cy.get('@propertyValue').should('be.visible');
       }
     } else {
       cy.get(`p[title='${propertyLabel}']`)
-        .parent("div")
-        .siblings("c8y-asset-properties-item")
+        .parent('div')
+        .siblings('c8y-asset-properties-item')
         .children(`p[title*='${value}']`)
-        .as("propertyValue");
-      cy.get("@propertyValue").scrollIntoView();
-      cy.get("@propertyValue").should("be.visible");
+        .as('propertyValue');
+      cy.get('@propertyValue').scrollIntoView();
+      cy.get('@propertyValue').should('be.visible');
     }
   }
 );

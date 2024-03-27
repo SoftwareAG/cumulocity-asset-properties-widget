@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 import {
+  AlarmRealtimeService,
   CoreModule,
+  EventRealtimeService,
   HOOK_COMPONENTS,
+  MeasurementRealtimeService,
+  OperationRealtimeService,
   RealtimeModule,
 } from '@c8y/ngx-components';
 import * as preview from './common/preview';
@@ -15,6 +19,10 @@ import { AssetPropertiesItemComponent } from './component/asset-properties-view/
 import { assetPropertyItemSelectorCtrlComponent } from './component/asset-properties-config/asset-property-item-selector/asset-property-item-selector.component';
 import { AssetPropertiesSelectorComponent } from './component/asset-properties-config/asset-property-selector/asset-property-selector.component';
 import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
+import { ComputedPropertyConfigComponent } from './component/asset-properties-config/computed-asset-property/computed-property-config.component';
+import { DatapointSelectorModule } from '@c8y/ngx-components/datapoint-selector';
+import { ComputedPropertyLastMeasurementConfigComponent } from './component/asset-properties-config/computed-asset-property/properties/last-measurement-config.component';
+import { AssetPropertiesViewService } from './component/asset-properties-view/asset-properties-view.service';
 
 @NgModule({
   declarations: [
@@ -24,6 +32,8 @@ import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
     AssetPropertiesViewComponent,
     AssetPropertiesComponent,
     AssetPropertiesItemComponent,
+    ComputedPropertyConfigComponent,
+    ComputedPropertyLastMeasurementConfigComponent
   ],
   imports: [
     CoreModule,
@@ -32,8 +42,14 @@ import { SubAssetsModule } from '@c8y/ngx-components/sub-assets';
     DragDropModule,
     RealtimeModule,
     SubAssetsModule,
+    DatapointSelectorModule,
   ],
   providers: [
+    AssetPropertiesViewService,
+    AlarmRealtimeService,
+    EventRealtimeService,
+    OperationRealtimeService,
+    MeasurementRealtimeService,
     {
       provide: HOOK_COMPONENTS,
       multi: true,
