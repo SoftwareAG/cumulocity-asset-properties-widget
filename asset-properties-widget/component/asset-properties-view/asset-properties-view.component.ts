@@ -30,7 +30,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   @Input() config: any;
   computedPropertyObject: ComputedPropertyObject;
   isLoading = true;
-  dateTimeWithTimeZone = 'yyyy-MM-ddThh:mm:ssZZZZZ';
+  dateTimeFormat = 'yyyy-MM-ddThh:mm:ssZZZZZ';
 
   constructor(
     protected inventoryService: InventoryService,
@@ -118,7 +118,7 @@ export class AssetPropertiesViewComponent implements OnInit {
                       Math.max(
                         ...Array.from(dateSet).map(dateString => new Date(dateString).getTime())
                       ),
-                      this.dateTimeWithTimeZone
+                      this.dateTimeFormat
                     );
                     this.computedPropertyObject = {
                       ...this.computedPropertyObject,
@@ -149,7 +149,7 @@ export class AssetPropertiesViewComponent implements OnInit {
       dateFrom: dateFrom,
       dateTo: this.datePipe.transform(
         new Date().setDate(new Date().getDate() + 1),
-        this.dateTimeWithTimeZone
+        this.dateTimeFormat
       ),
       source: device.id,
       pageSize: 2000,
@@ -180,7 +180,7 @@ export class AssetPropertiesViewComponent implements OnInit {
       dateFrom: dateFrom,
       dateTo: this.datePipe.transform(
         new Date().setDate(new Date().getDate() + 1),
-        this.dateTimeWithTimeZone
+        this.dateTimeFormat
       ),
       source: device.id,
       pageSize: 2000,
