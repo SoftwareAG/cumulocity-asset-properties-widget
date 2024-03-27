@@ -14,3 +14,6 @@ msgstr "Select an asset from the list."
 
 msgid "Add and select at least one property."
 msgstr "Add and select at least one property."
+
+msgid "No data"
+msgstr "No data"

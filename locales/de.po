@@ -17,3 +17,6 @@ msgstr "Ein Asset aus der Liste wählen."
 
 msgid "Add and select at least one property."
 msgstr "Fügen Sie und hinzu Wählen Sie mindestens einen Attribut"
+
+msgid "No data"
+msgstr "Keine Daten"
