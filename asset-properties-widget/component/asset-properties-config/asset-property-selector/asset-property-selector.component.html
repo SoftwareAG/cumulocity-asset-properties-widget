@@ -1,5 +1,5 @@
 <div class="form-group m-b-8">
-  <label>{{ "Properties" | translate }} </label>
+  <label>{{ 'Properties' | translate }} </label>
 </div>
 <div class="d-flex sticky-top">
   <div class="m-l-auto m-r-16">
@@ -12,30 +12,24 @@
       [disabled]="!asset"
     >
       <i c8yicon="plus" class="dlt-c8y-icon-plus"></i>
-      {{ "Add property" | translate }}
+      {{ 'Add property' | translate }}
     </button>
   </div>
 </div>
-<div class="alert alert-warning" *ngIf="!isAtleastOnePropertySelected">
-  {{ "Add and select at least one property." | translate }}
+<div class="alert alert-warning" *ngIf="!isAtleastOnePropertySelected || properties.length <= 0">
+  {{ 'Add and select at least one property.' | translate }}
 </div>
 <table class="table">
   <thead>
     <th style="width: 5%"></th>
     <th style="width: 10%">
-      <label data-cy="asset-property-selector-show-column">{{
-        "Show" | translate
-      }}</label>
+      <label data-cy="asset-property-selector-show-column">{{ 'Show' | translate }}</label>
     </th>
     <th style="width: 28%">
-      <label data-cy="asset-property-selector-label-column">{{
-        "Label" | translate
-      }}</label>
+      <label data-cy="asset-property-selector-label-column">{{ 'Label' | translate }}</label>
     </th>
     <th style="width: 28%">
-      <label data-cy="asset-property-selector-key-column">{{
-        "Key" | translate
-      }}</label>
+      <label data-cy="asset-property-selector-key-column">{{ 'Key' | translate }}</label>
     </th>
     <th style="width: 5%"></th>
   </thead>
@@ -69,13 +63,13 @@
           <table class="table">
             <thead>
               <th>
-                <label>{{ "Show" | translate }}</label>
+                <label>{{ 'Show' | translate }}</label>
               </th>
               <th>
-                <label>{{ "Label" | translate }}</label>
+                <label>{{ 'Label' | translate }}</label>
               </th>
               <th>
-                <label>{{ "Key" | translate }}</label>
+                <label>{{ 'Key' | translate }}</label>
               </th>
               <th></th>
             </thead>
@@ -83,8 +77,8 @@
               <tr
                 class="header-row"
                 *ngFor="
-                  let item of property.c8y_JsonSchema.properties[property.name]
-                    .properties | keyvalue
+                  let item of property.c8y_JsonSchema.properties[property.name].properties
+                    | keyvalue
                 "
               >
                 <td>
@@ -96,10 +90,7 @@
                   />
                 </td>
                 <td>
-                  <input
-                    class="property-label"
-                    [(ngModel)]="item.value.title"
-                  />
+                  <input class="property-label" [(ngModel)]="item.value.title" />
                 </td>
                 <td>
                   <span>{{ item.key | translate }}</span>
@@ -150,14 +141,10 @@
           data-cy="asset-property-selector-config-computed-property-button"
         >
           <i c8yIcon="bolt"></i>
-          {{
-            (property.name | translate) ||
-              (property.keyPath?.join(".") | translate)
-          }}
+          {{ (property.name | translate) || (property.keyPath?.join('.') | translate) }}
         </button>
         <span *ngIf="!property.config" data-cy="asset-property-selector-name">{{
-          (property.name | translate) ||
-            (property.keyPath?.join(".") | translate)
+          (property.name | translate) || (property.keyPath?.join('.') | translate)
         }}</span>
       </td>
       <td style="width: 5%">
