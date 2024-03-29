@@ -19,14 +19,27 @@ export default {
   widgetDashboardAddWidgetButton: "[data-cy='widget-dashboard--Add-widget']",
   saveAssetTypeButton: '.card-footer.separator.sticky-bottom>.btn.btn-primary',
   backButton: "button i[c8yicon='angle-left']",
+  addDataPointConfigButton: '.card-footer > .btn',
+  computedPropertyConfigSaveButton: '[data-cy="computed-property-config-save-button"]',
+  computedPropertySelectorConfigButton:
+    '[data-cy="asset-property-selector-config-computed-property-button"]',
+  addDataPointsButton: '[title="Add data points"] ',
+  dataPointRemoveButton: 'button i[c8yicon="minus-circle"]',
+  dataPointAddButton: 'button i[c8yicon="plus-circle"]',
+  widgetSaveButton: '[data-cy="widget-config--save-widget"]',
 
   // ###############[Dropdowns]############
 
   // ###############[Textbox]##############
   filterPropertiesTextBox: "input[data-cy='asset-property-item-input-search']",
   assetPropertySlectorLabelTextBox: '#modal-body-property input',
+  assetPropertySelectorLabel: '[data-cy=asset-property-selector-label]',
+  expandedDataPointLabel: '.expanded .data-point-label',
+  expandedInputNameLabel: '.expanded input[name="label"]',
 
   // ###############[Other]################
   cardElement: "div[title='Editable form for asset properties widget']",
-  filterProperties: "input[placeholder='Filter properties']"
+  filterProperties: "input[placeholder='Filter properties']",
+  datapointSelectionList: 'c8y-datapoint-selection-list',
+  measurmentReturnTypeValueSelector: '#returnTypeField'
 };
