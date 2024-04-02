@@ -4,9 +4,10 @@ import { AssetPropertiesConfigComponent } from './asset-properties-config.compon
 describe('AssetPropertiesConfigComponent', () => {
   const date = new Date();
   let component: AssetPropertiesConfigComponent;
-  let asset;
-  let properties;
-  let inventoryServiceMock;
+  let asset: any;
+  let properties: any;
+  let inventoryServiceMock: any;
+  let deviceMO: any;
 
   beforeEach(() => {
     inventoryServiceMock = { detail: jest.fn() };
@@ -14,28 +15,27 @@ describe('AssetPropertiesConfigComponent', () => {
     properties = [
       {
         c8y_JsonSchema: {
-          properties: { name: { type: 'string', label: 'Name' } },
+          properties: { name: { type: 'string', label: 'Name' } }
         },
         name: 'name',
         label: 'Name',
         type: 'string',
         active: true,
         isEditable: true,
-        isExistingProperty: true,
+        isStandardProperty: true
       },
       {
         c8y_JsonSchema: {
-          properties: { type: { type: 'string', label: 'Asset model' } },
+          properties: { type: { type: 'string', label: 'Type' } }
         },
         name: 'type',
-        label: 'Asset model',
+        label: 'Type',
         type: 'string',
         active: true,
         isEditable: false,
-        isExistingProperty: true,
-      },
+        isStandardProperty: true
+      }
     ];
-
     asset = {
       id: 12,
       name: 'Test',
@@ -44,19 +44,37 @@ describe('AssetPropertiesConfigComponent', () => {
         city: 'Düsseldorf',
         street: 'Toulouser Allee',
         postalCode: 40211,
-        apartmentNumber: '25',
+        apartmentNumber: '25'
       },
       fileTest: [
         {
           file: new File([new Blob(['some content'])], 'values.json', {
-            type: 'application/JSON',
-          }),
-        },
+            type: 'application/JSON'
+          })
+        }
       ],
       nameTest: 'test123',
       dateTest1: date.toISOString(),
-      dateTest2: '',
+      dateTest2: ''
     } as any as IManagedObject;
+    deviceMO = {
+      id: '674366',
+      type: 'c8y_MQTTDevice',
+      name: 'Ar-alarm-test #1',
+      lastUpdated: '2024-02-21T16:00:48.171Z',
+      creationTime: '2024-01-31T22:04:55.157Z',
+      owner: 'service_device-simulator',
+      childDevices: { references: [] },
+      childAssets: { references: [] },
+      childAdditions: { references: [{ managedObject: { id: '703401' } }] },
+      deviceParents: { references: [] },
+      assetParents: { references: [] },
+      additionParents: { references: [] },
+      c8y_ActiveAlarmsStatus: { critical: 3, major: 2, minor: 0, warning: 0 },
+      c8y_IsDevice: {},
+      c8y_SupportedOperations: [],
+      c8y_Position: { lng: 5, alt: 5, lat: null }
+    };
   });
 
   it('should exist', () => {
@@ -66,15 +84,26 @@ describe('AssetPropertiesConfigComponent', () => {
   it('should get selected asset MOs', async () => {
     // given
     component.config = { settings: true, device: asset };
-    jest
-      .spyOn(inventoryServiceMock, 'detail')
-      .mockReturnValue(Promise.resolve({ data: asset }));
+    jest.spyOn(inventoryServiceMock, 'detail').mockReturnValue(Promise.resolve({ data: asset }));
 
     // when
     await component.ngOnChanges();
 
     // then
     expect(component.selectedAsset).toEqual(asset);
+  });
+
+  it('should not retrieve device MOs if the device is selected', async () => {
+    // given
+    component.config = { settings: true, device: deviceMO };
+    jest.spyOn(inventoryServiceMock, 'detail').mockReturnValue(Promise.resolve({ data: deviceMO }));
+
+    // when
+    await component.ngOnChanges();
+
+    // then
+    expect(inventoryServiceMock.detail).not.toHaveBeenCalled();
+    expect(component.selectedAsset).toEqual(deviceMO);
   });
 
   describe('onBeforeSave', () => {

@@ -3,21 +3,23 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
   SimpleChanges,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
 import {
   IManagedObject,
   IManagedObjectBinary,
   InventoryBinaryService,
-  InventoryService,
+  InventoryService
 } from '@c8y/client';
 import {
   AlertService,
   AssetTypesService,
   DashboardChildComponent,
-  gettext,
+  DatePipe,
+  gettext
 } from '@c8y/ngx-components';
 import { AssetPropertiesItem } from './asset-properties.model';
 import { JSONSchema7 } from 'json-schema';
@@ -25,12 +27,14 @@ import { Permissions } from '@c8y/ngx-components';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { AssetLocationComponent } from '@c8y/ngx-components/sub-assets';
+import { RESULT_TYPES } from '../../../common/asset-property-constant';
 
 @Component({
   selector: 'c8y-asset-properties',
-  templateUrl: './asset-properties.component.html',
+  templateUrl: './asset-properties.component.html'
 })
-export class AssetPropertiesComponent implements OnChanges {
+export class AssetPropertiesComponent implements OnChanges, OnInit {
+  @Input() computedPropertyObject: IManagedObject;
   @Input() asset: IManagedObject;
   @Output() assetChange = new EventEmitter<IManagedObject>();
   @Input()
@@ -43,7 +47,7 @@ export class AssetPropertiesComponent implements OnChanges {
   private destroy$ = new Subject();
   @ViewChild(AssetLocationComponent)
   clusterMap: AssetLocationComponent;
-  component: { changeEnd: any; };
+  component: { changeEnd: any };
 
   constructor(
     private assetTypes: AssetTypesService,
@@ -51,7 +55,8 @@ export class AssetPropertiesComponent implements OnChanges {
     private inventoryBinary: InventoryBinaryService,
     private alert: AlertService,
     private permissionsService: Permissions,
-    public dashboardChild: DashboardChildComponent
+    public dashboardChild: DashboardChildComponent,
+    private datePipe: DatePipe
   ) {}
 
   async ngOnInit() {
@@ -62,8 +67,12 @@ export class AssetPropertiesComponent implements OnChanges {
     this.listenToWidgetResizeEvent(this.dashboardChild);
   }
 
- async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    if (changes.asset?.currentValue || changes.properties?.currentValue) {
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    if (
+      changes.asset?.currentValue ||
+      changes.properties?.currentValue ||
+      changes.computedPropertyObject?.currentValue
+    ) {
       this.assetType = undefined;
       this.customProperties = [];
       this.loadAsset();
@@ -95,11 +104,7 @@ export class AssetPropertiesComponent implements OnChanges {
     delete (mo?.c8y_JsonSchema?.properties[property] || {}).title;
   }
 
-  async parseItem(
-    mo: IManagedObject,
-    properties,
-    asset
-  ): Promise<AssetPropertiesItem[]> {
+  async parseItem(mo: IManagedObject, properties, asset): Promise<AssetPropertiesItem[]> {
     if (!asset) {
       return [];
     }
@@ -108,8 +113,11 @@ export class AssetPropertiesComponent implements OnChanges {
     for (const key of keys) {
       if (properties[key]) {
         let value = asset[key];
-        const {type} = properties[key];
-        const {title} = properties[key];
+        if (mo.computed) {
+          value = this.getComputedPropertyValue(mo, asset);
+        }
+        const { type } = properties[key];
+        const { title } = properties[key];
         let file;
         if (type === 'file' && value) {
           const fileId = typeof value === 'object' ? value[0]?.file?.id : value;
@@ -144,9 +152,10 @@ export class AssetPropertiesComponent implements OnChanges {
               : undefined,
           isEdit: false,
           jsonSchema: mo.c8y_JsonSchema,
-            lastUpdated: mo.lastUpdated,
-            isEditable: mo.isEditable,
-            active: properties[key].active as boolean,
+          lastUpdated: mo.lastUpdated,
+          isEditable: mo.isEditable,
+          active: properties[key].active as boolean,
+          isStandardProperty: mo.isStandardProperty
         });
       }
     }
@@ -231,20 +240,84 @@ export class AssetPropertiesComponent implements OnChanges {
     }
     const isComplexProperty = !!item?.complex?.length;
     if (isComplexProperty) {
-      const complexProperty = item.jsonSchema?.properties?.[mo.c8y_JsonSchema.key] as JSONSchema7;
+      const complexProperty = item.jsonSchema?.properties?.[mo.name] as JSONSchema7;
       complexProperty.required = item.complex.map(({ key }) => key);
     } else {
-      item.jsonSchema.required = [mo.c8y_JsonSchema.key];
+      item.jsonSchema.required = [mo.name];
     }
   }
- private async listenToWidgetResizeEvent(dashboardChild: DashboardChildComponent) {
-        dashboardChild.changeEnd
-          .pipe(
-            filter(child => child.lastChange === 'resize'),
-            takeUntil(this.destroy$)
-          )
-          .subscribe(async () => {
-            this.clusterMap.mapView.map.invalidateSize();
-          });
+
+  private async listenToWidgetResizeEvent(dashboardChild: DashboardChildComponent) {
+    dashboardChild.changeEnd
+      .pipe(
+        filter(child => child.lastChange === 'resize'),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(async () => {
+        this.clusterMap?.mapView.map.invalidateSize();
+      });
+  }
+
+  getComputedPropertyValue(mo, asset) {
+    let value = '';
+
+    switch (mo.name) {
+      case 'alarmCountToday':
+      case 'alarmCount3Months':
+      case 'eventCountToday':
+      case 'eventCount3Months':
+        value = this.computedPropertyObject?.[`${mo.name}_${mo.config.id}`] ?? 0;
+        break;
+      case 'lastDeviceMessage':
+        value =
+          asset.c8y_Availability?.lastMessage ??
+          this.computedPropertyObject?.[mo.name] ??
+          'No data';
+        break;
+      case 'lastMeasurement':
+        value = this.computedPropertyObject
+          ? this.getLastMeasurementWithFormat(
+              this.computedPropertyObject[`${mo.name}_${mo.config.id}`],
+              mo.config.resultTypes
+            )
+          : 'No data';
+        break;
+      case 'childDevicesCount':
+        value = asset.childDevices.references.length;
+        break;
+      case 'childAssetsCount':
+        value = asset.childAssets.references.length;
+        break;
+      case 'configurationSnapshot':
+        value = this.computedPropertyObject?.[mo.name] ?? 'No data';
+        break;
+      default:
+        value = 'No data';
+        break;
+    }
+    return value;
+  }
+
+  getLastMeasurementWithFormat(measurementObj, resultType) {
+    let out = '';
+    if (measurementObj) {
+      const { date, value, unit } = measurementObj;
+      const type = resultType || RESULT_TYPES.VALUE.value;
+      switch (type) {
+        case RESULT_TYPES.VALUE.value:
+          out = value;
+          break;
+        case RESULT_TYPES.VALUE_UNIT.value:
+          out = `${value} ${unit || ''}`;
+          break;
+        case RESULT_TYPES.VALUE_UNIT_TIME.value:
+          out = ` ${this.datePipe.transform(date, 'short')} | ${`${value} ${unit || ''}`}`;
+          break;
+        default:
+          out = '';
+          break;
       }
+    }
+    return out;
+  }
 }

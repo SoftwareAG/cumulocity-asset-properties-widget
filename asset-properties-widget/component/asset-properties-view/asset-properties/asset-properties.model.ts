@@ -14,4 +14,5 @@ export interface AssetPropertiesItem {
   lastUpdated: string;
   isEditable: boolean;
   active: boolean;
+  isStandardProperty: boolean;
 }
