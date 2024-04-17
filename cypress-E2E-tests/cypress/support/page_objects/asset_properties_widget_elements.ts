@@ -27,6 +27,7 @@ export default {
   dataPointRemoveButton: 'button i[c8yicon="minus-circle"]',
   dataPointAddButton: 'button i[c8yicon="plus-circle"]',
   widgetSaveButton: '[data-cy="widget-config--save-widget"]',
+  propertiesEditIcon: "button[data-cy='asset-properties-edit-icon']",
 
   // ###############[Dropdowns]############
 
@@ -41,5 +42,7 @@ export default {
   cardElement: "div[title='Editable form for asset properties widget']",
   filterProperties: "input[placeholder='Filter properties']",
   datapointSelectionList: 'c8y-datapoint-selection-list',
-  measurmentReturnTypeValueSelector: '#returnTypeField'
+  measurmentReturnTypeValueSelector: '#returnTypeField',
+  widgetTitleFieldId: '#widgetTitle',
+  cardTitleElement: 'c8y-dashboard-child-title'
 };

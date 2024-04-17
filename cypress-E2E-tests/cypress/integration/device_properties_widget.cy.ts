@@ -669,4 +669,74 @@ describe('Device properties widget', function () {
       cy.cleanup();
     });
   });
+
+  context('Device permissions tests', function () {
+    const user = 'test_user';
+
+    before(function () {
+      cy.login();
+      cy.createUser(user);
+      cy.apiCreateSimpleAsset([assetObject]).then(id => {
+        cy.assignUserInventoryRole([{ assetId: id, username: user, roleId: 1 }]);
+      });
+      for (let i = 1; i < 3; i++) {
+        cy.createDevice(`Device${i}`);
+      }
+      cy.apiAssignDevice([`Device${1}`], asset);
+      cy.visitAndWaitUntilPageLoad(url);
+      cy.get(asset_properties_widget_elements.addWidgetButton).click();
+      cy.get(asset_properties_widget_elements.cardElement).eq(0).click();
+      cy.get(asset_properties_widget_elements.widgetTitleFieldId).clear();
+      cy.get(asset_properties_widget_elements.widgetTitleFieldId).type(asset);
+      cy.clickOnAsset(asset);
+      cy.chooseAssetOrDevice(device, 1);
+      cy.get(asset_properties_widget_elements.widgetSaveButton).click();
+
+      cy.get(asset_properties_widget_elements.widgetDashboardAddWidgetButton).click();
+      cy.get(asset_properties_widget_elements.cardElement).eq(0).click();
+      cy.get(asset_properties_widget_elements.widgetTitleFieldId).clear();
+      cy.get(asset_properties_widget_elements.widgetTitleFieldId).type(`Device${2}`);
+      cy.clickOnAsset('Unassigned devices');
+      cy.chooseAssetOrDevice(`Device${2}`);
+      cy.get(asset_properties_widget_elements.widgetSaveButton).click();
+      cy.logout();
+    });
+
+    beforeEach(function () {
+      cy.login(user);
+      cy.visitAndWaitUntilPageLoad(url);
+    });
+
+    // Verify assigning device permissions is contingent upon group/asset inventory permissions.
+    // As user do not have inventory permission, add propertywidget button should be disabled.
+    it('TC_Device_Properties_Permissions_001', () => {
+      verifyPermissions(asset);
+    });
+
+    // As user with read permission, add widget button should be disabled.
+    // Verify unassigned devices, there are no specific permissions.
+    it('TC_Device_Properties_Permissions_002', () => {
+      verifyPermissions(`Device${2}`, true);
+    });
+
+    function verifyPermissions(title, shouldBeEnabled = false) {
+      cy.get(asset_properties_widget_elements.widgetDashboardAddWidgetButton).should(
+        shouldBeEnabled ? 'be.enabled' : 'be.disabled'
+      );
+      cy.get(asset_properties_widget_elements.cardTitleElement).should('contain.text', title);
+      cy.get(asset_properties_widget_elements.propertiesEditIcon).should(
+        shouldBeEnabled ? 'be.enabled' : 'be.disabled'
+      );
+    }
+
+    after(function () {
+      cy.logout();
+      cy.login();
+      cy.cleanup();
+      cy.deleteUser(user);
+      cy.visitAndWaitUntilPageLoad(url);
+      cy.deleteWidgetInstances([asset, `Device${2}`]);
+      cy.deleteAllDevices();
+    });
+  });
 });
