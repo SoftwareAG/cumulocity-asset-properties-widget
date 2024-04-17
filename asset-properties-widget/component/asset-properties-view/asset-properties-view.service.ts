@@ -131,7 +131,9 @@ export class AssetPropertiesViewService {
   }
 
   updateTimeStamp(dateSet: Set<string>) {
-    this.variableSubject.next(dateSet);
+    if (dateSet.size > 0) {
+      this.variableSubject.next(dateSet);
+    }
   }
 
   getLatestMeasurement$(datapoint: KPIDetails): Observable<MeasurementValue> {
