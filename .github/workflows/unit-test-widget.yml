@@ -1,0 +1,45 @@
+name: Widget unit test
+
+on:
+  workflow_call:
+    inputs:
+      test_command:
+        description: "Command to run widget unit tests. For example: yarn test"
+        required: true
+        type: string
+      skip_run:
+        description: "use to skip the workflow run"
+        type: boolean
+        default: false
+
+jobs:
+  unit-tests:
+    runs-on: [ubuntu-latest]
+    if: ${{inputs.skip_run != true }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: "Install dependencies"
+        run: yarn install --frozen-lockfile --prefer-offline
+
+      - name: Test
+        run: ${{inputs.test_command}}
+
+  status-check:
+    needs: [unit-tests]
+    if: always()
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Verify step status
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1

@@ -1,0 +1,33 @@
+{
+  "name": "cypres",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "report:merge": "mochawesome-merge mochawesome-report/*.json > cypress-combined-report.json",
+    "report:generate": "npm run report:merge && marge --reportDir TestReport cypress-combined-report.json",
+    "test:ci": "cypress run",
+    "test:lint": "eslint ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@4tw/cypress-drag-drop": "^2.2.1",
+    "@c8y/client": "1018.481.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "cy-verify-downloads": "0.1.14",
+    "cypress": "12.7.0",
+    "cypress-iframe": "^1.0.1",
+    "cypress-multi-reporters": "^1.5.0",
+    "cypress-real-events": "^1.11.0",
+    "eslint": "8.35.0",
+    "eslint-plugin-cypress": "2.13.3",
+    "eslint-plugin-import": "2.27.5",
+    "mocha": "^5.2.0",
+    "mochawesome": "^4.0.1",
+    "mochawesome-merge": "^4.2.1",
+    "typescript": "^5.0.4"
+  },
+  "description": ""
+}

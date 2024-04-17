@@ -1,0 +1,87 @@
+name: Widget cypress E2E
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      tenantUrl:
+        required: false
+        type: string
+      project_directory:
+        description: "Cypress folder path"
+        required: true
+        type: string
+      spec_files:
+        description: "Comma separated list of spec file names"
+        required: true
+        type: string
+      browser:
+        description: "browser to run the tests on"
+        required: true
+        type: string
+
+    secrets:
+      AUTOTEST_USERNAME1:
+        required: true
+      AUTOTEST_USERNAME1_PASSWORD:
+        required: true
+      AUTOTEST_USERNAME2:
+        required: true
+      AUTOTEST_USERNAME2_PASSWORD:
+        required: true
+      TENANT_URL:
+        required: false
+
+jobs:
+  cypress-run:
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: "Install dependencies"
+        run: yarn install --frozen-lockfile --prefer-offline
+        working-directory: ${{ inputs.project_directory }}
+
+      - name: "Begin Testing"
+        run: |
+          yarn test:ci \
+            -- --config baseUrl=${{ inputs.tenantUrl || secrets.TENANT_URL }} \
+            --env username=${{ secrets.AUTOTEST_USERNAME1  }},password=${{ secrets.AUTOTEST_USERNAME1_PASSWORD }} \
+            --browser ${{inputs.browser}} \
+            --spec ${{inputs.spec_files}}
+        working-directory: ${{ inputs.project_directory }}
+
+      # Merge mochawesome report of each spec file and generate single html report
+      - name: Gnerate HTML report
+        if: always()
+        run: yarn report:generate
+        working-directory: ${{ inputs.project_directory }}
+
+      - name: Tar files
+        if: always()
+        run: tar -cvf my_files.tar ./TestReport/
+        working-directory: ${{ inputs.project_directory }}
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Cypress-report
+          path: ${{ inputs.project_directory }}/my_files.tar
+
+      - name: "Upload Screenshots"
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-screenshots
+          path: ${{ inputs.project_directory }}/cypress/screenshots

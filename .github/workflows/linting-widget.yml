@@ -1,0 +1,45 @@
+name: Widget linting
+
+on:
+  workflow_call:
+    inputs:
+      lint_command:
+        description: 'Command to run widget linting. For example: yarn lint'
+        required: true
+        type: string
+      skip_run:
+        description: 'use to skip the workflow run'
+        type: boolean
+        default: false
+
+jobs:
+  lint:    
+    if: ${{inputs.skip_run != true }}
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: 'Install dependencies'
+        run: yarn install --frozen-lockfile --prefer-offline
+
+      - name: Lint
+        run: ${{inputs.lint_command}}
+
+  status-check:
+    needs: [lint]
+    if: always()
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Verify step status
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1

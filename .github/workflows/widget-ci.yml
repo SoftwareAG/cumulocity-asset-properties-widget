@@ -1,0 +1,29 @@
+name: Widget - CI
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    paths:
+      - asset-properties-widget/**
+    branches:
+      - develop
+
+jobs:
+  unit-tests:
+    uses: ./.github/workflows/unit-test-widget.yml
+    with:
+      test_command: "yarn test"
+
+  build-widget:
+    uses: ./.github/workflows/build-widget.yml
+    with:
+      build_command: "yarn build"
+      app_file_name_prefix: "sag-pkg-asset-properties-widget"
+      app_context_path: "sag-pkg-asset-properties-widget"
+      upload_artifact: true
+
+  lint:
+    uses: ./.github/workflows/linting-widget.yml
+    with:
+      lint_command: 'yarn lint'

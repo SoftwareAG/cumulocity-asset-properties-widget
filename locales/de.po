@@ -1,0 +1,28 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: c8y.plugin\n"
+"Language: de\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Module Federation widget"
+msgstr "Modul Federation Dingsbums"
+
+msgid "File could not be loaded."
+msgstr "Die Datei konnte nicht geladen werden."
+
+msgid "Select an asset from the list."
+msgstr "Ein Asset aus der Liste wählen."
+
+msgid "Add and select at least one property."
+msgstr "Fügen Sie und hinzu Wählen Sie mindestens einen Attribut"
+
+msgid "No data"
+msgstr "Keine Daten"
+
+msgid "Asset Properties 2.0"
+msgstr "Asset-Attribute 2.0"
+
+msgid "Editable form for asset properties widget"
+msgstr "Editierbares Formular für Asset-Attribute Widget"

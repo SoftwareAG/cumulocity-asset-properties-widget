@@ -1,0 +1,2 @@
+AssetModel/DeviceType,AssetName,Path,Device ID/External ID,Description,HvacBulk.Bulk Import Custom Property Color(string)
+hvacbulk,TC_Bulk_Import_008 Asset,,,Created Asset to test Single Asset import functionality,Red

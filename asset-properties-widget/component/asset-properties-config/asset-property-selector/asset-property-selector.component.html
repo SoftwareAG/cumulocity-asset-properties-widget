@@ -1,0 +1,163 @@
+<div class="form-group m-b-8">
+  <label>{{ 'Properties' | translate }} </label>
+</div>
+<div class="d-flex sticky-top">
+  <div class="m-l-auto m-r-16">
+    <button
+      title="{{ 'Add property' | translate }}"
+      data-cy="asset-property-selector-add-property-button"
+      class="btn btn-default btn-xs"
+      (click)="addProperty()"
+      type="button"
+      [disabled]="!asset"
+    >
+      <i c8yicon="plus" class="dlt-c8y-icon-plus"></i>
+      {{ 'Add property' | translate }}
+    </button>
+  </div>
+</div>
+<div class="alert alert-warning" *ngIf="!isAtleastOnePropertySelected || properties.length <= 0">
+  {{ 'Add and select at least one property.' | translate }}
+</div>
+<table class="table">
+  <thead>
+    <th style="width: 5%"></th>
+    <th style="width: 10%">
+      <label data-cy="asset-property-selector-show-column">{{ 'Show' | translate }}</label>
+    </th>
+    <th style="width: 28%">
+      <label data-cy="asset-property-selector-label-column">{{ 'Label' | translate }}</label>
+    </th>
+    <th style="width: 28%">
+      <label data-cy="asset-property-selector-key-column">{{ 'Key' | translate }}</label>
+    </th>
+    <th style="width: 5%"></th>
+  </thead>
+
+  <tbody class="header-row" cdkDropList (cdkDropListDropped)="drop($event)">
+    <tr
+      cdkDrag
+      cdkDragLockAxis="y"
+      class="property"
+      *ngFor="let property of properties; index as i"
+      class="table-row-not-expanded"
+    >
+      <td cdkDragHandle style="width: 5%">
+        <i
+          c8yicon="bars"
+          class="dlt-c8y-icon-bars"
+          data-cy="asset-property-selector-move-bars"
+          style="cursor: move"
+        ></i>
+      </td>
+      <td style="width: 10%">
+        <input
+          data-cy="asset-property-selector-checkbox"
+          type="checkbox"
+          (change)="updateOptions()"
+          [(ngModel)]="property.active"
+        />
+      </td>
+      <div *ngIf="property?.open" class="expanded-panel">
+        <div *ngIf="property?.open" class="table-container">
+          <table class="table">
+            <thead>
+              <th>
+                <label>{{ 'Show' | translate }}</label>
+              </th>
+              <th>
+                <label>{{ 'Label' | translate }}</label>
+              </th>
+              <th>
+                <label>{{ 'Key' | translate }}</label>
+              </th>
+              <th></th>
+            </thead>
+            <tbody>
+              <tr
+                class="header-row"
+                *ngFor="
+                  let item of property.c8y_JsonSchema.properties[property.name].properties
+                    | keyvalue
+                "
+              >
+                <td>
+                  <input
+                    [disabled]="true"
+                    type="checkbox"
+                    (change)="updateOptions()"
+                    [(ngModel)]="property.active"
+                  />
+                </td>
+                <td>
+                  <input class="property-label" [(ngModel)]="item.value.title" />
+                </td>
+                <td>
+                  <span>{{ item.key | translate }}</span>
+                </td>
+                <td>
+                  <button
+                    [disabled]="true"
+                    class="btn btn-dot btn-dot--danger showOnHover pull-right"
+                    type="button"
+                    title="{{ 'Remove property' | translate }}"
+                    data-cy="asset-property-selector-remove-complex-property-button"
+                    (click)="removeComplexProperty(item)"
+                  >
+                    <i c8yicon="times" class="dlt-c8y-icon-times"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <td style="width: 28%">
+        <div *ngIf="property.label">
+          <input
+            data-cy="asset-property-selector-label"
+            class="form-control property-label"
+            [(ngModel)]="property.label"
+          />
+        </div>
+        <div *ngIf="!property.label && property.title">
+          <input
+            data-cy="asset-property-selector-label"
+            class="form-control property-label"
+            [(ngModel)]="property.title"
+          />
+        </div>
+      </td>
+      <td style="width: 28%">
+        <button
+          class="btn btn-xs btn-default"
+          type="button"
+          aria-label="{{ 'Configure computed property' | translate }}"
+          title="{{ 'Configure computed property' | translate }}"
+          tooltip-popup-delay="500"
+          tooltip-append-to-body="true"
+          *ngIf="!!property.computed && property.config"
+          (click)="configureComputedProperty(i)"
+          data-cy="asset-property-selector-config-computed-property-button"
+        >
+          <i c8yIcon="bolt"></i>
+          {{ (property.name | translate) || (property.keyPath?.join('.') | translate) }}
+        </button>
+        <span *ngIf="!property.config" data-cy="asset-property-selector-name">{{
+          (property.name | translate) || (property.keyPath?.join('.') | translate)
+        }}</span>
+      </td>
+      <td style="width: 5%">
+        <button
+          class="btn btn-dot btn-dot--danger showOnHover pull-right"
+          type="button"
+          title="{{ 'Remove property' | translate }}"
+          data-cy="asset-property-selector-remove-property-button"
+          (click)="removeProperty(property)"
+        >
+          <i c8yicon="times" class="dlt-c8y-icon-times"></i>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

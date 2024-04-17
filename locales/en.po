@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: c8y.plugin\n"
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "File could not be loaded."
+msgstr "File could not be loaded."
+
+msgid "Select an asset from the list."
+msgstr "Select an asset from the list."
+
+msgid "Add and select at least one property."
+msgstr "Add and select at least one property."
+
+msgid "No data"
+msgstr "No data"
+
+msgid "Asset Properties 2.0"
+msgstr "Asset Properties 2.0"
+
+msgid "Editable form for asset properties widget"
+msgstr "Editable form for asset properties widget"

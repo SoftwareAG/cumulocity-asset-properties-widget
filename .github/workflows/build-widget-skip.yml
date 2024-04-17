@@ -1,0 +1,17 @@
+name: Widget build skip
+
+on:
+  pull_request:
+    paths-ignore:
+      - asset-properties-widget/**
+    branches:
+      - develop
+
+jobs:
+  build-widget:
+    uses: ./.github/workflows/build-widget.yml
+    with:
+      skip_run: true
+      build_command: ""
+      app_file_name_prefix: ""
+      app_context_path: ""
