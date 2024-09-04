@@ -30,7 +30,7 @@ export class AssetPropertiesViewComponent implements OnInit {
   @Input() config: any;
   computedPropertyObject: ComputedPropertyObject;
   isLoading = true;
-  dateTimeFormat = 'yyyy-MM-ddThh:mm:ssZZZZZ';
+  dateTimeFormat = 'yyyy-MM-ddTHH:mm:ssZZZZZ';
 
   constructor(
     protected inventoryService: InventoryService,
